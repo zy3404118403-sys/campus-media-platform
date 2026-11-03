@@ -1,0 +1,58 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">CURATED</view>
+    <view class="hdr-title">专题</view>
+    <view class="hdr-sub">编辑策展 · 深度内容</view>
+  </view>
+
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-short"></view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">专题加载失败</view>
+    <view class="state-desc">请稍后重试</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <view class="sec">
+      <text class="sec-title">专题集</text>
+      <text class="sec-more">左右滑动</text>
+    </view>
+
+    <scroll-view class="hscroll" scroll-x="true" enable-flex="true" show-scrollbar="false">
+      <view wx:for="{{collections}}" wx:key="id" class="coll {{item.tone}}">
+        <view class="coll-title">{{item.title}}</view>
+        <view class="coll-count">{{item.count}} 件作品</view>
+      </view>
+    </scroll-view>
+
+    <view class="sec">
+      <text class="sec-title">最新文章</text>
+      <text class="sec-more">{{articles.length}} 篇</text>
+    </view>
+
+    <view
+      wx:for="{{articles}}"
+      wx:key="id"
+      class="row"
+      data-id="{{item.id}}"
+      bindtap="onTapArticle"
+    >
+      <view class="row-thumb {{item.tone}}"></view>
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-desc">{{item.excerpt}}</view>
+        <view class="row-foot">
+          <text>{{item.date}}</text>
+          <text>{{item.views}} 阅读</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

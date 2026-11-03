@@ -1,0 +1,110 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">CCIBE CAMPUS MEDIA CENTER</view>
+    <view class="hdr-title">素材库</view>
+    <view class="hdr-sub">{{subtitle}}</view>
+  </view>
+
+  <view class="search">
+    <view class="search-icon ico ico-search ico-dim3"></view>
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索标题、标签或学院"
+      placeholder-class="search-ph"
+      confirm-type="search"
+      bindinput="onInput"
+    />
+  </view>
+
+  <scroll-view class="chips" scroll-x="true" enable-flex="true" show-scrollbar="false">
+    <view
+      wx:for="{{filters}}"
+      wx:key="*this"
+      class="chip {{item === filter ? 'on' : ''}}"
+      data-v="{{item}}"
+      bindtap="onFilter"
+    >{{item}}</view>
+  </scroll-view>
+
+  <view wx:if="{{state === 'loading'}}" class="grid">
+    <view class="col">
+      <view class="sk sk-tall"></view>
+      <view class="sk sk-short"></view>
+      <view class="sk sk-short"></view>
+    </view>
+    <view class="col">
+      <view class="sk sk-short"></view>
+      <view class="sk sk-tall"></view>
+      <view class="sk sk-short"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">内容加载失败</view>
+    <view class="state-desc">请检查网络后重试，已加载的内容不会丢失</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">没有匹配的素材</view>
+    <view class="state-desc">换个关键词或切回「全部」看看</view>
+    <view class="btn btn-ghost state-btn" bindtap="onReset">重置筛选</view>
+  </view>
+
+  <view wx:else class="grid">
+    <view class="col">
+      <view
+        wx:for="{{left}}"
+        wx:key="id"
+        class="card"
+        data-id="{{item.id}}"
+        bindtap="onTap"
+      >
+        <view class="thumb thumb-{{item.ratio}} {{item.tone}}">
+          <view class="tag">{{item.type}}</view>
+          <view wx:if="{{item.type === '视频'}}" class="tag tag-play"><view class="ico ico-play"></view></view>
+        </view>
+        <view class="card-body">
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">
+            <text>{{item.type === '视频' ? item.duration : item.size}}</text>
+            <text class="gold">{{item.downloads}} ↓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="col">
+      <view
+        wx:for="{{right}}"
+        wx:key="id"
+        class="card"
+        data-id="{{item.id}}"
+        bindtap="onTap"
+      >
+        <view class="thumb thumb-{{item.ratio}} {{item.tone}}">
+          <view class="tag">{{item.type}}</view>
+          <view wx:if="{{item.type === '视频'}}" class="tag tag-play"><view class="ico ico-play"></view></view>
+        </view>
+        <view class="card-body">
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">
+            <text>{{item.type === '视频' ? item.duration : item.size}}</text>
+            <text class="gold">{{item.downloads}} ↓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{state === 'ready'}}" class="list-foot">
+    <view wx:if="{{loadingMore}}" class="list-more">加载中…</view>
+    <view wx:elif="{{hasMore}}" class="list-more" bindtap="onLoadMoreTap">上拉或点击加载更多</view>
+    <text wx:else>已显示全部 {{total}} 条</text>
+  </view>
+
+  <view class="safe"></view>
+</view>

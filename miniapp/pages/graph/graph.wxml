@@ -1,0 +1,121 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">KNOWLEDGE GRAPH</view>
+    <view class="hdr-title">内容关系</view>
+    <view class="hdr-sub">{{g.nodes}} 个节点 · {{g.edges}} 条关联</view>
+  </view>
+
+  <view class="seg">
+    <view
+      class="seg-item {{tab === 'material' ? 'on' : ''}}"
+      data-tab="material"
+      bindtap="onSeg"
+    >素材 {{counts.material}}</view>
+    <view
+      class="seg-item {{tab === 'tag' ? 'on' : ''}}"
+      data-tab="tag"
+      bindtap="onSeg"
+    >标签 {{counts.tag}}</view>
+    <view
+      class="seg-item {{tab === 'more' ? 'on' : ''}}"
+      data-tab="more"
+      bindtap="onSeg"
+    >更多 {{counts.more}}</view>
+  </view>
+
+  <!-- ══════════ 素材 ══════════ -->
+  <block wx:if="{{tab === 'material'}}">
+    <view
+      wx:for="{{g.mats}}"
+      wx:key="id"
+      class="g-node"
+      data-id="{{item.id}}"
+      bindtap="onMaterial"
+    >
+      <view class="g-node-hd">
+        <text class="g-node-name">{{item.title}}</text>
+        <text class="g-badge">{{item.type}}</text>
+      </view>
+      <view class="g-node-sub">{{item.college}} · 关联 {{item.tags.length}} 个标签</view>
+      <view class="g-chips">
+        <text wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this" class="g-chip">#{{t}}</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- ══════════ 标签（枢纽） ══════════ -->
+  <block wx:elif="{{tab === 'tag'}}">
+    <view class="note">标签是连接素材的枢纽，点开可以看到它连着哪些素材。</view>
+    <view
+      wx:for="{{g.tags}}"
+      wx:key="id"
+      class="g-node"
+      data-id="{{item.id}}"
+      bindtap="onToggleTag"
+    >
+      <view class="g-node-hd">
+        <text class="g-node-name g-hash">#{{item.name}}</text>
+        <text class="g-badge">{{item.count}} 个素材</text>
+      </view>
+      <view wx:if="{{expanded === item.id}}" class="g-linked">
+        <view
+          wx:for="{{item.items}}"
+          wx:for-item="m"
+          wx:key="id"
+          class="g-linked-item"
+          data-id="{{m.id}}"
+          catchtap="onMaterial"
+        >· {{m.title}}</view>
+      </view>
+      <view wx:else class="g-node-sub">点击展开关联素材</view>
+    </view>
+  </block>
+
+  <!-- ══════════ 更多 ══════════ -->
+  <block wx:else>
+    <view class="sec"><view class="sec-title">专题</view></view>
+    <view
+      wx:for="{{g.cols}}"
+      wx:key="id"
+      class="g-node"
+      data-id="{{item.id}}"
+      bindtap="onCollection"
+    >
+      <view class="g-node-hd">
+        <text class="g-node-name">{{item.title}}</text>
+        <text class="g-badge">{{item.count}} 件</text>
+      </view>
+      <view class="g-node-sub">{{item.desc}}</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">活动</view></view>
+    <view
+      wx:for="{{g.acts}}"
+      wx:key="id"
+      class="g-node"
+      data-id="{{item.id}}"
+      bindtap="onActivity"
+    >
+      <view class="g-node-hd">
+        <text class="g-node-name">{{item.title}}</text>
+        <text class="g-badge">{{item.state}}</text>
+      </view>
+      <view class="g-node-sub">{{item.sub}}</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">其他内容</view></view>
+    <view wx:for="{{g.others}}" wx:key="id" class="g-node g-node-flat">
+      <view class="g-node-hd">
+        <text class="g-node-name">{{item.title}}</text>
+        <text class="g-badge">{{item.kind}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="note">
+    当前关联边来自素材的标签归属。接入全文检索与语义分析后，
+    「谁上传、谁点赞、属于哪个专题」这类关系会自动补进来。
+  </view>
+
+  <view class="safe"></view>
+</view>

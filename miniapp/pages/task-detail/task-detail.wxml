@@ -1,0 +1,167 @@
+<view class="page">
+  <!-- 加载 -->
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <!-- 未找到 -->
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">任务不存在或已关闭</view>
+    <view class="state-desc">可能已被管理员关闭，去看看其他任务吧。</view>
+    <view class="btn state-btn" bindtap="onBack">返回任务大厅</view>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">任务加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <!-- 正文 -->
+  <block wx:else>
+    <view class="hdr task-hdr">
+      <view class="hdr-kicker">TASK · {{task.type}}</view>
+      <view class="hdr-title task-h1">
+        {{task.title}}
+        <text wx:if="{{task.demo}}" class="demo-tag">演示</text>
+      </view>
+      <view class="task-tags">
+        <text class="pill {{stageCls}}">{{stageText}}</text>
+        <text class="pill pill-ok">完成可得 {{task.points}} 贡献值</text>
+      </view>
+    </view>
+
+    <view class="meta-list">
+      <view class="meta-item">
+        <text class="meta-k">任务类型</text>
+        <text class="meta-v">{{task.type}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">奖励贡献值</text>
+        <text class="meta-v gold">{{task.points}} 分</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">名额</text>
+        <text class="meta-v">{{task.claimedCount || 0}} / {{task.slots}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">截止时间</text>
+        <text class="meta-v">{{task.deadlineFull}}</text>
+      </view>
+    </view>
+
+    <view class="sec"><view class="sec-title">任务说明</view></view>
+    <view class="art-body">
+      <view class="art-p">{{task.desc}}</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">交付物</view></view>
+    <view class="deliver">
+      <view class="deliver-mark ico ico-file-g"></view>
+      <text class="deliver-txt">{{task.deliver}}</text>
+    </view>
+
+    <view class="sec"><view class="sec-title">要求</view></view>
+    <view class="notes">
+      <view wx:for="{{task.requirements}}" wx:key="*this" class="note-item">
+        <text class="note-idx">{{index + 1}}</text>
+        <text class="note-txt">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 已提交：展示提交摘要 -->
+    <block wx:if="{{stage === 'submitted'}}">
+      <view class="sec"><view class="sec-title">我的提交</view></view>
+      <view class="submit-card">
+        <view class="submit-row">
+          <text class="submit-k">提交时间</text>
+          <text class="submit-v">{{submittedAt || '刚刚'}}</text>
+        </view>
+        <view class="submit-block">
+          <text class="submit-k">成果说明</text>
+          <text class="submit-v">{{note}}</text>
+        </view>
+        <view wx:if="{{link}}" class="submit-block">
+          <text class="submit-k">成果链接</text>
+          <text class="submit-v">{{link}}</text>
+        </view>
+        <view class="submit-tip">审核结果会通过站内通知提醒你，通常 1–2 个工作日处理。</view>
+      </view>
+    </block>
+
+    <!-- 提交表单 -->
+    <block wx:if="{{formOpen}}">
+      <view class="sec"><view class="sec-title">提交成果</view></view>
+      <view class="field">
+        <view class="field-lbl">成果说明（必填）</view>
+        <view class="input-wrap ta-wrap">
+          <textarea
+            id="noteInput"
+            class="ta"
+            value="{{note}}"
+            placeholder="写清拍了什么、几个文件、时长或张数，方便审核核对"
+            placeholder-class="input-ph"
+            maxlength="500"
+            auto-height
+            bindinput="onNoteInput"
+          />
+        </view>
+        <view class="ta-count">{{note.length}} / 500</view>
+        <view wx:if="{{err}}" class="err-tip">{{err}}</view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">成果链接（选填）</view>
+        <view class="input-wrap">
+          <input
+            id="linkInput"
+            class="input"
+            value="{{link}}"
+            placeholder="网盘或素材库链接，便于老师下载"
+            placeholder-class="input-ph"
+            maxlength="200"
+            bindinput="onLinkInput"
+          />
+        </view>
+      </view>
+    </block>
+
+    <view class="note task-note">任务标注「演示」表示用于功能体验的示例任务，不影响贡献值统计规则。</view>
+
+    <view class="safe-btn"></view>
+
+    <!-- 底栏 -->
+    <view class="bar">
+      <view wx:if="{{!formOpen}}" class="bar-share">
+        <view class="share-glyph ico ico-upload ico-dim2"></view>
+        <text class="share-txt">分享</text>
+        <button class="share-hit" open-type="share"></button>
+      </view>
+
+      <!-- 表单打开时只留提交/取消 -->
+      <block wx:if="{{formOpen}}">
+        <view id="cancelFormBtn" class="btn btn-ghost bar-main" bindtap="onCloseForm">取消</view>
+        <view
+          id="submitBtn"
+          class="btn bar-cancel {{submitting ? 'btn-loading' : ''}}"
+          bindtap="onSubmit"
+        >{{submitting ? '提交中…' : '提交成果'}}</view>
+      </block>
+
+      <view wx:elif="{{stage === 'open'}}" id="claimBtn" class="btn bar-main" bindtap="onClaim">领取任务</view>
+
+      <view wx:elif="{{stage === 'claimed'}}" id="openFormBtn" class="btn bar-main" bindtap="onOpenForm">提交成果</view>
+
+      <view wx:elif="{{stage === 'submitted'}}" class="btn btn-ghost bar-main row-btn-mute">已提交，等待审核</view>
+
+      <view wx:else class="btn btn-done bar-main">已完成，贡献值已到账</view>
+    </view>
+  </block>
+
+  <view wx:if="{{state !== 'ready'}}" class="safe"></view>
+</view>

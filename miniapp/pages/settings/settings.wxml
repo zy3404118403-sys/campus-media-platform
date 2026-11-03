@@ -1,0 +1,107 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">ACCOUNT SETTINGS</view>
+    <view class="hdr-title">账号设置</view>
+    <view class="hdr-sub">资料、密码与登录安全</view>
+  </view>
+
+  <!-- 账号卡 -->
+  <view class="acc">
+    <view class="acc-avatar">{{initial}}</view>
+    <view class="acc-main">
+      <view class="acc-name">{{name}}</view>
+      <view class="acc-meta">{{loggedIn ? '学号 ' + sid : '登录后可修改资料与密码'}}</view>
+      <view class="acc-meta">{{college}}</view>
+    </view>
+    <view wx:if="{{loggedIn}}" class="acc-tag">{{role}}</view>
+  </view>
+
+  <block wx:if="{{loggedIn}}">
+    <!-- 修改密码 -->
+    <view class="sec-h">登录安全</view>
+
+    <view id="togglePwdBtn" class="row-btn" bindtap="onTogglePwd">
+      <view class="row-btn-main">
+        <view class="row-btn-title">修改密码</view>
+        <view class="row-btn-sub">建议 8 位以上，字母与数字组合</view>
+      </view>
+      <view class="row-btn-act">{{openPwd ? '收起' : '修改'}}</view>
+    </view>
+
+    <view wx:if="{{openPwd}}" class="pwd-box">
+      <view class="field">
+        <view class="field-lbl">当前密码</view>
+        <view class="input-wrap {{pwdErr ? 'err' : ''}}">
+          <input
+            class="input"
+            password="{{true}}"
+            value="{{oldPwd}}"
+            placeholder="请输入当前密码"
+            placeholder-class="input-ph"
+            maxlength="64"
+            bindinput="onOld"
+          />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">新密码</view>
+        <view class="input-wrap {{pwdErr ? 'err' : ''}}">
+          <input
+            class="input"
+            password="{{true}}"
+            value="{{newPwd}}"
+            placeholder="至少 8 位，含字母与数字"
+            placeholder-class="input-ph"
+            maxlength="64"
+            bindinput="onNew"
+          />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">确认新密码</view>
+        <view class="input-wrap {{pwdErr ? 'err' : ''}}">
+          <input
+            class="input"
+            password="{{true}}"
+            value="{{againPwd}}"
+            placeholder="再输入一次新密码"
+            placeholder-class="input-ph"
+            maxlength="64"
+            bindinput="onAgain"
+          />
+        </view>
+      </view>
+
+      <view wx:if="{{pwdErr}}" class="pwd-err">{{pwdErr}}</view>
+      <view wx:if="{{pwdDone}}" class="pwd-ok">密码已更新，下次登录请使用新密码。</view>
+
+      <view class="btn pwd-btn" bindtap="onSubmitPwd">
+        {{pwdBusy ? '提交中…' : '确认修改'}}
+      </view>
+    </view>
+
+    <view id="twoFABtn" class="row-btn" bindtap="onTwoFA">
+      <view class="row-btn-main">
+        <view class="row-btn-title">两步验证</view>
+        <view class="row-btn-sub">登录时额外输入动态验证码</view>
+      </view>
+      <view class="row-btn-act {{twoFA ? 'on' : ''}}">{{twoFAText}}</view>
+    </view>
+
+    <view class="note">
+      两步验证需要在网页端扫码绑定身份验证器，小程序内无法完成绑定，因此这里只显示状态并提供入口说明。
+    </view>
+
+    <view class="btn btn-ghost logout" bindtap="onLogout">退出登录</view>
+  </block>
+
+  <block wx:else>
+    <view class="btn login-btn" bindtap="onLogin">去登录</view>
+  </block>
+
+  <view wx:if="{{mockNote}}" class="note mock">{{mockNote}}</view>
+
+  <view class="safe"></view>
+</view>

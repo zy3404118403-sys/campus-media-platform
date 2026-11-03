@@ -1,0 +1,73 @@
+<view class="page">
+  <view class="search search-page-bar">
+    <view class="search-icon ico ico-search ico-dim3"></view>
+    <input
+      id="kwInput"
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索素材、标签或学院"
+      placeholder-class="search-ph"
+      confirm-type="search"
+      focus="{{autoFocus}}"
+      bindinput="onInput"
+      bindconfirm="onConfirm"
+    />
+    <view wx:if="{{keyword}}" class="s-clear ico ico-close ico-dim3" bindtap="onClear"></view>
+  </view>
+
+  <block wx:if="{{state === 'idle'}}">
+    <block wx:if="{{history.length}}">
+      <view class="sec">
+        <text class="sec-title">搜索历史</text>
+        <text class="sec-more" bindtap="onClearHistory">清空</text>
+      </view>
+      <view class="tag-wrap">
+        <view wx:for="{{history}}" wx:key="*this" class="tag-pill" data-k="{{item}}" bindtap="onHit">{{item}}</view>
+      </view>
+    </block>
+
+    <view class="sec">
+      <text class="sec-title">试试这些</text>
+      <text class="sec-more"></text>
+    </view>
+    <view class="tag-wrap">
+      <view wx:for="{{hot}}" wx:key="*this" class="tag-pill" data-k="{{item}}" bindtap="onHit">{{item}}</view>
+    </view>
+  </block>
+
+  <view wx:elif="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-short"></view>
+    <view class="sk sk-short"></view>
+  </view>
+
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">没有找到「{{keyword}}」</view>
+    <view class="state-desc">试试更短的关键词，或换个学院名</view>
+    <view class="btn btn-ghost state-btn" bindtap="onClear">清空重搜</view>
+  </view>
+
+  <block wx:else>
+    <view class="note">找到 {{results.length}} 条结果</view>
+    <view
+      wx:for="{{results}}"
+      wx:key="id"
+      class="row"
+      data-id="{{item.id}}"
+      bindtap="onTap"
+    >
+      <view class="row-thumb {{item.tone}}"></view>
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-desc">{{item.college}} · {{item.shotDate}}</view>
+        <view class="row-foot">
+          <text class="pill">{{item.type}}</text>
+          <text class="gold">{{item.downloads}} ↓</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

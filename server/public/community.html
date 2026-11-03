@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<link rel="preload" href="shared.js?v=20" as="script">
+<link rel="stylesheet" href="shared.css?v=14">
+<meta name="description" content="校园社区——博客、论坛、校园墙，师生互动的官方授权空间。">
+<meta name="theme-color" content="#05070B">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<link rel="stylesheet" href="/fonts/fonts.css?v=1">
+<title>校园社区 · Creative Studio</title>
+<link rel="stylesheet" href="/assets/community.css?v=p2v7">
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+<link rel="stylesheet" href="/assets/remixicon/remixicon.css">
+
+</head>
+<body>
+<div class="app">
+<div class="hamburger" onclick="toggleSidebar()" aria-label="菜单"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-brand">
+<div class="logo"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+<div><div class="name">校园社区</div><div class="sub">CAMPUS COMMUNITY</div></div>
+<div class="notif-icon-wrap" style="margin-left:auto;cursor:pointer" role="button" aria-label="通知" tabindex="0" onclick="toggleNotifDropdown()">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-badge" id="notif-badge" style="display:none">0</span>
+</div>
+</div>
+<nav class="sidebar-nav">
+<div class="search-box">
+<div class="search-wrap">
+<input class="search-input" id="search-input" placeholder="搜索博客/论坛/墙贴..." aria-label="搜索">
+</div>
+</div>
+<a class="nav-item active" data-section="blog" href="#blog" role="button" tabindex="0"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>校园博客</a>
+<a class="nav-item" data-section="forum" href="#forum" role="button" tabindex="0"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>校园论坛</a>
+<a class="nav-item" data-section="wall" href="#wall" role="button" tabindex="0"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg></span>校园墙</a>
+<a class="nav-item" data-section="profile" href="#profile" role="button" tabindex="0" data-auth-only="1" style="display:none"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>个人中心</a>
+<a class="nav-item" data-section="messages" href="#messages" role="button" tabindex="0" data-auth-only="1" style="display:none"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>私信<span class="pm-badge" id="pm-nav-badge" style="display:none"></span></a>
+<a class="nav-item" data-section="activities" href="#activities" role="button" tabindex="0"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>活动报名</a>
+</nav>
+<div class="sidebar-footer">
+<a href="/index.html">首页</a>
+<a href="/admin.html" id="footer-admin-link" style="display:none">管理</a>
+</div>
+</aside>
+<div class="notif-dropdown" id="notif-dropdown">
+<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+<strong>通知</strong>
+<span style="font-size:12px;color:var(--primary);cursor:pointer" onclick="markAllNotifRead()">全部已读</span>
+</div>
+<div id="notif-list"></div>
+</div>
+<main class="main">
+
+<!-- 博客区 -->
+<section class="page-section active" id="sec-blog">
+<div class="blog-list-view" id="blog-list-view">
+<div class="page-header">
+<h1>校园博客</h1>
+<div class="actions"><button class="btn btn-primary" onclick="openBlogModal()"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 写博文</button></div>
+</div>
+<div class="tag-filter" id="blog-filters">
+<div class="filter-btn active" data-cat="">全部</div>
+<div class="filter-btn" data-cat="campus">校园</div>
+<div class="filter-btn" data-cat="tech">技术</div>
+<div class="filter-btn" data-cat="life">生活</div>
+<div class="filter-btn" data-cat="study">学习</div>
+</div>
+<div class="blog-grid" id="blog-grid"></div>
+</div>
+<div class="blog-detail-view" id="blog-detail-view"></div>
+</section>
+
+<!-- 论坛区 -->
+<section class="page-section" id="sec-forum">
+<div class="page-header">
+<h1>校园论坛</h1>
+</div>
+<div id="forum-boards-view">
+<div class="forum-grid" id="forum-grid"></div>
+</div>
+<div id="forum-threads-view" style="display:none">
+<div class="page-header">
+<h1 id="forum-board-title">版块</h1>
+<div class="actions"><button class="btn btn-primary" onclick="openThreadModal()"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 发帖</button></div>
+</div>
+<span class="back-btn" role="button" tabindex="0" onclick="showForumBoards()">← 返回版块列表</span>
+<div class="tag-filter" id="forum-sort-filter" style="margin:12px 0">
+<div class="filter-btn active" data-sort="latest" onclick="changeForumSort('latest')">最新发帖</div>
+<div class="filter-btn" data-sort="reply" onclick="changeForumSort('reply')">最新回复</div>
+<div class="filter-btn" data-sort="hot" onclick="changeForumSort('hot')">热门</div>
+</div>
+<div class="thread-list" id="thread-list"></div>
+</div>
+<div id="forum-detail-view" style="display:none">
+<span class="back-btn" role="button" tabindex="0" onclick="showForumThreads()">← 返回帖子列表</span>
+<div class="detail-view" id="thread-detail"></div>
+<div id="reply-list"></div>
+<div class="card" style="margin-top:16px">
+<div class="form-group">
+<label for="reply-content">发表回复</label>
+<textarea class="form-textarea" id="reply-content" placeholder="写下你的回复..."></textarea>
+</div>
+<button class="btn btn-primary" onclick="submitReply()">发送回复</button>
+</div>
+</div>
+</section>
+
+<!-- 校园墙区 -->
+<section class="page-section" id="sec-wall">
+<div class="page-header">
+<h1>校园墙</h1>
+<div class="actions"><button class="btn btn-primary" onclick="openWallModal()"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 发墙贴</button></div>
+</div>
+<div class="tag-filter" id="wall-filters">
+<div class="filter-btn active" data-tag="">全部</div>
+<div class="filter-btn" data-tag="表白">表白</div>
+<div class="filter-btn" data-tag="求助">求助</div>
+<div class="filter-btn" data-tag="吐槽">吐槽</div>
+<div class="filter-btn" data-tag="分享">分享</div>
+<div class="filter-btn" data-tag="问答">问答</div>
+</div>
+<div class="wall-grid" id="wall-grid"></div>
+</section>
+
+<!-- 搜索结果区 -->
+<section class="page-section" id="sec-search">
+<div class="page-header">
+<h1>搜索结果</h1>
+</div>
+<div class="tag-filter" id="search-filters">
+<div class="filter-btn active" data-type="all">全部</div>
+<div class="filter-btn" data-type="material">素材</div>
+<div class="filter-btn" data-type="blog">博客</div>
+<div class="filter-btn" data-type="forum">论坛</div>
+<div class="filter-btn" data-type="wall">墙贴</div>
+</div>
+<div id="search-results"></div>
+</section>
+
+<!-- 个人中心 -->
+<section class="page-section" id="sec-profile">
+<div class="page-header"><h1>个人中心</h1></div>
+<div id="profile-content"></div>
+</section>
+
+<!-- 私信 -->
+<section class="page-section" id="sec-messages">
+<div id="pm-conversation-list-view">
+<div class="page-header"><h1>私信</h1></div>
+<div id="pm-conversations"></div>
+</div>
+<div id="pm-chat-view" style="display:none">
+<div class="page-header" style="display:flex;align-items:center;gap:12px">
+<span class="back-btn" role="button" tabindex="0" onclick="showPmList()">← 返回</span>
+<h1 id="pm-partner-name">私信</h1>
+</div>
+<div id="pm-messages" style="max-height:60vh;overflow-y:auto;padding:8px 0"></div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<input class="form-input" id="pm-input" placeholder="输入消息..." style="flex:1" maxlength="1000" onkeydown="if(event.key==='Enter')sendPm()">
+<button class="btn btn-primary" onclick="sendPm()">发送</button>
+</div>
+</div>
+</section>
+
+<!-- 活动报名 -->
+<section class="page-section" id="sec-activities">
+<div id="act-list-view">
+<div class="page-header"><h1>活动报名</h1></div>
+<div id="act-cards" class="act-grid"></div>
+</div>
+<div id="act-detail-view" style="display:none">
+<div class="page-header" style="display:flex;align-items:center;gap:12px">
+<span class="back-btn" role="button" tabindex="0" onclick="showActList()">← 返回</span>
+<h1 id="act-detail-title">活动详情</h1>
+</div>
+<div id="act-detail-content"></div>
+</div>
+</section>
+
+</main>
+</div>
+
+<!-- 移动端底部 Tab Bar -->
+<nav class="mobile-tabbar" aria-label="主导航">
+<div class="tab active" data-section="blog"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>博客</div>
+<div class="tab" data-section="forum"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>论坛</div>
+<div class="tab" data-section="wall"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg></span>墙</div>
+<div class="tab" data-section="profile" data-auth-only="1" style="display:none"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>我的</div>
+<div class="tab" data-section="messages" data-auth-only="1" style="display:none"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>私信<span class="pm-badge" id="pm-tab-badge" style="display:none"></span></div>
+<div class="tab" data-section="activities"><span class="tab-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>活动</div>
+</nav>
+
+<!-- 博客发布弹窗 -->
+<div class="modal-overlay" id="blog-modal">
+<div class="modal">
+<h2>写博文</h2>
+<div class="form-group"><label for="blog-title">标题</label><input class="form-input" id="blog-title" placeholder="请输入标题"></div>
+<div class="form-group"><label for="blog-category">分类</label><select class="form-select" id="blog-category"><option value="campus">校园</option><option value="tech">技术</option><option value="life">生活</option><option value="study">学习</option></select></div>
+<div class="form-group"><label>正文</label>
+<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+<div class="rte-toolbar">
+<button class="rte-btn" type="button" onclick="rteCmd('bold')" title="粗体" aria-label="粗体"><b>B</b></button>
+<button class="rte-btn" type="button" onclick="rteCmd('italic')" title="斜体" aria-label="斜体"><i>I</i></button>
+<button class="rte-btn" type="button" onclick="rteCmd('underline')" title="下划线" aria-label="下划线"><u>U</u></button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertUnorderedList')" title="列表" aria-label="无序列表">•</button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertOrderedList')" title="编号" aria-label="有序列表">1.</button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','blockquote')" title="引用" aria-label="引用"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .5-1 1v1c0 1 .5 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1v1c0 1-1 2-1.5 2s-1.5.5-1.5 1v1c0 1 .5 1 1 1z"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteLink()" title="链接" aria-label="插入链接"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+<button class="rte-btn" type="button" onclick="insertBlogImage()" title="插入图片" aria-label="插入图片"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','pre')" title="代码" aria-label="代码块">&lt;/&gt;</button>
+</div>
+<div class="rte-editor" id="blog-content" contenteditable="true" role="textbox" aria-label="博文正文" data-placeholder="分享你的故事..." onfocus="activeEditor='blog-content'"></div>
+</div>
+</div>
+<input type="file" id="blog-image-input" accept="image/*" multiple style="display:none" onchange="handleBlogImages(this)">
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('blog-modal')">取消</button><button class="btn btn-primary" onclick="submitBlog()">提交</button></div>
+</div>
+</div>
+
+<!-- 发帖弹窗 -->
+<div class="modal-overlay" id="thread-modal">
+<div class="modal">
+<h2>发帖</h2>
+<div class="form-group"><label for="thread-title">标题</label><input class="form-input" id="thread-title" placeholder="请输入标题"></div>
+<div class="form-group"><label>内容</label>
+<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+<div class="rte-toolbar">
+<button class="rte-btn" type="button" onclick="rteCmd('bold')" title="粗体" aria-label="粗体"><b>B</b></button>
+<button class="rte-btn" type="button" onclick="rteCmd('italic')" title="斜体" aria-label="斜体"><i>I</i></button>
+<button class="rte-btn" type="button" onclick="rteCmd('underline')" title="下划线" aria-label="下划线"><u>U</u></button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertUnorderedList')" title="列表" aria-label="无序列表">•</button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertOrderedList')" title="编号" aria-label="有序列表">1.</button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','blockquote')" title="引用" aria-label="引用"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .5-1 1v1c0 1 .5 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1v1c0 1-1 2-1.5 2s-1.5.5-1.5 1v1c0 1 .5 1 1 1z"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteLink()" title="链接" aria-label="插入链接"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','pre')" title="代码" aria-label="代码块">&lt;/&gt;</button>
+</div>
+<div class="rte-editor" id="thread-content" contenteditable="true" role="textbox" aria-label="帖子内容" data-placeholder="请输入帖子内容..." style="min-height:160px" onfocus="activeEditor='thread-content'"></div>
+</div>
+</div>
+<div class="form-group" id="anon-wrap"><label><input type="checkbox" id="thread-anon"> 匿名发布（仅树洞版块可用）</label></div>
+<div class="form-group"><label><input type="checkbox" id="thread-poll-toggle" onchange="togglePollEditor()"> 添加投票</label></div>
+<div id="poll-editor" style="display:none">
+<div class="poll-editor-box">
+<div class="form-group"><label for="poll-question">投票问题（100字以内）</label><input class="form-input" id="poll-question" maxlength="100" placeholder="例如：你更喜欢哪种风格的校园活动？"></div>
+<div class="form-group"><label>选项（2-10个，每个50字以内）</label><div id="poll-options"></div>
+<button class="btn" type="button" style="padding:4px 12px;font-size:13px" onclick="addPollOption()">+ 添加选项</button></div>
+<div class="form-group"><label><input type="checkbox" id="poll-multiple"> 允许多选</label></div>
+</div>
+</div>
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('thread-modal')">取消</button><button class="btn btn-primary" onclick="submitThread()">发布</button></div>
+</div>
+</div>
+
+<!-- 墙贴弹窗 -->
+<div class="modal-overlay" id="wall-modal">
+<div class="modal">
+<h2>发墙贴</h2>
+<div class="form-group"><label for="wall-content">内容（200字以内）</label><textarea class="form-textarea" id="wall-content" maxlength="200" style="min-height:100px" placeholder="说点什么..."></textarea></div>
+<div class="form-group"><label for="wall-tag">标签</label><select class="form-select" id="wall-tag"><option value="分享">分享</option><option value="表白">表白</option><option value="求助">求助</option><option value="吐槽">吐槽</option><option value="问答">问答</option></select></div>
+<div class="form-group"><label><input type="checkbox" id="wall-anon"> 匿名发布</label></div>
+<div class="form-group">
+<label>图片（可选，最多3张）</label>
+<div class="image-upload-area">
+<input type="file" id="wall-image-input" accept="image/*" multiple style="display:none" onchange="handleWallImages(this)">
+<div class="image-upload-btn" onclick="$('wall-image-input').click()"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 添加图片</div>
+<div class="image-preview-row" id="wall-image-previews"></div>
+</div>
+</div>
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('wall-modal')">取消</button><button class="btn btn-primary" onclick="submitWall()">发布</button></div>
+</div>
+</div>
+
+<!-- 墙贴详情弹窗 -->
+<div class="modal-overlay" id="wall-detail-modal" role="dialog" aria-modal="true" aria-label="墙贴详情" onclick="if(event.target===this)closeWallDetail()">
+<div class="modal">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+<h2 style="margin:0">墙贴详情</h2>
+<div style="display:flex;gap:8px">
+<button class="btn btn-sm" onclick="likeWallPost()" aria-label="点赞"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 点赞</button>
+<button class="btn btn-outline btn-sm" onclick="closeWallDetail()" aria-label="关闭">关闭</button>
+</div>
+</div>
+<div id="wd-content" class="form-textarea" style="min-height:60px;border:none;padding:0;white-space:pre-wrap;background:transparent;resize:none"></div>
+<div id="wd-images" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px"></div>
+<div id="wd-meta" style="margin-top:14px;font-size:12.5px;color:var(--text-3,#8a93a5);display:flex;align-items:center;gap:8px;flex-wrap:wrap"></div>
+<div style="border-top:1px solid var(--border,rgba(128,128,128,.15));margin-top:16px;padding-top:14px">
+<h3 style="margin:0 0 10px;font-size:14px">评论</h3>
+<div id="wd-comments" style="max-height:220px;overflow:auto"></div>
+<div style="display:flex;gap:8px;margin-top:12px;align-items:flex-start">
+<input type="text" class="form-input" id="wd-comment-input" maxlength="200" placeholder="说点什么...（200字以内）" style="flex:1" onkeydown="if(event.key==='Enter')postWallComment()">
+<label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;color:var(--text-3,#8a93a5)"><input type="checkbox" id="wd-anon"> 匿名</label>
+<button class="btn btn-primary btn-sm" onclick="postWallComment()">发布</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 评论弹窗 -->
+<div class="modal-overlay" id="comment-modal">
+<div class="modal comment-modal">
+<h2>发表评论</h2>
+<div class="form-group"><label for="comment-content">评论内容</label><textarea class="form-textarea" id="comment-content" placeholder="写下你的评论..." maxlength="500"></textarea></div>
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('comment-modal')">取消</button><button class="btn btn-primary" onclick="submitComment()">发送评论</button></div>
+</div>
+</div>
+
+<!-- 编辑弹窗 -->
+<div class="modal-overlay" id="edit-modal">
+<div class="modal">
+<h2 id="edit-modal-title">编辑</h2>
+<div class="form-group"><label for="edit-title">标题</label><input class="form-input" id="edit-title" placeholder="请输入标题"></div>
+<div class="form-group" id="edit-category-wrap" style="display:none"><label for="edit-category">分类</label><select class="form-select" id="edit-category"><option value="campus">校园</option><option value="tech">技术</option><option value="life">生活</option><option value="study">学习</option></select></div>
+<div class="form-group" id="edit-content-rte-wrap"><label>正文</label>
+<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+<div class="rte-toolbar">
+<button class="rte-btn" type="button" onclick="rteCmd('bold')" title="粗体" aria-label="粗体"><b>B</b></button>
+<button class="rte-btn" type="button" onclick="rteCmd('italic')" title="斜体" aria-label="斜体"><i>I</i></button>
+<button class="rte-btn" type="button" onclick="rteCmd('underline')" title="下划线" aria-label="下划线"><u>U</u></button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertUnorderedList')" title="列表" aria-label="无序列表">•</button>
+<button class="rte-btn" type="button" onclick="rteCmd('insertOrderedList')" title="编号" aria-label="有序列表">1.</button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','blockquote')" title="引用" aria-label="引用"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .5-1 1v1c0 1 .5 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1v1c0 1-1 2-1.5 2s-1.5.5-1.5 1v1c0 1 .5 1 1 1z"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteLink()" title="链接" aria-label="插入链接"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+<button class="rte-btn" type="button" onclick="insertBlogImage()" title="插入图片" aria-label="插入图片"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+<button class="rte-btn" type="button" onclick="rteCmd('formatBlock','pre')" title="代码" aria-label="代码块">&lt;/&gt;</button>
+</div>
+<div class="rte-editor" id="edit-content" contenteditable="true" role="textbox" aria-label="编辑正文" data-placeholder="请输入内容..." style="min-height:120px" onfocus="activeEditor='edit-content'"></div>
+</div>
+</div>
+<div class="form-group" id="edit-content-text-wrap" style="display:none"><label for="edit-content-text">内容（200字以内）</label><textarea class="form-textarea" id="edit-content-text" maxlength="200" style="min-height:100px" placeholder="说点什么..."></textarea></div>
+<div class="form-group" id="edit-tag-wrap" style="display:none"><label for="edit-tag">标签</label><select class="form-select" id="edit-tag"><option value="分享">分享</option><option value="表白">表白</option><option value="求助">求助</option><option value="吐槽">吐槽</option><option value="问答">问答</option></select></div>
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('edit-modal')">取消</button><button class="btn btn-primary" onclick="submitEdit()">保存</button></div>
+</div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="modal-overlay" id="confirm-modal">
+<div class="modal" style="max-width:400px">
+<h2 id="confirm-title">确认</h2>
+<p id="confirm-message" style="margin:12px 0;color:var(--text-2)"></p>
+<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" onclick="closeModal('confirm-modal')">取消</button><button class="btn btn-primary" id="confirm-ok-btn" style="background:#ef4444">确认删除</button></div>
+</div>
+</div>
+
+<script src="shared.js?v=20"></script>
+<script src="/assets/community.js?v=p2v10"></script>
+<button id="themeToggle" onclick="toggleTheme()" title="切换主题" aria-label="切换主题" aria-pressed="false">
+  <span id="themeToggleIcon"></span>
+</button>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+<script>
+// 低危修复：管理入口仅对管理员可见（避免未登录用户看到后台路径）
+fetch('/api/me', { credentials: 'same-origin' }).then(function (r) { return r.json() }).then(function (d) {
+  if (d && d.ok && d.user && d.user.is_admin) {
+    var el = document.getElementById('footer-admin-link')
+    if (el) el.style.display = ''
+  }
+}).catch(function () {})
+</script>
+</body>
+</html>

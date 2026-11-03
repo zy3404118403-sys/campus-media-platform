@@ -1,0 +1,163 @@
+<view class="page">
+  <view class="home-brand">
+    <view class="hdr-kicker">CCIBE CAMPUS MEDIA CENTER</view>
+    <view class="home-title">{{hello || '融媒体中心'}}</view>
+    <view class="home-sub">素材 · 专题 · 活动 · 任务，一站直达</view>
+  </view>
+
+  <view class="search home-search" bindtap="onSearch">
+    <view class="search-icon ico ico-search ico-dim3"></view>
+    <text class="search-ph">搜索素材、文章或学院</text>
+  </view>
+
+  <view class="stat-bar">
+    <view class="stat-item">
+      <view class="stat-num">{{stats.materials}}</view>
+      <view class="stat-lbl">素材</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num">{{stats.collections}}</view>
+      <view class="stat-lbl">专题</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num">{{stats.activities}}</view>
+      <view class="stat-lbl">活动</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num">{{stats.tasks}}</view>
+      <view class="stat-lbl">任务</view>
+    </view>
+  </view>
+
+  <view class="quick-grid">
+    <view
+      wx:for="{{quick}}"
+      wx:key="key"
+      class="quick-item"
+      data-key="{{item.key}}"
+      bindtap="onQuick"
+    >
+      <view class="quick-glyph {{item.tone}}"><view class="ico {{item.ico}}"></view></view>
+      <view class="quick-text">{{item.text}}</view>
+      <view class="quick-sub">{{item.sub}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-tall"></view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">首页内容加载失败</view>
+    <view class="state-desc">请检查网络后重试</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <view class="sec">
+      <text class="sec-title">精选</text>
+      <text class="sec-more">编辑推荐</text>
+    </view>
+    <scroll-view class="feat-scroll" scroll-x="true" enable-flex="true" show-scrollbar="{{false}}">
+      <view
+        wx:for="{{featured}}"
+        wx:key="id"
+        class="feat-card {{item.tone}}"
+        data-id="{{item.id}}"
+        bindtap="onMaterial"
+      >
+        <view wx:if="{{item.type === '视频'}}" class="tag tag-play feat-play"><view class="ico ico-play"></view></view>
+        <view class="feat-foot">
+          <view class="feat-title">{{item.title}}</view>
+          <view class="feat-meta">{{item.college}} · {{item.downloads}} 次下载</view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="sec">
+      <text class="sec-title">最新素材</text>
+      <text class="sec-more" bindtap="onAllMaterials">查看全部 →</text>
+    </view>
+    <view class="mini-grid">
+      <view wx:for="{{latest}}" wx:key="id" class="mini-card" data-id="{{item.id}}" bindtap="onMaterial">
+        <view class="mini-thumb {{item.tone}}">
+          <view wx:if="{{item.type === '视频'}}" class="tag tag-play"><view class="ico ico-play"></view></view>
+        </view>
+        <view class="mini-title">{{item.title}}</view>
+      </view>
+    </view>
+
+    <view class="sec">
+      <text class="sec-title">校园社区</text>
+      <text class="sec-more" bindtap="onCommunity">进入社区 →</text>
+    </view>
+    <view
+      wx:for="{{posts}}"
+      wx:key="id"
+      class="post-row"
+      data-id="{{item.id}}"
+      bindtap="onPost"
+    >
+      <view class="post-thumb {{item.tone}}"></view>
+      <view class="post-main">
+        <view class="post-title">{{item.title}}</view>
+        <view class="post-excerpt">{{item.excerpt}}</view>
+        <view class="post-meta">
+          <text>{{item.author}}</text>
+          <text>{{item.views}} 阅读</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="sec">
+      <text class="sec-title">正在进行</text>
+      <text class="sec-more" bindtap="onAllActivities">全部活动 →</text>
+    </view>
+    <view wx:for="{{activities}}" wx:key="id" class="row" bindtap="onAllActivities">
+      <view class="row-thumb {{item.tone}}"></view>
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-desc">{{item.time}} · {{item.place}}</view>
+        <view class="row-foot">
+          <text class="pill">{{item.state}}</text>
+          <text>{{item.joined}} 人参与</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="sec">
+      <text class="sec-title">任务提醒</text>
+      <text class="sec-more" bindtap="onAllTasks">任务大厅 →</text>
+    </view>
+    <view wx:for="{{tasks}}" wx:key="id" class="row" bindtap="onAllTasks">
+      <view class="row-main">
+        <view class="row-title">{{item.title}}<text wx:if="{{item.demo}}" class="demo-tag">演示</text></view>
+        <view class="row-desc">{{item.desc}}</view>
+        <view class="row-foot">
+          <text><text class="gold">{{item.points}}</text> 贡献值 · {{item.type}}</text>
+          <text>{{item.deadline}} 截止</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="sec">
+      <text class="sec-title">专题集</text>
+      <text class="sec-more" bindtap="onAllArticles">更多 →</text>
+    </view>
+    <scroll-view class="hscroll" scroll-x="true" enable-flex="true" show-scrollbar="{{false}}">
+      <view
+        wx:for="{{collections}}"
+        wx:key="id"
+        class="coll {{item.tone}}"
+        bindtap="onAllArticles"
+      >
+        <view class="coll-title">{{item.title}}</view>
+        <view class="coll-count">{{item.count}} 件作品</view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <view class="safe"></view>
+</view>

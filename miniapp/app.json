@@ -1,0 +1,82 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/index/index",
+    "pages/detail/detail",
+    "pages/articles/articles",
+    "pages/article/article",
+    "pages/login/login",
+    "pages/search/search",
+    "pages/items/items",
+    "pages/profile/profile",
+    "pages/my-list/my-list",
+    "pages/activity-detail/activity-detail",
+    "pages/task-detail/task-detail",
+    "pages/community/community",
+    "pages/post-detail/post-detail",
+    "pages/upload/upload",
+    "pages/messages/messages",
+    "pages/chat/chat",
+    "pages/notifications/notifications",
+    "pages/post-create/post-create",
+    "pages/diagnose/diagnose",
+    "pages/points/points",
+    "pages/graph/graph",
+    "pages/settings/settings",
+    "pages/admin/admin",
+    "pages/admin-review/admin-review",
+    "pages/admin-materials/admin-materials",
+    "pages/admin-users/admin-users",
+    "pages/admin-notice/admin-notice",
+    "pages/admin-items/admin-items",
+    "pages/admin-item-edit/admin-item-edit"
+  ],
+  "window": {
+    "navigationBarTitleText": "融媒体素材库",
+    "navigationBarBackgroundColor": "#0a0c11",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0a0c11",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#69717f",
+    "selectedColor": "#d8b46a",
+    "backgroundColor": "#12151d",
+    "borderStyle": "black",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/home/home",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-on.png"
+      },
+      {
+        "text": "素材",
+        "pagePath": "pages/index/index",
+        "iconPath": "assets/tabbar/library.png",
+        "selectedIconPath": "assets/tabbar/library-on.png"
+      },
+      {
+        "text": "事项",
+        "pagePath": "pages/items/items",
+        "iconPath": "assets/tabbar/event.png",
+        "selectedIconPath": "assets/tabbar/event-on.png"
+      },
+      {
+        "text": "消息",
+        "pagePath": "pages/messages/messages",
+        "iconPath": "assets/tabbar/chat.png",
+        "selectedIconPath": "assets/tabbar/chat-on.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/profile/profile",
+        "iconPath": "assets/tabbar/me.png",
+        "selectedIconPath": "assets/tabbar/me-on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

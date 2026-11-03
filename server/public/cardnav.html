@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05070B">
+<meta name="robots" content="noindex, nofollow">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<title>CardNav 效果演示 · 融媒体素材共建平台</title>
+<script defer src="./gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scrollbar-width:none;-ms-overflow-style:none;color-scheme:dark}
+::-webkit-scrollbar{width:0;height:0;display:none}
+html,body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
+body{background:#05070B;min-height:100vh;min-height:100dvh;color:#e8eaed;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 70% 0%,rgba(196,30,58,.04) 0%,transparent 50%),radial-gradient(ellipse at 30% 100%,rgba(212,175,55,.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* ── 页面内容 ── */
+.demo-content{position:relative;z-index:1;padding:140px 24px 60px;max-width:900px;margin:0 auto;text-align:center}
+.demo-content h1{font-family:"Noto Serif SC","Songti SC",serif;font-size:clamp(28px,4vw,42px);font-weight:700;background:linear-gradient(135deg,#d4af37,#f0d060,#d4af37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.demo-content p{font-size:15px;color:rgba(255,255,255,.5);line-height:1.8;max-width:600px;margin:0 auto 40px}
+.demo-hint{display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);color:rgba(240,208,96,.8);padding:8px 20px;border-radius:24px;font-size:13px;letter-spacing:.5px}
+.demo-hint svg{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.demo-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:48px}
+.demo-feature{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;text-align:left;transition:border-color .3s}
+.demo-feature:hover{border-color:rgba(212,175,55,.2)}
+.demo-feature .icon{width:36px;height:36px;border-radius:10px;background:rgba(212,175,55,.1);display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:#d4af37}
+.demo-feature h3{font-size:14px;font-weight:600;margin-bottom:6px;color:#e8eaed}
+.demo-feature p{font-size:12px;color:rgba(255,255,255,.4);text-align:left;margin:0}
+
+/* ═══════ CardNav 组件样式（暗色主题适配） ═══════ */
+.card-nav-container{position:fixed;top:1.5em;left:50%;transform:translateX(-50%);width:90%;max-width:800px;z-index:100;box-sizing:border-box}
+.card-nav{display:block;height:60px;padding:0;background:rgba(12,12,20,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,.12);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden;will-change:height}
+.card-nav-top{position:absolute;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:.5rem .45rem .55rem 1.1rem;z-index:2}
+.hamburger-menu{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:6px;color:#d4af37;transition:opacity .2s}
+.hamburger-menu:hover{opacity:.75}
+.hamburger-line{width:30px;height:2px;background-color:currentColor;transition:transform .25s ease,opacity .2s ease,margin .3s ease;transform-origin:50% 50%;border-radius:2px}
+.hamburger-menu.open .hamburger-line:first-child{transform:translateY(4px) rotate(45deg)}
+.hamburger-menu.open .hamburger-line:last-child{transform:translateY(-4px) rotate(-45deg)}
+.logo-container{display:flex;align-items:center;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.logo-text{font-size:17px;font-weight:700;background:linear-gradient(135deg,#d4af37,#f0d060,#d4af37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.5px;white-space:nowrap}
+.card-nav-cta-button{background:linear-gradient(135deg,#d4af37,#b8945a);color:#0a0a0f;border:none;border-radius:10px;padding:0 1.2rem;height:42px;font-weight:700;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .3s;align-items:center;display:inline-flex;box-shadow:0 4px 16px rgba(212,175,55,.25)}
+.card-nav-cta-button:hover{box-shadow:0 6px 24px rgba(212,175,55,.4);transform:translateY(-1px)}
+.card-nav-cta-button:active{transform:scale(.97)}
+.card-nav-content{position:absolute;left:0;right:0;top:60px;bottom:0;padding:.5rem;display:flex;align-items:flex-end;gap:12px;visibility:hidden;pointer-events:none;z-index:1}
+.card-nav.open .card-nav-content{visibility:visible;pointer-events:auto}
+.nav-card{height:100%;flex:1 1 0;min-width:0;border-radius:12px;position:relative;display:flex;flex-direction:column;padding:14px 16px;gap:8px;user-select:none;overflow:hidden}
+.nav-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.3),transparent)}
+.nav-card-label{font-weight:600;font-size:20px;letter-spacing:-.5px}
+.nav-card-links{margin-top:auto;display:flex;flex-direction:column;gap:4px}
+.nav-card-link{font-size:14px;cursor:pointer;text-decoration:none;transition:opacity .3s,color .3s;display:inline-flex;align-items:center;gap:6px;color:inherit;opacity:.7}
+.nav-card-link:hover{opacity:1;color:#d4af37}
+.nav-card-link svg{flex-shrink:0;opacity:.6}
+
+/* ── 响应式 ── */
+@media(max-width:768px){
+  .card-nav-container{width:92%;top:1em}
+  .card-nav-top{padding:.5rem 1rem;justify-content:space-between}
+  .hamburger-menu{order:2}
+  .logo-container{position:static;transform:none;order:1}
+  .card-nav-cta-button{display:none}
+  .card-nav-content{flex-direction:column;align-items:stretch;gap:8px;padding:.5rem;bottom:0;justify-content:flex-start}
+  .nav-card{height:auto;min-height:50px;flex:1 1 auto;max-height:none}
+  .nav-card-label{font-size:16px}
+  .nav-card-link{font-size:13px}
+  .demo-content{padding-top:120px}
+}
+</style>
+<meta name="description" content="分类导航 · 校园融媒体中心素材库快捷入口，按类型直达图片、视频、文档与音频素材。">
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+
+<!-- ═══════ CardNav 组件 ═══════ -->
+<div class="card-nav-container">
+  <nav class="card-nav" id="cardNav">
+    <div class="card-nav-top">
+      <div class="hamburger-menu" id="hamburger" role="button" aria-label="Open menu" aria-expanded="false" tabindex="0">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+      <div class="logo-container">
+        <span class="logo-text">Creative Studio</span>
+      </div>
+      <button type="button" class="card-nav-cta-button" id="ctaBtn">登 录</button>
+    </div>
+    <div class="card-nav-content" id="cardNavContent" aria-hidden="true"></div>
+  </nav>
+</div>
+
+<!-- ═══════ 页面内容 ═══════ -->
+<div class="demo-content">
+  <h1>CardNav 导航效果演示</h1>
+  <p>点击左上角菜单按钮，导航栏会展开显示卡片式导航面板。每个卡片包含分类标签和快捷链接，配合 GSAP 动画流畅展开。</p>
+  <div class="demo-hint">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <span>点击左上角菜单按钮展开导航</span>
+  </div>
+  <div class="demo-features">
+    <div class="demo-feature">
+      <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div>
+      <h3>卡片式导航</h3>
+      <p>展开后显示分类卡片，每张卡片包含标题和链接列表</p>
+    </div>
+    <div class="demo-feature">
+      <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <h3>GSAP 动画</h3>
+      <p>使用 GSAP timeline 实现高度展开和卡片错位淡入动画</p>
+    </div>
+    <div class="demo-feature">
+      <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <h3>响应式设计</h3>
+      <p>桌面端横向卡片排列，移动端自动切换为纵向布局</p>
+    </div>
+    <div class="demo-feature">
+      <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <h3>暗色主题适配</h3>
+      <p>配色方案匹配平台暗色主题，金色高亮点缀</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ClickSpark 点击火花效果 ═══════ -->
+<script>
+(function(){
+  var sparkColor='#fff', sparkSize=10, sparkRadius=15, sparkCount=8, duration=400, easing='ease-out', extraScale=1.0;
+  var canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;top:0;left:0;pointer-events:none;z-index:99999;display:block';
+  document.body.appendChild(canvas);
+  var ctx=canvas.getContext('2d'), sparks=[], rafId=null, dpr=window.devicePixelRatio||1;
+  function resize(){var w=window.innerWidth,h=window.innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+  resize();window.addEventListener('resize',resize);
+  function easeFunc(t){switch(easing){case 'linear':return t;case 'ease-in':return t*t;case 'ease-in-out':return t<0.5?2*t*t:-1+(4-2*t)*t;default:return t*(2-t)}}
+  function draw(ts){
+    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+    sparks=sparks.filter(function(sp){
+      var el=ts-sp.startTime; if(el>=duration) return false;
+      var p=el/duration, e=easeFunc(p), dist=e*sparkRadius*extraScale, len=sparkSize*(1-e);
+      var x1=sp.x+dist*Math.cos(sp.angle), y1=sp.y+dist*Math.sin(sp.angle);
+      var x2=sp.x+(dist+len)*Math.cos(sp.angle), y2=sp.y+(dist+len)*Math.sin(sp.angle);
+      ctx.strokeStyle=sparkColor; ctx.lineWidth=2; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      return true;
+    });
+    if(sparks.length) rafId=requestAnimationFrame(draw); else {rafId=null; ctx.clearRect(0,0,window.innerWidth,window.innerHeight)}
+  }
+  document.addEventListener('click',function(e){
+    var x=e.clientX, y=e.clientY, now=performance.now();
+    for(var i=0;i<sparkCount;i++) sparks.push({x:x,y:y,angle:(2*Math.PI*i)/sparkCount,startTime:now});
+    if(!rafId) rafId=requestAnimationFrame(draw);
+  });
+})();
+</script>
+
+<!-- ═══════ CardNav 组件逻辑（原生 JS 版） ═══════ -->
+<script>
+(function(){
+  // ── 配置 ──
+  var items = [
+    {
+      label: '平台',
+      bgColor: 'rgba(27,23,34,.95)',
+      textColor: '#e8eaed',
+      links: [
+        { label: '首页', href: '/', ariaLabel: '返回首页' },
+        { label: '素材库', href: '/#materials', ariaLabel: '浏览素材库' },
+        { label: '部门活动', href: '/#activities', ariaLabel: '查看活动' }
+      ]
+    },
+    {
+      label: '学院',
+      bgColor: 'rgba(47,41,58,.95)',
+      textColor: '#e8eaed',
+      links: [
+        { label: '传媒', href: '/#colleges', ariaLabel: '传媒学院' },
+        { label: '设计', href: '/#colleges', ariaLabel: '设计学院' },
+        { label: '音乐', href: '/#colleges', ariaLabel: '音乐学院' }
+      ]
+    },
+    {
+      label: '关于',
+      bgColor: 'rgba(30,28,40,.95)',
+      textColor: '#e8eaed',
+      links: [
+        { label: '融媒体中心', href: '/', ariaLabel: '关于融媒体中心' },
+        { label: '用户工作室', href: '/user.html', ariaLabel: '进入用户工作室' },
+        { label: '管理后台', href: '/admin.html', ariaLabel: '进入管理后台' }
+      ]
+    }
+  ];
+
+  var ARROW_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>';
+
+  var navEl = document.getElementById('cardNav');
+  var hamburger = document.getElementById('hamburger');
+  var contentEl = document.getElementById('cardNavContent');
+  var ctaBtn = document.getElementById('ctaBtn');
+  var isExpanded = false;
+  var tl = null;
+
+  // ── 渲染卡片 ──
+  function renderCards() {
+    var html = items.slice(0, 3).map(function(item) {
+      var linksHtml = (item.links || []).map(function(lnk) {
+        return '<a class="nav-card-link" href="' + (lnk.href || '#') + '" aria-label="' + (lnk.ariaLabel || lnk.label) + '">' + ARROW_SVG + '<span>' + lnk.label + '</span></a>';
+      }).join('');
+      return '<div class="nav-card" style="background:' + item.bgColor + ';color:' + item.textColor + '">' +
+             '<div class="nav-card-label">' + item.label + '</div>' +
+             '<div class="nav-card-links">' + linksHtml + '</div>' +
+             '</div>';
+    }).join('');
+    contentEl.innerHTML = html;
+  }
+  renderCards();
+
+  // ── 计算展开高度 ──
+  function calculateHeight() {
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) {
+      var wasVisible = contentEl.style.visibility;
+      var wasPE = contentEl.style.pointerEvents;
+      var wasPos = contentEl.style.position;
+      var wasH = contentEl.style.height;
+      contentEl.style.visibility = 'visible';
+      contentEl.style.pointerEvents = 'auto';
+      contentEl.style.position = 'static';
+      contentEl.style.height = 'auto';
+      contentEl.offsetHeight;
+      var topBar = 60, padding = 16;
+      var contentHeight = contentEl.scrollHeight;
+      contentEl.style.visibility = wasVisible;
+      contentEl.style.pointerEvents = wasPE;
+      contentEl.style.position = wasPos;
+      contentEl.style.height = wasH;
+      return topBar + contentHeight + padding;
+    }
+    return 260;
+  }
+
+  // ── 创建 GSAP 动画 ──
+  function createTimeline() {
+    if (typeof gsap === 'undefined') return null;
+    var cards = contentEl.querySelectorAll('.nav-card');
+    gsap.set(navEl, { height: 60, overflow: 'hidden' });
+    gsap.set(cards, { y: 50, opacity: 0 });
+    var t = gsap.timeline({ paused: true });
+    t.to(navEl, { height: calculateHeight, duration: 0.4, ease: 'power3.out' });
+    t.to(cards, { y: 0, opacity: 1, duration: 0.4, ease: 'power3.out', stagger: 0.08 }, '-=0.1');
+    return t;
+  }
+
+  // ── 等待 GSAP 加载 ──
+  function waitForGsap(cb) {
+    if (typeof gsap !== 'undefined') cb();
+    else setTimeout(function(){ waitForGsap(cb); }, 50);
+  }
+
+  waitForGsap(function() {
+    tl = createTimeline();
+
+    // ── 窗口大小变化时重新计算 ──
+    var resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        if (isExpanded && tl) {
+          var newHeight = calculateHeight();
+          gsap.set(navEl, { height: newHeight });
+          tl.kill();
+          tl = createTimeline();
+          if (tl) tl.progress(1);
+        } else if (tl) {
+          tl.kill();
+          tl = createTimeline();
+        }
+      }, 150);
+    });
+  });
+
+  // ── 切换菜单 ──
+  function toggleMenu() {
+    if (!tl) return;
+    if (!isExpanded) {
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      hamburger.setAttribute('aria-label', 'Close menu');
+      navEl.classList.add('open');
+      contentEl.setAttribute('aria-hidden', 'false');
+      isExpanded = true;
+      tl.play(0);
+    } else {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'Open menu');
+      tl.eventCallback('onReverseComplete', function() {
+        navEl.classList.remove('open');
+        contentEl.setAttribute('aria-hidden', 'true');
+        isExpanded = false;
+      });
+      tl.reverse();
+    }
+  }
+
+  hamburger.addEventListener('click', toggleMenu);
+  hamburger.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMenu(); }
+  });
+
+  // ── CTA 按钮 ──
+  ctaBtn.addEventListener('click', function() { window.location.href = '/login.html'; });
+
+  // ── 点击外部关闭 ──
+  document.addEventListener('click', function(e) {
+    if (isExpanded && !navEl.contains(e.target) && !hamburger.contains(e.target)) {
+      toggleMenu();
+    }
+  });
+})();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+</body>
+</html>

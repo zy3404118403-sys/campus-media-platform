@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于我们 · 芜宇乐的融媒体中心</title>
+<meta name="description" content="云洲大学党委宣传部 · 融媒体中心团队风采与工作影像">
+<style>
+/* ============================================================
+   融媒体中心 · 复古报刊风照片墙
+   ------------------------------------------------------------
+   ★ 性能说明：本版已移除大面积高斯模糊、玻璃拟态、常驻动画，
+     仅保留轻量淡入，帧率友好，普通电脑/手机均可流畅滚动。
+
+   ★ 免代码换图（推荐）：
+   打开网页后点右下角「照片管理」，再点击任意照片（或把图片文件
+   直接拖到照片上）即可更换，自动压缩并记在本机；
+   完成后点「导出网页」，下载的照片已嵌入的新文件，用它替换原
+   文件即可分享给别人。
+   ★ 手动改代码（可选）：
+   1. 部门风采照：搜索 PHOTOS，把 src:null 改成 "images/xxx.jpg"
+   2. 毛毡板年度合照：搜索 CORKBOARD，同样改 src 并调整 year
+   3. 建议在网页同目录建 images 文件夹存放照片
+   ★ 修改文字：搜索 "关于我们"、"统计"、"联系方式" 定位。
+   ============================================================ */
+
+:root{
+  --paper:#f2e8d5;        /* 报纸米黄 */
+  --paper-deep:#e9dcbf;
+  --ink:#2b2118;          /* 油墨黑棕 */
+  --ink-soft:#5c4f40;
+  --ink-faint:#8a7a63;
+  --red:#a63a2b;          /* 报刊红 */
+  --red-soft:#c05843;
+  --gold:#9c7c38;
+  --rule:rgba(43,33,24,.75);
+  --rule-soft:rgba(43,33,24,.25);
+  --cork:#c19a6b;         /* 毛毡/软木板 */
+  --cork-dark:#a37f52;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --serif:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif;
+  --kai:"KaiTi","Kaiti SC","STKaiti",var(--serif);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--serif);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  /* 纸张竖向纤维纹理（静态，无动画开销） */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(43,33,24,.018) 0 1px, transparent 1px 3px);
+}
+::selection{background:rgba(166,58,43,.25)}
+img{display:block}
+a{color:inherit}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,48px)}
+
+/* ---------- 报头 ---------- */
+.masthead{border-bottom:4px double var(--rule);padding:26px 0 0;text-align:center;position:relative}
+.masthead .topline{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12.5px;letter-spacing:.14em;color:var(--ink-soft);
+  border-bottom:1px solid var(--rule-soft);padding-bottom:8px;margin-bottom:22px;
+}
+.masthead .topline span{white-space:nowrap}
+@media (max-width:640px){.masthead .topline span:nth-child(2){display:none}}
+.paper-name{
+  font-size:clamp(44px,9vw,92px);font-weight:900;letter-spacing:.12em;
+  line-height:1.05;color:var(--ink);
+}
+.paper-name em{font-style:normal;color:var(--red)}
+.paper-sub{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  margin:14px 0 18px;font-size:14.5px;letter-spacing:.32em;color:var(--ink-soft);
+}
+.paper-sub::before,.paper-sub::after{
+  content:"";height:1px;width:min(140px,18vw);background:var(--rule-soft);
+}
+.mast-nav{
+  display:flex;justify-content:center;gap:0;flex-wrap:wrap;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.mast-nav a{
+  text-decoration:none;font-size:15px;letter-spacing:.22em;
+  padding:11px 26px;position:relative;color:var(--ink);
+}
+.mast-nav a+a{border-left:1px solid var(--rule-soft)}
+.mast-nav a:hover{background:var(--ink);color:var(--paper)}
+@media (max-width:560px){.mast-nav a{padding:10px 14px;letter-spacing:.1em}}
+
+/* ---------- 头版 Hero ---------- */
+.front{padding:clamp(40px,6vw,72px) 0}
+.front-grid{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,48px)}
+.front-head{text-align:center}
+.front-kicker{
+  display:inline-block;border:1px solid var(--red);color:var(--red);
+  font-size:13px;letter-spacing:.5em;padding:5px 18px 5px 24px;margin-bottom:22px;
+}
+.front-title{
+  font-size:clamp(34px,6.4vw,66px);font-weight:900;letter-spacing:.06em;line-height:1.25;
+}
+.front-title .hl{
+  color:var(--paper);background:var(--ink);padding:2px 14px;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.front-deck{
+  margin:24px auto 0;max-width:46em;color:var(--ink-soft);font-size:clamp(15px,1.7vw,17.5px);
+  text-align:center;
+}
+.front-deck::first-letter{
+  float:left;font-size:3.2em;line-height:.9;font-weight:900;color:var(--red);
+  padding:4px 10px 0 0;font-family:var(--serif);
+}
+
+/* 头版主图 */
+.front-figure{
+  border:1px solid var(--rule);padding:12px;background:#fbf6ea;
+  box-shadow:6px 6px 0 rgba(43,33,24,.14);
+}
+.front-figure .frame{aspect-ratio:21/9;overflow:hidden;border:1px solid var(--rule-soft)}
+.front-figure img{width:100%;height:100%;object-fit:cover}
+.front-figure figcaption{
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-top:10px;font-size:13px;color:var(--ink-faint);letter-spacing:.05em;
+}
+.front-figure figcaption b{color:var(--ink);letter-spacing:.12em}
+
+/* 头版数据栏 */
+.front-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--rule);border-top:3px solid var(--ink);margin-top:8px;
+}
+.front-stats .cell{padding:20px 14px;text-align:center;border-left:1px solid var(--rule-soft)}
+.front-stats .cell:first-child{border-left:none}
+.front-stats .num{
+  font-size:clamp(26px,3.2vw,38px);font-weight:900;color:var(--red);letter-spacing:.02em;
+}
+.front-stats .lbl{font-size:12.5px;color:var(--ink-soft);letter-spacing:.2em;margin-top:2px}
+@media (max-width:720px){
+  .front-stats{grid-template-columns:repeat(2,1fr)}
+  .front-stats .cell:nth-child(3){border-left:none}
+  .front-stats .cell:nth-child(n+3){border-top:1px solid var(--rule-soft)}
+}
+
+/* ---------- 通用节标题 ---------- */
+.section{padding:clamp(48px,7vw,84px) 0}
+.sec-rule{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.sec-rule .no{font-size:13px;letter-spacing:.3em;color:var(--red);white-space:nowrap}
+.sec-rule::after{content:"";height:1px;flex:1;background:var(--rule)}
+.sec-title{
+  font-size:clamp(28px,4.4vw,44px);font-weight:900;letter-spacing:.08em;margin-bottom:8px;
+}
+.sec-title em{font-style:normal;color:var(--red)}
+.sec-deck{color:var(--ink-soft);max-width:62em;font-size:15.5px;margin-bottom:clamp(26px,4vw,44px)}
+
+/* ---------- 关于我们（报纸双栏文） ---------- */
+.about-cols{
+  columns:2;column-gap:44px;column-rule:1px solid var(--rule-soft);
+  font-size:16px;color:var(--ink);text-align:justify;
+}
+.about-cols p{margin-bottom:1em;break-inside:avoid}
+.about-cols p:first-child::first-letter{
+  float:left;font-size:3em;line-height:.95;font-weight:900;color:var(--red);padding:3px 10px 0 0;
+}
+.about-cols strong{color:var(--red);font-weight:700}
+@media (max-width:760px){.about-cols{columns:1}}
+.about-badges{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.dept-badge{
+  border:1px solid var(--ink);padding:7px 18px;font-size:14px;letter-spacing:.14em;
+  background:var(--paper);box-shadow:3px 3px 0 rgba(43,33,24,.16);
+}
+.dept-badge b{color:var(--red)}
+
+/* ---------- 部门风采（报刊栏目） ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);margin-bottom:34px}
+.tab{
+  appearance:none;border:none;background:transparent;cursor:pointer;
+  font-family:var(--serif);font-size:15px;letter-spacing:.14em;color:var(--ink-soft);
+  padding:11px 20px;position:relative;transition:background .2s,color .2s;
+}
+.tab+.tab{border-left:1px solid var(--rule-soft)}
+.tab .count{
+  font-size:11.5px;color:var(--red);vertical-align:super;margin-left:3px;
+}
+.tab:hover{background:var(--paper-deep);color:var(--ink)}
+.tab.active{background:var(--ink);color:var(--paper)}
+.tab.active .count{color:var(--red-soft)}
+
+/* 报刊网格：图文卡片 */
+.newsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px 26px}
+@media (max-width:980px){.newsgrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:620px){.newsgrid{grid-template-columns:1fr}}
+.photo-card{
+  position:relative;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+  cursor:pointer;background:#fbf6ea;border:1px solid var(--rule-soft);
+  padding:10px;box-shadow:4px 4px 0 rgba(43,33,24,.10);
+}
+.photo-card.shown{opacity:1;transform:none}
+.photo-card:hover{box-shadow:6px 7px 0 rgba(43,33,24,.20);transform:translate(-1px,-2px)}
+.photo-card .frame{overflow:hidden;border:1px solid var(--rule-soft)}
+.photo-card img{width:100%;transition:transform .5s var(--ease)}
+.photo-card:hover img{transform:scale(1.04)}
+.ph-cap{padding:12px 6px 6px}
+.ph-cap h4{font-size:17px;font-weight:900;letter-spacing:.04em}
+.ph-cap h4::before{content:"◆ ";color:var(--red);font-size:12px;vertical-align:2px}
+.ph-cap p{font-size:13.5px;color:var(--ink-soft);margin-top:5px;line-height:1.65}
+.ph-meta{
+  display:flex;gap:10px;align-items:center;margin-top:8px;
+  font-size:12px;color:var(--ink-faint);border-top:1px dotted var(--rule-soft);padding-top:8px;
+}
+.ph-meta .tag{color:var(--red);border:1px solid currentColor;padding:0 8px;font-size:11.5px;letter-spacing:.08em}
+.ph-meta .dot{width:3px;height:3px;background:var(--ink-faint);border-radius:50%}
+
+/* ---------- 记忆毛毡板 ---------- */
+.corkboard-wrap{padding:clamp(8px,1.5vw,18px)}
+.corkboard{
+  background:
+    radial-gradient(ellipse at 20% 25%, rgba(255,255,255,.10), transparent 55%),
+    radial-gradient(ellipse at 80% 75%, rgba(0,0,0,.14), transparent 60%),
+    repeating-radial-gradient(circle at 12px 10px, rgba(90,62,30,.16) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(46deg, rgba(90,62,30,.05) 0 6px, transparent 6px 11px),
+    var(--cork);
+  border:10px solid #6f4f2c;
+  box-shadow:inset 0 0 60px rgba(60,38,12,.35), 0 10px 30px rgba(43,33,24,.25);
+  padding:clamp(20px,3.5vw,44px);
+}
+@media (min-width:900px){
+  .corkboard::before{ /* 木框上的铜牌 */
+    content:"记忆毛毡板 · MEMORY BOARD";
+    position:absolute;
+  }
+}
+.corkboard{position:relative;overflow:hidden}
+.year-tag{
+  display:inline-block;background:#e8dcc0;color:var(--ink);
+  font-size:14px;letter-spacing:.3em;font-weight:700;
+  padding:4px 16px 4px 20px;position:absolute;white-space:nowrap;z-index:1;
+  border:1px solid rgba(43,33,24,.4);
+  box-shadow:2px 3px 5px rgba(43,33,24,.35);
+  transform:rotate(-1.2deg);
+}
+.year-tag::before{ /* 图钉 */
+  content:"";position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  width:9px;height:9px;border-radius:50%;background:var(--red);
+  box-shadow:inset -1px -2px 2px rgba(0,0,0,.4), 1px 1px 2px rgba(0,0,0,.3);
+}
+.year-tag small{color:var(--ink-soft);font-weight:400;letter-spacing:.12em;margin-left:8px}
+
+/* 拍立得：绝对定位，可自由拖拽 */
+.polaroid{
+  position:absolute;background:#f7f2e6;padding:10px 10px 14px;
+  width:clamp(170px,20vw,225px);
+  box-shadow:3px 5px 12px rgba(43,33,24,.35);
+  transition:transform .35s var(--ease),box-shadow .35s;
+  cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;
+  transform:rotate(var(--rot,0deg));z-index:2;
+}
+.polaroid:hover{
+  transform:rotate(0deg) translateY(-5px) scale(1.03);
+  box-shadow:6px 12px 22px rgba(43,33,24,.4);z-index:5;
+}
+.polaroid.dragging{
+  cursor:grabbing;transition:box-shadow .2s;z-index:60;
+  transform:rotate(0deg) scale(1.06);
+  box-shadow:8px 14px 28px rgba(43,33,24,.5);
+}
+.polaroid .pin{
+  position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #d96a55, #8f2f22);
+  box-shadow:0 3px 4px rgba(43,33,24,.45);
+  z-index:1;
+}
+.polaroid .pin::after{
+  content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:3px solid transparent;border-top-color:rgba(43,33,24,.5);
+}
+.polaroid .ph{aspect-ratio:1/1;overflow:hidden;border:1px solid rgba(43,33,24,.2)}
+.polaroid .ph img{
+  width:100%;height:100%;object-fit:cover;filter:sepia(.22) saturate(.9);
+  -webkit-user-drag:none;pointer-events:none;
+}
+.polaroid .note{
+  font-family:var(--kai);font-size:14.5px;text-align:center;color:var(--ink);
+  padding-top:9px;letter-spacing:.05em;
+}
+.polaroid .note small{
+  display:block;font-size:11.5px;color:var(--ink-faint);letter-spacing:.14em;margin-top:1px;
+}
+.cork-tools{display:flex;justify-content:center;margin-top:22px}
+.cork-reset{
+  font-family:var(--serif);font-size:13.5px;letter-spacing:.22em;color:var(--ink-soft);
+  background:transparent;border:1px solid var(--rule-soft);padding:7px 24px;cursor:pointer;
+  transition:all .25s;
+}
+.cork-reset:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cork-tip{
+  text-align:center;color:var(--ink-faint);font-size:13.5px;letter-spacing:.2em;
+  margin-top:22px;font-family:var(--kai);
+}
+
+/* ---------- 照片管理工具 ---------- */
+.manage-bar{
+  position:fixed;right:18px;bottom:18px;z-index:95;display:flex;gap:10px;
+}
+.mbtn{
+  font-family:var(--serif);font-size:13px;letter-spacing:.18em;color:var(--ink);
+  background:#fbf6ea;border:1px solid var(--rule);padding:9px 20px;cursor:pointer;
+  box-shadow:3px 3px 0 rgba(43,33,24,.2);transition:background .2s,color .2s;
+}
+.mbtn:hover{background:var(--ink);color:var(--paper)}
+.mbtn.primary{background:var(--red);color:#f7f2e6;border-color:var(--red)}
+.mbtn.primary:hover{background:var(--ink)}
+.manage-hint{
+  position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:95;
+  background:var(--ink);color:var(--paper);font-size:13.5px;letter-spacing:.1em;
+  padding:10px 26px;box-shadow:4px 4px 0 rgba(43,33,24,.3);
+  display:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;
+}
+body.manage .manage-hint{display:block}
+body.manage .photo-card,
+body.manage .polaroid{
+  outline:2px dashed var(--red);outline-offset:3px;cursor:pointer;
+}
+body.manage .photo-card:hover,
+body.manage .polaroid:hover{outline-style:solid}
+body.manage .photo-card::after,
+body.manage .polaroid::after{
+  content:"点击换图";position:absolute;top:8px;left:8px;z-index:7;
+  background:var(--red);color:#f7f2e6;font-size:12px;letter-spacing:.2em;
+  padding:3px 10px 3px 12px;font-family:var(--serif);pointer-events:none;
+}
+.photo-card.drop-ok,.polaroid.drop-ok{outline:2px solid #2e7d32;outline-offset:3px}
+#mgToast{
+  position:fixed;left:50%;bottom:118px;transform:translateX(-50%) translateY(10px);
+  background:var(--ink);color:var(--paper);font-size:13.5px;letter-spacing:.1em;
+  padding:10px 26px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:96;
+}
+#mgToast.on{opacity:1;transform:translateX(-50%)}
+
+/* ---------- 部门分工 ---------- */
+.duty-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 30px}
+.duty-grid .duty-card:last-child{grid-column:1 / -1}
+@media (max-width:760px){.duty-grid{grid-template-columns:1fr}}
+.duty-card{
+  background:#fbf6ea;border:1px solid var(--rule-soft);padding:22px 26px 18px;
+  box-shadow:4px 4px 0 rgba(43,33,24,.10);
+}
+.duty-name{
+  font-size:19px;font-weight:900;letter-spacing:.06em;color:var(--red);
+  border-bottom:1px solid var(--rule-soft);padding-bottom:9px;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.duty-name span{
+  font-size:12px;font-weight:400;color:var(--ink-faint);letter-spacing:.18em;
+}
+.duty-card ul{list-style:none}
+.duty-card li{
+  font-size:14.5px;color:var(--ink);line-height:1.7;padding-left:1.2em;
+  position:relative;margin-bottom:6px;text-align:justify;
+}
+.duty-card li::before{content:"·";position:absolute;left:0;color:var(--red);font-weight:900}
+
+/* ---------- 报尾 ---------- */
+footer{
+  border-top:4px double var(--rule);margin-top:20px;
+  padding:34px 0 26px;
+}
+.foot-grid{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.foot-brand .name{font-size:26px;font-weight:900;letter-spacing:.18em}
+.foot-brand .name em{font-style:normal;color:var(--red)}
+.foot-brand p{font-size:13px;color:var(--ink-soft);margin-top:8px;max-width:44em}
+.foot-cols{display:flex;gap:44px;font-size:14px}
+.foot-cols b{display:block;font-size:12.5px;letter-spacing:.3em;color:var(--red);margin-bottom:8px}
+.foot-cols a{text-decoration:none;color:var(--ink-soft);display:block;margin-bottom:4px;letter-spacing:.08em}
+.foot-cols a:hover{color:var(--red)}
+.copyright{
+  margin-top:28px;padding-top:14px;border-top:1px solid var(--rule-soft);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-size:12px;color:var(--ink-faint);letter-spacing:.14em;
+}
+
+/* ---------- 灯箱（报纸阅览窗） ---------- */
+.lightbox{
+  position:fixed;inset:0;z-index:100;display:none;
+  background:rgba(30,22,14,.88);
+  align-items:center;justify-content:center;padding:clamp(16px,4vw,56px);
+}
+.lightbox.open{display:flex;animation:lbIn .3s var(--ease)}
+@keyframes lbIn{from{opacity:0}to{opacity:1}}
+.lb-body{
+  max-width:min(1000px,100%);width:100%;display:flex;flex-direction:column;gap:0;
+  animation:lbUp .4s var(--ease);
+  background:#fbf6ea;border:1px solid var(--rule);padding:16px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+@keyframes lbUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.lb-img-wrap img{max-width:100%;max-height:70vh;object-fit:contain;margin:0 auto}
+.lb-cap{padding:14px 8px 4px;border-top:1px dotted var(--rule-soft);margin-top:12px}
+.lb-cap h4{font-size:19px;font-weight:900;letter-spacing:.06em}
+.lb-cap h4::before{content:"◆ ";color:var(--red);font-size:13px;vertical-align:2px}
+.lb-cap p{font-size:14px;color:var(--ink-soft);margin-top:4px;max-width:70ch}
+.lb-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.lb-count{font-size:12.5px;color:var(--ink-faint);letter-spacing:.2em}
+.lb-close,.lb-prev,.lb-next{
+  position:fixed;z-index:101;width:46px;height:46px;border-radius:50%;
+  background:#fbf6ea;border:1px solid var(--rule);color:var(--ink);
+  display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s;
+  font-family:var(--serif);
+}
+.lb-close:hover,.lb-prev:hover,.lb-next:hover{background:var(--ink);color:var(--paper);transform:scale(1.08)}
+.lb-close{top:22px;right:26px}
+.lb-prev{left:26px;top:50%;transform:translateY(-50%)}
+.lb-next{right:26px;top:50%;transform:translateY(-50%)}
+.lb-prev:hover{transform:translateY(-50%) scale(1.08)}
+.lb-next:hover{transform:translateY(-50%) scale(1.08)}
+@media (max-width:640px){.lb-prev{left:10px}.lb-next{right:10px}.lb-close{top:10px;right:10px}}
+
+/* ---------- 轻量淡入 ---------- */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.shown{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal,.photo-card{opacity:1!important;transform:none!important}
+}
+
+/* ---------- 返回首页（WorkBuddy 集成，2026-10-22） ---------- */
+.back-home{text-align:right;padding:12px 0 0}
+.back-home a{
+  display:inline-block;font-size:12.5px;letter-spacing:.14em;color:var(--ink-soft);
+  text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent;
+  transition:color .18s,border-color .18s;
+}
+.back-home a:hover{color:var(--red);border-bottom-color:var(--red)}
+@media (max-width:640px){.back-home{text-align:center;padding-top:10px}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg"><link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+
+<!-- ===================== 报头 ===================== -->
+<header class="masthead">
+  <div class="wrap">
+    <div class="back-home"><a href="/">← 返回首页</a></div>
+    <div class="topline">
+      <span>云洲大学 党委宣传部 主办</span>
+      <span>创刊于二〇一五年 · 每学期一刊</span>
+      <span>本期编辑：融媒体中心</span>
+    </div>
+    <h1 class="paper-name">光影<em>之间</em></h1>
+    <div class="paper-sub">融媒体中心 · 团队风采特刊</div>
+    <nav class="mast-nav">
+      <a href="#about">关于我们</a>
+      <a href="#duties">部门分工</a>
+      <a href="#gallery">部门风采</a>
+      <a href="#memory">记忆毛毡板</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ===================== 头版 ===================== -->
+<section class="front">
+  <div class="wrap front-grid">
+    <div class="front-head reveal">
+      <div class="front-kicker">头版头条</div>
+      <h2 class="front-title">用镜头记录<span class="hl">青春的每一个瞬间</span></h2>
+      <p class="front-deck">
+        从清晨的第一缕阳光到晚会的最后一束灯光，我们穿梭在校园的每个角落——
+        拍摄、采写、剪辑、设计。融媒体中心下辖四个部门百余名成员，
+        让每一个值得铭记的校园故事，都被看见、被留下、被传阅。
+      </p>
+    </div>
+
+    <figure class="front-figure reveal">
+      <div class="frame"><img id="frontImg" alt="头版主图"></div>
+      <figcaption>
+        <b>本刊主图</b>
+        <span>年度校园文化活动掠影 · 摄影摄像部 供图</span>
+      </figcaption>
+    </figure>
+
+    <!-- ▼ 头版数据栏（依据部门定责书：总编制15、主任2、五部门；数字可按需修改） -->
+    <div class="front-stats reveal">
+      <div class="cell"><div class="num">5</div><div class="lbl">大专业部门</div></div>
+      <div class="cell"><div class="num">15</div><div class="lbl">名骨干编制</div></div>
+      <div class="cell"><div class="num">800+</div><div class="lbl">年度原创内容</div></div>
+      <div class="cell"><div class="num">300+</div><div class="lbl">场活动报道</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 关于我们 ===================== -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-rule reveal"><span class="no">第贰版 · 关于我们</span></div>
+    <h2 class="sec-title reveal">我们是校园故事的<em>记录者</em></h2>
+    <p class="sec-deck reveal">——本报编辑部综述</p>
+    <div class="about-cols reveal">
+      <!-- ▼ 部门介绍文字（依据部门定责书整理，可按需修改） ▼ -->
+      <p><strong>融媒体中心</strong>隶属于校党委宣传部，是学校新闻宣传工作的主力军。我们负责运营学校新媒体宣传平台，完成新闻采写、影像摄制剪辑、宣传物料设计等内容产出，同时承担校园各类宣传素材与工作资料的归档管理，是校园里"离故事最近的人"。</p>
+      <p>中心现设主任两名，下辖<strong>行政部、新闻采编部、摄影技术部、平台运营部、校报编辑部</strong>五个部门，各司其职又彼此成就：行政部掌好后勤与台账，新闻采编部写好每一段文字，摄影技术部端稳每一个机位，平台运营部让内容抵达更多人，校报编辑部守护着纸上的校园记忆。</p>
+      <p>无论是开学典礼、运动会、文艺晚会，还是一场普通的社团活动，只要校园里有故事发生，就有我们的身影。我们相信：好的影像会说话，好的文字有温度。</p>
+      <p>这里不只是一个学生组织，更是一群热爱表达的年轻人互相成就的地方。一届又一届的成员来了又毕业，而这面毛毡板上的照片，替我们记得所有一起走过的日子。</p>
+    </div>
+    <div class="about-badges reveal">
+      <span class="dept-badge">行政部 <b>●</b></span>
+      <span class="dept-badge">新闻采编部 <b>●</b></span>
+      <span class="dept-badge">摄影技术部 <b>●</b></span>
+      <span class="dept-badge">平台运营部 <b>●</b></span>
+      <span class="dept-badge">校报编辑部 <b>●</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 部门分工与职责 ===================== -->
+<section class="section" id="duties">
+  <div class="wrap">
+    <div class="sec-rule reveal"><span class="no">第叁版 · 部门分工</span></div>
+    <h2 class="sec-title reveal">五大部门，<em>各司其职</em></h2>
+    <p class="sec-deck reveal">——依据《党委宣传部-融媒体中心部门定责书》摘编。中心设主任两名，总编制十五人。</p>
+
+    <!-- ▼ 部门职责（依据定责书浓缩，可按需修改） ▼ -->
+    <div class="duty-grid reveal">
+      <article class="duty-card">
+        <h3 class="duty-name">行政部<span>部长 2 名</span></h3>
+        <ul>
+          <li>处理团队内部行政事务，传达通知，招新排班、人事信息登记</li>
+          <li>负责宣传物资设备登记、领用保管，维护物资设备台账</li>
+          <li>跨部门协调与活动后勤、经费登记，文件资料整理归档</li>
+          <li>收集核对第二课堂学分与学生工时，汇总统计业务数据</li>
+        </ul>
+      </article>
+      <article class="duty-card">
+        <h3 class="duty-name">新闻采编部<span>部长 3 名</span></h3>
+        <ul>
+          <li>开展新闻选题策划，完成校园活动、人物故事的采访与各类文稿撰写</li>
+          <li>做好稿件初审校对，保障新闻内容真实、时效，完成供稿工作</li>
+          <li>整理归档采访及文稿资料，为其他部门提供文字内容支持</li>
+        </ul>
+      </article>
+      <article class="duty-card">
+        <h3 class="duty-name">摄影技术部<span>部长 3 名</span></h3>
+        <ul>
+          <li>承担校园活动摄影摄像、视频录制剪辑等制作任务，做好活动影像技术保障</li>
+          <li>负责拍摄器材调度、维护，管理影像素材库，完成素材分类归档</li>
+          <li>组织内部影像技能交流，为校内宣传任务提供影像技术支撑</li>
+        </ul>
+      </article>
+      <article class="duty-card">
+        <h3 class="duty-name">平台运营部<span>部长 3 名</span></h3>
+        <ul>
+          <li>协助官方新媒体平台运维，完成推文排版推送，参与新媒体选题与线上活动策划</li>
+          <li>完成海报、长图、展板等宣传物料设计制作，整理维护视觉素材</li>
+          <li>统计新媒体运营数据，组织新媒体、平面设计内部技能交流</li>
+        </ul>
+      </article>
+      <article class="duty-card">
+        <h3 class="duty-name">校报编辑部<span>部长 2 名</span></h3>
+        <ul>
+          <li>负责校报内容策划、文稿选编，统筹纸质校报与电子校报的内容生产</li>
+          <li>承担校报版面设计、图文排版，完成纸质版定稿并制作电子版</li>
+          <li>整理归档往期报纸、文稿、版面素材，做好报纸资料留存</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 部门风采 ===================== -->
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="sec-rule reveal"><span class="no">第肆版 · 部门风采</span></div>
+    <h2 class="sec-title reveal">团队风采与<em>工作影像</em></h2>
+    <p class="sec-deck reveal">点击任意照片可放大阅览，支持键盘 ← → 翻阅，Esc 关闭；更换照片请用右下角「照片管理」。</p>
+    <div class="tabs reveal" id="tabs"></div>
+    <div class="newsgrid" id="newsgrid"></div>
+  </div>
+</section>
+
+<!-- ===================== 记忆毛毡板 ===================== -->
+<section class="section" id="memory">
+  <div class="wrap">
+    <div class="sec-rule reveal"><span class="no">第伍版 · 往事如昨</span></div>
+    <h2 class="sec-title reveal">记忆<em>毛毡板</em></h2>
+    <p class="sec-deck reveal">
+      一枚图钉，一张合照，一段回不去的时光。这里钉着过去几年我们的大合影与珍贵瞬间——
+      每一届成员的名字会毕业，但照片不会。
+    </p>
+    <div class="corkboard-wrap reveal">
+      <div class="corkboard" id="corkboard"></div>
+    </div>
+    <div class="cork-tools reveal"><button class="cork-reset" id="corkReset">恢复默认布局</button></div>
+    <p class="cork-tip reveal">—— 照片可自由拖动重新布置 · 点击可取下细看 · 布局自动留存在本机 ——</p>
+  </div>
+</section>
+</main>
+
+<!-- ===================== 报尾 ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="name">光影<em>之间</em></div>
+        <!-- ▼ 联系方式，按需修改 ▼ -->
+        <p>云洲大学 党委宣传部 · 融媒体中心<br>
+        行政楼 X 楼 XXX 室 ｜ 官方微信：XX学院融媒体<br>
+        记录青春 · 传递声音 · 光影不熄</p>
+      </div>
+      <div class="foot-cols">
+        <div>
+          <b>部 门</b>
+          <a href="#duties">行政部</a>
+          <a href="#duties">新闻采编部</a>
+          <a href="#duties">摄影技术部</a>
+          <a href="#duties">平台运营部</a>
+          <a href="#duties">校报编辑部</a>
+        </div>
+        <div>
+          <b>平 台</b>
+          <a href="#" onclick="return false">微信公众号</a>
+          <a href="#" onclick="return false">视频号</a>
+          <a href="#" onclick="return false">微博</a>
+          <a href="#" onclick="return false">抖音</a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">
+      <span>© 2026 融媒体中心 · 保留所有权利</span>
+      <span>本刊版权归本报编辑部所有</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== 照片管理工具 ===================== -->
+<div class="manage-hint" id="manageHint">照片管理模式：点击任意照片选择新图片，或把图片文件直接拖到照片上（自动压缩并记住）</div>
+<div class="manage-bar">
+  <button class="mbtn" id="btnResetPhotos" style="display:none">还原全部</button>
+  <button class="mbtn" id="btnExport">导出网页</button>
+  <button class="mbtn primary" id="btnManage">照片管理</button>
+</div>
+
+<!-- ===================== 灯箱 ===================== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="照片阅览">
+  <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+  <button class="lb-prev" id="lbPrev" aria-label="上一张">‹</button>
+  <button class="lb-next" id="lbNext" aria-label="下一张">›</button>
+  <div class="lb-body">
+    <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+    <div class="lb-cap">
+      <h4 id="lbTitle"></h4>
+      <p id="lbDesc"></p>
+      <div class="lb-bottom"><span class="lb-count" id="lbCount"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* 页面原始快照（供「导出网页」功能使用，必须最先执行） */
+const PRISTINE_BODY = document.body.innerHTML;
+const SCRIPT_TEXT = document.currentScript.textContent;
+
+/* ============================================================
+   ★★★ 数据配置区（替换真实照片只改这里）★★★
+   src: null = 占位图。替换示例：src: "images/运动会合照.jpg"
+   ============================================================ */
+const GROUPS = [
+  { id:"all",    name:"全部栏目" },
+  { id:"admin",  name:"行政部" },
+  { id:"news",   name:"新闻采编部" },
+  { id:"photo",  name:"摄影技术部" },
+  { id:"oper",   name:"平台运营部" },
+  { id:"paper",  name:"校报编辑部" },
+];
+
+/* ---------- 第肆版 · 部门风采照片 ---------- */
+const PHOTOS = [
+  /* 摄影技术部 */
+  { src:null, group:"photo", title:"运动会 · 百米冲刺", desc:"校运会男子100米决赛终点线抓拍，快门定格冲线瞬间。", date:"2026-04", ratio:[4,5] },
+  { src:null, group:"photo", title:"晚会舞台机位", desc:"迎新晚会主舞台侧机位，长焦捕捉歌手与灯光的交织。", date:"2025-12", ratio:[4,3] },
+  { src:null, group:"photo", title:"毕业季 · 学士帽抛起", desc:"毕业典礼结束后，毕业生们在图书馆前抛帽合影。", date:"2025-06", ratio:[3,4] },
+  { src:null, group:"photo", title:"外拍采风 · 老街", desc:"摄影技术部周末外拍活动，成员在磁器口老街进行街拍练习。", date:"2025-11", ratio:[4,3] },
+  { src:null, group:"photo", title:"无人机航拍校园", desc:"运动会开幕式前，航拍组在校田径场上空取景。", date:"2026-04", ratio:[4,3] },
+  { src:null, group:"photo", title:"器材调度与维护", desc:"大型活动前，器材管理员逐台检查相机、镜头与稳定器。", date:"2026-03", ratio:[4,5] },
+  /* 新闻采编部 */
+  { src:null, group:"news", title:"开学典礼采访", desc:"新生开学典礼现场，采编部成员对新生代表进行采访。", date:"2025-09", ratio:[4,3] },
+  { src:null, group:"news", title:"部门例会 · 头脑风暴", desc:"每周选题会，大家围坐讨论下一周的推送选题。", date:"2026-03", ratio:[4,3] },
+  { src:null, group:"news", title:"与优秀校友对谈", desc:"校友返校日活动，采编部完成人物专访的现场记录。", date:"2025-10", ratio:[3,4] },
+  { src:null, group:"news", title:"深夜改稿时刻", desc:"推送发布前的最后校对，凌晨的编辑部依然亮着灯。", date:"2025-11", ratio:[4,5] },
+  /* 平台运营部 */
+  { src:null, group:"oper", title:"视频号拍摄现场", desc:"校园街访栏目《贸院快问快答》的录制现场。", date:"2026-04", ratio:[4,3] },
+  { src:null, group:"oper", title:"爆款推送诞生记", desc:"推文《食堂新窗口测评》阅读量破5万时的后台截图与欢呼。", date:"2025-10", ratio:[3,4] },
+  { src:null, group:"oper", title:"海报设计工作台", desc:"迎新晚会主视觉海报的设计过程稿与工作台。", date:"2025-12", ratio:[4,3] },
+  { src:null, group:"oper", title:"展板布展现场", desc:"校园文化周宣传展板的现场安装与校对。", date:"2025-11", ratio:[4,5] },
+  /* 校报编辑部 */
+  { src:null, group:"paper", title:"校报排版定稿", desc:"纸质校报的版面设计与图文排版，付印前的最后调整。", date:"2026-03", ratio:[4,3] },
+  { src:null, group:"paper", title:"电子校报制作", desc:"适配线上发布的电子校报版本制作中。", date:"2026-04", ratio:[3,4] },
+  { src:null, group:"paper", title:"往期校报存档", desc:"整理归档往期报纸、文稿与版面素材，做好资料留存。", date:"2026-01", ratio:[4,5] },
+  /* 行政部 */
+  { src:null, group:"admin", title:"物资设备盘点", desc:"学期末，行政部对照台账清点宣传物资与设备。", date:"2026-01", ratio:[4,3] },
+  { src:null, group:"admin", title:"工时与学分核对", desc:"第二课堂学分与学生工时的收集核对现场。", date:"2026-03", ratio:[4,3] },
+  { src:null, group:"admin", title:"活动后勤保障", desc:"大型活动背后的签到、协调与后勤支持。", date:"2025-12", ratio:[3,4] },
+];
+
+/* ---------- 第肆版 · 毛毡板年度合照 ----------
+   year: 年份标签（决定毛毡板上的分组）
+   note: 拍立得下方的手写体注释                                   */
+const CORKBOARD = [
+  { src:null, year:"2023", note:"2023 全体成员大会", sub:"初创的日子" },
+  { src:null, year:"2023", note:"秋招 · 摄影部合影", sub:"第一次外拍" },
+  { src:null, year:"2024", note:"2024 迎新晚会后台", sub:"忙里偷闲的一张" },
+  { src:null, year:"2024", note:"毕业季送老成员", sub:"走廊里的告别" },
+  { src:null, year:"2024", note:"校运会报道小组", sub:"烈日下的坚守" },
+  { src:null, year:"2025", note:"2025 年度总结会", sub:"拿了三个奖" },
+  { src:null, year:"2025", note:"记者节团建", sub:"火锅与快门" },
+  { src:null, year:"2026", note:"2026 春季纳新合影", sub:"新面孔报到" },
+  { src:null, year:"2026", note:"十周年筹备组", sub:"正在进行时" },
+];
+
+/* ---------- 照片管理：免代码换图 ----------
+   「照片管理」模式下点击照片或拖入图片文件即可更换；
+   替换结果存于本机 localStorage，并可「导出网页」嵌入照片。 */
+const STORE_KEY = "rmc-photos-v1";
+let MANAGE = false;
+const PHOTO_MAP = {};
+PHOTOS.forEach(p=>{ PHOTO_MAP[p.title] = { p:p, kind:"photos" }; });
+CORKBOARD.forEach(p=>{ PHOTO_MAP[p.note] = { p:p, kind:"cork" }; });
+
+/* 载入本机已替换的照片 */
+let STORE = { photos:{}, cork:{} };
+try{ STORE = JSON.parse(localStorage.getItem(STORE_KEY)) || { photos:{}, cork:{} }; }catch(e){}
+PHOTOS.forEach(p=>{ if(STORE.photos[p.title]) p.src = STORE.photos[p.title]; });
+CORKBOARD.forEach(p=>{ if(STORE.cork[p.note]) p.src = STORE.cork[p.note]; });
+
+function saveStore(){
+  const s = { photos:{}, cork:{} };
+  PHOTOS.forEach(p=>{ if(p.src && p.src.indexOf("data:")===0) s.photos[p.title] = p.src; });
+  CORKBOARD.forEach(p=>{ if(p.src && p.src.indexOf("data:")===0) s.cork[p.note] = p.src; });
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(s));
+  }catch(e){
+    alert("浏览器本地存储空间已满，本次更换不会被记住。\n建议减少照片数量，或直接点「导出网页」保存已嵌入照片的新文件。");
+  }
+}
+
+/* ============================================================
+   以下为页面逻辑，一般无需修改
+   ============================================================ */
+
+/* ---------- 占位图（复古网点纸风格 SVG） ---------- */
+const PALETTES = [
+  ["#8a6d3b","#c9a86a"], ["#a63a2b","#d98e6a"], ["#5c4f40","#9c8a70"],
+  ["#7d5544","#b98f6f"], ["#9c7c38","#d3b878"], ["#6b4a3a","#a3806a"],
+];
+function dotsPattern(w,h,c,op){
+  const step=18;let s="";
+  for(let y=6;y<h;y+=step)for(let x=6;x<w;x+=step)
+    s+=`<circle cx='${x}' cy='${y}' r='2.1' fill='${c}' opacity='${op}'/>`;
+  return s;
+}
+function placeholder(p, w, h, label){
+  const [c1,c2] = PALETTES[((PHOTOS.indexOf(p)+1)*5+2) % PALETTES.length];
+  const svg =
+`<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='${c1}'/><stop offset='1' stop-color='${c2}'/>
+  </linearGradient></defs>
+  <rect width='${w}' height='${h}' fill='url(#g)'/>
+  ${dotsPattern(w,h,"rgba(43,33,24,.5)",.22)}
+  <rect x='${w*0.06}' y='${h*0.08}' width='${w*0.88}' height='${h*0.84}' fill='none' stroke='rgba(247,242,230,.5)' stroke-width='1.5'/>
+  <text x='50%' y='46%' text-anchor='middle' font-size='${Math.round(w*0.048)}' fill='rgba(247,242,230,.95)' font-family='serif' letter-spacing='3'>${label}</text>
+  <text x='50%' y='46%' dy='34' text-anchor='middle' font-size='${Math.round(w*0.036)}' fill='rgba(247,242,230,.7)' font-family='serif' letter-spacing='6'>示例照片 · 请替换</text>
+</svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+function corkPlaceholder(p, w, h){
+  const [c1,c2] = PALETTES[(CORKBOARD.indexOf(p)*3+1) % PALETTES.length];
+  const svg =
+`<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'>
+  <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+    <stop offset='0' stop-color='${c1}'/><stop offset='1' stop-color='${c2}'/>
+  </linearGradient></defs>
+  <rect width='${w}' height='${h}' fill='url(#g)'/>
+  ${dotsPattern(w,h,"rgba(43,33,24,.5)",.2)}
+  <text x='50%' y='50%' dy='6' text-anchor='middle' font-size='${Math.round(w*0.058)}' fill='rgba(247,242,230,.85)' font-family='serif' letter-spacing='4'>请替换</text>
+</svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+function imgSrc(p,w,h){ return p.src ? p.src : placeholder(p,w,h,(GROUPS.find(g=>g.id===p.group)||{}).name||""); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
+/* ---------- 头版主图 ---------- */
+document.getElementById("frontImg").src =
+  PHOTOS[1].src ? PHOTOS[1].src : placeholder(PHOTOS[1], 1600, 686, "融媒体中心");
+
+/* ---------- 栏目 Tab ---------- */
+const tabsEl = document.getElementById("tabs");
+GROUPS.forEach(g=>{
+  const count = g.id==="all" ? PHOTOS.length : PHOTOS.filter(p=>p.group===g.id).length;
+  const b = document.createElement("button");
+  b.className = "tab" + (g.id==="all" ? " active" : "");
+  b.innerHTML = `${esc(g.name)}<span class="count">${count}</span>`;
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    b.classList.add("active"); renderGallery(g.id);
+  });
+  tabsEl.appendChild(b);
+});
+
+/* ---------- 报刊照片网格 ---------- */
+const gridEl = document.getElementById("newsgrid");
+let visiblePhotos = [];
+function renderGallery(group){
+  visiblePhotos = group==="all" ? PHOTOS.slice() : PHOTOS.filter(p=>p.group===group);
+  gridEl.innerHTML = "";
+  visiblePhotos.forEach((p,i)=>{
+    const [rw,rh] = p.ratio || [4,3];
+    const W = 620, H = Math.round(W*rh/rw);
+    const groupName = (GROUPS.find(g=>g.id===p.group)||{}).name || "";
+    const card = document.createElement("article");
+    card.className = "photo-card";
+    card.dataset.key = p.title;
+    card.style.transitionDelay = (i%6)*60 + "ms";
+    card.innerHTML = `
+      <div class="frame"><img src="${imgSrc(p,W,H)}" alt="${esc(p.title)}" loading="lazy"></div>
+      <div class="ph-cap">
+        <h4>${esc(p.title)}</h4>
+        <p>${esc(p.desc)}</p>
+        <div class="ph-meta"><span class="tag">${esc(groupName)}</span><span class="dot"></span><span>${esc(p.date||"")}</span></div>
+      </div>`;
+    card.addEventListener("click", ()=>{ if(!MANAGE) openLightbox(i); });
+    gridEl.appendChild(card);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add("shown")));
+  });
+}
+renderGallery("all");
+
+/* ---------- 毛毡板：自由拖拽 + 点击放大 ----------
+   拖动照片可自由布置（布局自动存入 localStorage，仅保存在本机浏览器）；
+   原地点击（位移 < 5px）视为"取下细看"，打开灯箱。                 */
+const corkEl = document.getElementById("corkboard");
+let corkPhotos = [];
+const POS_KEY = "rmc-corkboard-layout-v1";
+const corkGroups = []; /* {year, tag, cards:[{el, idx}]} */
+
+(function buildCorkboard(){
+  const years = [...new Set(CORKBOARD.map(p=>p.year))];
+  years.forEach(y=>{
+    const tag = document.createElement("div");
+    tag.className = "year-tag";
+    tag.innerHTML = `${esc(y)} 年度 <small>ANNUAL ${esc(y)}</small>`;
+    corkEl.appendChild(tag);
+    const g = { year:y, tag, cards:[] };
+    CORKBOARD.filter(p=>p.year===y).forEach(p=>{
+      corkPhotos.push(p);
+      const idx = corkPhotos.length - 1;
+      const card = document.createElement("div");
+      card.className = "polaroid";
+      card.dataset.idx = idx;
+      card.dataset.key = p.note;
+      card.style.setProperty("--rot", [-2.4, 1.8, -1.2, 2.6][idx % 4] + "deg");
+      card.innerHTML = `
+        <div class="pin"></div>
+        <div class="ph"><img src="${p.src ? p.src : corkPlaceholder(p, 480, 480)}" alt="${esc(p.note)}" loading="lazy" draggable="false"></div>
+        <div class="note">${esc(p.note)}<small>${esc(p.sub||"")}</small></div>`;
+      corkEl.appendChild(card);
+      g.cards.push({ el:card, idx:idx });
+    });
+    corkGroups.push(g);
+  });
+})();
+
+/* 默认网格布局（按年份分区） */
+function corkLayoutDefault(){
+  const PAD = 26, GAP = 22, TAGH = 48;
+  const W = corkEl.clientWidth;
+  const first = corkGroups[0].cards[0].el;
+  const pw = first.offsetWidth || 200, phh = first.offsetHeight || 270;
+  const cols = Math.max(1, Math.floor((W - PAD*2 + GAP) / (pw + GAP)));
+  let y = PAD;
+  corkGroups.forEach(g=>{
+    g.tag.style.left = PAD + "px";
+    g.tag.style.top = y + "px";
+    y += TAGH;
+    g.cards.forEach((c,i)=>{
+      c.el.style.left = (PAD + (i % cols) * (pw + GAP)) + "px";
+      c.el.style.top = y + "px";
+      if(i % cols === cols - 1 || i === g.cards.length - 1) y += phh + GAP;
+    });
+    y += 10;
+  });
+  corkEl.style.height = (y + 6) + "px";
+}
+
+/* 布局保存 / 恢复（仅本机） */
+function corkSave(){
+  try{
+    const all = corkGroups.flatMap(g=>g.cards);
+    localStorage.setItem(POS_KEY, JSON.stringify(all.map(c=>({
+      x: parseFloat(c.el.style.left) || 0,
+      y: parseFloat(c.el.style.top) || 0
+    }))));
+  }catch(e){}
+}
+function corkRestore(){
+  try{
+    const s = JSON.parse(localStorage.getItem(POS_KEY) || "null");
+    const all = corkGroups.flatMap(g=>g.cards);
+    if(!s || s.length !== all.length) return false;
+    const W = corkEl.clientWidth;
+    let maxBottom = 0;
+    all.forEach((c,i)=>{
+      const pw = c.el.offsetWidth, phh = c.el.offsetHeight;
+      const x = Math.min(Math.max(2, s[i].x), Math.max(2, W - pw - 2));
+      const yy = Math.max(2, s[i].y);
+      c.el.style.left = x + "px";
+      c.el.style.top = yy + "px";
+      maxBottom = Math.max(maxBottom, yy + phh);
+    });
+    corkEl.style.height = (maxBottom + 14) + "px";
+    return true;
+  }catch(e){ return false; }
+}
+function corkClampAll(){
+  const W = corkEl.clientWidth;
+  let maxBottom = 0;
+  corkGroups.forEach(g=>g.cards.forEach(c=>{
+    const pw = c.el.offsetWidth, phh = c.el.offsetHeight;
+    const x = Math.min(parseFloat(c.el.style.left) || 0, Math.max(2, W - pw - 2));
+    c.el.style.left = x + "px";
+    maxBottom = Math.max(maxBottom, (parseFloat(c.el.style.top) || 0) + phh);
+  }));
+  corkEl.style.height = Math.max(corkEl.clientHeight, maxBottom + 14) + "px";
+}
+
+/* 拖拽 + 点击判定 */
+corkGroups.forEach(g=>g.cards.forEach(c=>{
+  const card = c.el;
+  card.addEventListener("pointerdown", ev=>{
+    if(MANAGE) return; /* 管理模式下交给点击换图逻辑 */
+    if(ev.pointerType === "mouse" && ev.button !== 0) return;
+    const sx = ev.clientX, sy = ev.clientY;
+    const ox = parseFloat(card.style.left) || 0, oy = parseFloat(card.style.top) || 0;
+    let moved = false;
+    try{ card.setPointerCapture(ev.pointerId); }catch(e){}
+    const onMove = e2=>{
+      const dx = e2.clientX - sx, dy = e2.clientY - sy;
+      if(!moved && Math.hypot(dx, dy) > 5){ moved = true; card.classList.add("dragging"); }
+      if(!moved) return;
+      const W = corkEl.clientWidth, pw = card.offsetWidth, phh = card.offsetHeight;
+      const nx = Math.min(Math.max(2, ox + dx), Math.max(2, W - pw - 2));
+      const ny = Math.max(2, oy + dy);
+      card.style.left = nx + "px";
+      card.style.top = ny + "px";
+      if(ny + phh + 12 > corkEl.clientHeight) corkEl.style.height = (ny + phh + 12) + "px";
+    };
+    const onUp = ()=>{
+      card.removeEventListener("pointermove", onMove);
+      card.removeEventListener("pointerup", onUp);
+      card.removeEventListener("pointercancel", onUp);
+      if(moved){ card.classList.remove("dragging"); corkSave(); }
+      else openCork(c.idx); /* 原地松手 = 点击放大 */
+    };
+    card.addEventListener("pointermove", onMove);
+    card.addEventListener("pointerup", onUp);
+    card.addEventListener("pointercancel", onUp);
+  });
+}));
+
+corkLayoutDefault();
+corkRestore();
+window.addEventListener("resize", corkClampAll);
+
+document.getElementById("corkReset").addEventListener("click", ()=>{
+  try{ localStorage.removeItem(POS_KEY); }catch(e){}
+  corkLayoutDefault();
+});
+
+/* ---------- 灯箱 ---------- */
+const lb = document.getElementById("lightbox");
+const lbImg = document.getElementById("lbImg");
+const lbTitle = document.getElementById("lbTitle");
+const lbDesc = document.getElementById("lbDesc");
+const lbCount = document.getElementById("lbCount");
+let lbList = [], lbIndex = 0, lbMode = "";
+
+function openLightbox(i){ lbList = visiblePhotos; lbMode = "news"; show(i); }
+function openCork(i){ lbList = corkPhotos; lbMode = "cork"; show(i); }
+function show(i){
+  lbIndex = i;
+  const p = lbList[i];
+  const isCork = lbMode === "cork";
+  lbImg.src = p.src ? p.src
+    : (isCork ? corkPlaceholder(p, 900, 900) : placeholder(p, 1000, Math.round(1000*(p.ratio?p.ratio[1]/p.ratio[0]:3/4)), ""));
+  lbImg.alt = isCork ? p.note : p.title;
+  lbTitle.textContent = isCork ? `${p.year} · ${p.note}` : p.title;
+  lbDesc.textContent = isCork ? (p.sub||"") : p.desc;
+  lbCount.textContent = `${i+1} / ${lbList.length}`;
+  lb.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeLightbox(){ lb.classList.remove("open"); document.body.style.overflow = ""; }
+function step(d){ show((lbIndex + d + lbList.length) % lbList.length); }
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", e=>{ e.stopPropagation(); step(-1); });
+document.getElementById("lbNext").addEventListener("click", e=>{ e.stopPropagation(); step(1); });
+lb.addEventListener("click", e=>{ if(e.target===lb) closeLightbox(); });
+document.addEventListener("keydown", e=>{
+  if(!lb.classList.contains("open")) return;
+  if(e.key==="Escape") closeLightbox();
+  if(e.key==="ArrowLeft") step(-1);
+  if(e.key==="ArrowRight") step(1);
+});
+
+/* ---------- 轻量淡入 ---------- */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add("shown"); io.unobserve(en.target); }
+  });
+},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+/* ============================================================
+   照片管理：点击换图 / 拖入图片 / 导出网页
+   ============================================================ */
+
+/* 选图自动压缩到最长边 1280px、JPEG 86%，控制网页体积 */
+function fitImage(file, cb){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const MAX = 1280;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if(w > MAX || h > MAX){
+        const k = Math.min(MAX/w, MAX/h);
+        w = Math.round(w*k); h = Math.round(h*k);
+      }
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      const ctx = cv.getContext("2d");
+      ctx.fillStyle = "#fff"; ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img, 0, 0, w, h);
+      cb(cv.toDataURL("image/jpeg", 0.86));
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+let toastTimer = null;
+function toast(msg){
+  let t = document.getElementById("mgToast");
+  if(!t){ t = document.createElement("div"); t.id = "mgToast"; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("on"), 2400);
+}
+
+function replacePhoto(key, file){
+  const rec = PHOTO_MAP[key];
+  if(!rec) return;
+  fitImage(file, data=>{
+    rec.p.src = data;
+    document.querySelectorAll('[data-key="'+key+'"] img').forEach(im=>{ im.src = data; });
+    if(lb.classList.contains("open")) show(lbIndex);
+    saveStore();
+    /* 同步上传服务器（管理员）：上线后所有访客可见；失败则保留本机显示 */
+    uploadPhotoToServer(key, data);
+  });
+}
+
+/* ---------- 服务器照片（管理员上传 · 全站可见）----------
+   数据源 /api/about/photos → { 照片标题: 图片URL }
+   优先级：服务器覆盖 > 本机 localStorage 缓存 > 内置示例图 */
+let SERVER_PHOTOS = {};
+
+function applyServerPhotos(){
+  let changed = false;
+  PHOTOS.forEach(p=>{ const u = SERVER_PHOTOS[p.title]; if(u){ p.src = u; changed = true; } });
+  CORKBOARD.forEach(p=>{ const u = SERVER_PHOTOS[p.note]; if(u){ p.src = u; changed = true; } });
+  return changed;
+}
+
+async function loadServerPhotos(){
+  try{
+    const r = await fetch("/api/about/photos", { credentials:"same-origin", cache:"no-store" });
+    if(!r.ok) return;
+    const j = await r.json();
+    if(j && j.ok && j.data && typeof j.data === "object"){
+      SERVER_PHOTOS = j.data;
+      if(applyServerPhotos()){
+        try{ renderGallery("all"); }catch(e){}
+      }
+    }
+  }catch(e){ /* 离线或接口异常：继续用本机缓存 */ }
+}
+
+function dataURLtoBlob(d){
+  try{
+    const parts = String(d).split(",");
+    const mime = (parts[0].match(/:(.*?);/) || [0, "image/jpeg"])[1];
+    const bin = atob(parts[1]);
+    const u8 = new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) u8[i] = bin.charCodeAt(i);
+    return new Blob([u8], { type: mime });
+  }catch(e){ return null; }
+}
+
+async function uploadPhotoToServer(key, localData){
+  const blob = dataURLtoBlob(localData);
+  if(!blob){ toast("已在本机替换（图片编码失败）"); return; }
+  const fd = new FormData();
+  fd.append("image", blob, "photo.jpg");
+  try{
+    const r = await fetch("/api/about/photos/" + encodeURIComponent(key), {
+      method:"POST", body: fd, credentials:"same-origin"
+    });
+    const j = await r.json().catch(()=>null);
+    if(r.ok && j && j.ok){
+      SERVER_PHOTOS[key] = (j.data && j.data.url) || SERVER_PHOTOS[key];
+      toast("已上线：「" + key + "」，所有访客可见");
+    }else if(r.status === 401 || r.status === 403){
+      toast("已在本机替换；上传被拒绝（需要管理员权限）");
+    }else{
+      toast("已在本机替换；服务器同步失败：" + ((j && j.message) || ("HTTP " + r.status)));
+    }
+  }catch(e){
+    toast("已在本机替换；服务器不可达");
+  }
+}
+
+/* 权限门禁：仅管理员可见「照片管理 / 导出 / 恢复」入口；异常时默认隐藏（fail-closed） */
+function hideManageEntries(){
+  ["btnManage","btnResetPhotos","btnExport"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = "none";
+  });
+  const hint = document.getElementById("manageHint");
+  if(hint) hint.style.display = "none";
+}
+(async function guardPhotoAdmin(){
+  let isAdmin = false;
+  try{
+    const r = await fetch("/api/me", { credentials:"same-origin", cache:"no-store" });
+    const j = await r.json();
+    const u = j && j.user;
+    isAdmin = !!(u && (u.is_admin || u.role === "admin"));
+  }catch(e){ isAdmin = false; }
+  if(!isAdmin){
+    hideManageEntries();
+  }else{
+    /* 管理员：入口保留，同时恢复「恢复示例图」按钮的初始隐藏态 */
+    const rst = document.getElementById("btnResetPhotos");
+    if(rst) rst.style.display = "none";
+  }
+})();
+
+/* 隐藏文件选择器 */
+const filePicker = document.createElement("input");
+filePicker.type = "file";
+filePicker.accept = "image/*";
+filePicker.style.display = "none";
+document.body.appendChild(filePicker);
+let pendingKey = null;
+filePicker.addEventListener("change", ()=>{
+  const f = filePicker.files && filePicker.files[0];
+  if(f && pendingKey) replacePhoto(pendingKey, f);
+  filePicker.value = "";
+  pendingKey = null;
+});
+
+/* 管理模式开关 */
+const btnManage = document.getElementById("btnManage");
+const btnExport = document.getElementById("btnExport");
+const btnResetPhotos = document.getElementById("btnResetPhotos");
+function setManage(on){
+  MANAGE = on;
+  document.body.classList.toggle("manage", on);
+  btnManage.textContent = on ? "完成" : "照片管理";
+  btnResetPhotos.style.display = on ? "" : "none";
+}
+btnManage.addEventListener("click", ()=>setManage(!MANAGE));
+btnResetPhotos.addEventListener("click", ()=>{
+  if(!confirm("确定清空所有已替换的照片，恢复示例图吗？\n（同时会撤销服务器上已上线的替换图）")) return;
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  const keys = Object.keys(SERVER_PHOTOS || {});
+  if(!keys.length){ location.reload(); return; }
+  Promise.all(keys.map(k=>
+    fetch("/api/about/photos/" + encodeURIComponent(k), { method:"DELETE", credentials:"same-origin" }).catch(()=>null)
+  )).then(()=>location.reload());
+});
+
+/* 事件委托：管理模式下点击换图 / 拖入图片（含切换栏目后新渲染的卡片） */
+document.addEventListener("click", e=>{
+  if(!MANAGE) return;
+  const card = e.target.closest(".photo-card,.polaroid");
+  if(!card || !card.dataset.key) return;
+  e.preventDefault();
+  pendingKey = card.dataset.key;
+  filePicker.click();
+});
+document.addEventListener("dragover", e=>{
+  if(!MANAGE) return;
+  const card = e.target.closest(".photo-card,.polaroid");
+  if(card){ e.preventDefault(); card.classList.add("drop-ok"); }
+});
+document.addEventListener("dragleave", e=>{
+  if(!e.target.closest) return;
+  const card = e.target.closest(".photo-card,.polaroid");
+  if(card) card.classList.remove("drop-ok");
+});
+document.addEventListener("drop", e=>{
+  if(!MANAGE) return;
+  const card = e.target.closest(".photo-card,.polaroid");
+  if(!card || !card.dataset.key) return;
+  e.preventDefault();
+  card.classList.remove("drop-ok");
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f && f.type.indexOf("image/")===0) replacePhoto(card.dataset.key, f);
+});
+
+/* 导出网页：把已替换的照片嵌入源码，生成可直接分享的新文件 */
+function buildExportHTML(){
+  let script = SCRIPT_TEXT;
+  const putSrc = (anchor, data)=>{
+    const ai = script.indexOf(anchor);
+    if(ai < 0) return;
+    const si = script.lastIndexOf("src:null", ai);
+    if(si < 0 || ai - si > 400) return; /* 限定同一条目内，防误替换 */
+    script = script.slice(0, si) + 'src:"' + data + '"' + script.slice(si + 8);
+  };
+  PHOTOS.forEach(p=>{ if(p.src && p.src.indexOf("data:")===0) putSrc('title:"' + p.title + '"', p.src); });
+  CORKBOARD.forEach(p=>{ if(p.src && p.src.indexOf("data:")===0) putSrc('note:"' + p.note + '"', p.src); });
+  const body = PRISTINE_BODY.replace(SCRIPT_TEXT, ()=>script);
+  return '<!DOCTYPE html>\n<html lang="zh-CN">\n' + document.head.outerHTML + '\n<body>\n' + body + '\n</body>\n</html>';
+}
+btnExport.addEventListener("click", ()=>{
+  const html = buildExportHTML();
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "融媒体中心-照片墙-已更新.html";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 5000);
+  toast("已导出：照片已嵌入新网页文件，请用下载的文件替换原文件");
+});
+
+/* 启动：拉取服务器端已上线的替换图（管理员上传的照片优先显示） */
+loadServerPhotos();
+</script>
+</body>
+</html>

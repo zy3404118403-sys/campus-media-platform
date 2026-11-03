@@ -1,0 +1,110 @@
+<view class="page">
+  <!-- 加载 -->
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <!-- 未找到 -->
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">内容不存在或已删除</view>
+    <view class="state-desc">可能已被作者或管理员撤回。</view>
+    <view class="btn state-btn" bindtap="onBack">返回</view>
+  </view>
+
+  <!-- 失败 -->
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">内容加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <view class="post-wrap">
+    <!-- 博客有封面 -->
+    <view wx:if="{{type === 'blog'}}" class="hero post-hero {{post.tone}}"></view>
+
+    <!-- 有标题（博客 / 论坛） -->
+    <view wx:if="{{hasTitle}}" class="detail-title post-h1">
+      <text wx:if="{{post.pinned}}" class="pin-tag">置顶</text>
+      {{post.title}}
+    </view>
+
+    <view class="post-byline">
+      <view class="byline-avatar">{{post.initial}}</view>
+      <view class="byline-main">
+        <view class="byline-name">{{post.author}}</view>
+        <view class="byline-sub">{{post.date}}{{post.readMin ? ' · 约 ' + post.readMin + ' 分钟读完' : ''}}</view>
+      </view>
+      <text wx:if="{{post.views}}" class="byline-views">{{post.views}} 阅读</text>
+    </view>
+
+    <view class="art-body post-body">
+      <view wx:for="{{body}}" wx:key="*this" class="art-p">{{item}}</view>
+    </view>
+
+    <view class="post-stat">
+      <text>{{likeCount}} 人赞同</text>
+      <text>{{commentCount}} 条评论</text>
+    </view>
+
+    <!-- 评论 -->
+    <view class="sec">
+      <text class="sec-title">评论</text>
+      <text class="sec-more">{{commentCount}} 条</text>
+    </view>
+
+    <view wx:if="{{commentCount === 0}}" class="cmt-empty">还没有评论，说两句吧</view>
+
+    <view wx:for="{{comments}}" wx:key="id" class="cmt">
+      <view class="cmt-avatar">{{item.initial}}</view>
+      <view class="cmt-main">
+        <view class="cmt-head">
+          <text class="cmt-name">{{item.author}}{{item.mine ? ' · 我' : ''}}</text>
+          <text class="cmt-date">{{item.date}}</text>
+        </view>
+        <view class="cmt-text">{{item.text}}</view>
+      </view>
+    </view>
+
+    <view class="safe-bar"></view>
+    </view>
+
+    <!-- 底栏：点赞 + 评论输入 -->
+    <view class="bar">
+      <view
+        id="likeBtn"
+        class="bar-act {{liked ? 'on' : ''}}"
+        bindtap="onLike"
+      >
+        <view class="bar-icon ico {{liked ? 'ico-heart-g' : 'ico-heart ico-dim3'}}"></view>
+        <text class="bar-text">{{likeCount}}</text>
+      </view>
+      <view class="input-wrap cmt-input-wrap">
+        <input
+          id="cmtInput"
+          class="input"
+          value="{{draft}}"
+          placeholder="说点什么…"
+          placeholder-class="input-ph"
+          maxlength="200"
+          cursor-spacing="24"
+          adjust-position="{{true}}"
+          confirm-type="send"
+          bindinput="onDraft"
+          bindconfirm="onSend"
+        />
+      </view>
+      <view
+        id="sendBtn"
+        class="btn row-btn {{posting ? 'btn-loading' : ''}}"
+        bindtap="onSend"
+      >{{posting ? '…' : '发送'}}</view>
+    </view>
+  </block>
+
+  <view wx:if="{{state !== 'ready'}}" class="safe"></view>
+</view>

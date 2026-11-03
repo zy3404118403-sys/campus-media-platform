@@ -1,0 +1,39 @@
+{
+  "description": "芜宇乐的融媒体中心 · 素材库小程序",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".workbuddy"
+      },
+      {
+        "type": "folder",
+        "value": "tools"
+      },
+      {
+        "type": "suffix",
+        "value": ".py"
+      },
+      {
+        "type": "suffix",
+        "value": ".md"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "bundle": false,
+    "es6": true,
+    "minified": true,
+    "postcss": true,
+    "urlCheck": true,
+    "enhance": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": true
+  },
+  "compileType": "miniprogram",
+  "appid": "wx0000000000000000",
+  "projectname": "campus-media-miniapp",
+  "miniprogramRoot": "./"
+}

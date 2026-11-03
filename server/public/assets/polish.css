@@ -1,0 +1,65 @@
+/* ═══════════════════════════════════════════════════════════════
+   polish.css · 全站交互体验增强层 v1 (2026-08-30)
+   原则：纯增量、不动现有规则；删除本文件引用即可完全回滚
+   覆盖：键盘焦点 / 触控反馈 / 触控目标 / 移动端底栏 / 滚动锁定
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. 键盘焦点可见性（WCAG 2.4.7）：仅键盘聚焦时显示金色描边 ── */
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--gold,#D4AF37);outline-offset:2px;border-radius:6px}
+.btn:focus-visible,.btn-white:focus-visible,.menu-toggle:focus-visible,
+.hot-tags a:focus-visible,.tabs button:focus-visible,.pager button:focus-visible{outline-offset:3px}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold,#D4AF37);outline-offset:2px}
+
+/* ── 2. 按压反馈：可点元素按下时轻微收缩，松开回弹 ── */
+.btn:active,.btn-white:active,.specular-button:active{transform:scale(.97)}
+.hot-tags a:active,.tabs button:active,.pager button:active{transform:scale(.94)}
+.material-card:active,.cat-card:active,.topic-card:active,.feat-hero:active,.feat-mini:active,.activity-card:active{transform:scale(.98);transition-duration:.1s}
+.menu-toggle:active{transform:scale(.9)}
+@media(prefers-reduced-motion:reduce){*,:before,:after{transition-duration:.01ms!important}}
+
+/* ── 3. 触控目标 ≥44px（仅粗指针设备生效，桌面不受影响） ── */
+@media(pointer:coarse){
+  .hot-tags a{padding:10px 18px;min-height:44px;display:inline-flex;align-items:center}
+  .tabs button{min-height:44px}
+  .pager button{min-width:44px;min-height:44px}
+  .lb-row{min-height:44px}
+  .material-actions button{min-height:44px}
+  .msg-badge{min-width:18px}
+}
+
+/* ── 4. 移动端输入防缩放：iOS 聚焦 <16px 输入框会强制放大页面 ── */
+@media(max-width:768px){
+  input,select,textarea{font-size:16px!important}
+}
+
+/* ── 5. 汉堡菜单开启时锁定背景滚动 ── */
+html.polish-menu-open,html.polish-menu-open body{overflow:hidden}
+
+/* ── 6. 移动端底部快捷导航（polish.js 注入，仅窄屏显示） ── */
+.polish-bottom-nav{display:none}
+@media(max-width:768px){
+  .polish-bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:150;
+    background:var(--header-bg,rgba(10,13,20,.92));
+    -webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);
+    border-top:1px solid var(--border,rgba(255,255,255,.09));
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+  }
+  .polish-bottom-nav a{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:6px 2px;border-radius:10px;text-decoration:none;
+    color:var(--text2,#9AA3B5);font-size:11px;line-height:1.2;
+    -webkit-tap-highlight-color:transparent;transition:color .2s;
+  }
+  .polish-bottom-nav a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .polish-bottom-nav a.active{color:var(--gold2,#F0D060)}
+  .polish-bottom-nav a:active{transform:scale(.92)}
+  /* 返回顶部按钮避让底栏 */
+  #backTop{bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}
+  /* 底部内容避让：给 footer 预留高度 */
+  footer{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .polish-bottom-nav a,.polish-bottom-nav a:active{transition:none;transform:none}
+}

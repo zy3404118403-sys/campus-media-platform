@@ -1,0 +1,129 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">COMMUNITY</view>
+    <view class="hdr-title">校园社区</view>
+    <view class="hdr-sub">{{desc}}</view>
+  </view>
+
+  <!-- 三个 tab -->
+  <view class="seg">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      id="tab-{{item.key}}"
+      class="seg-item {{tab === item.key ? 'on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTab"
+    >{{item.text}}</view>
+  </view>
+
+  <view class="publish-bar">
+    <view id="publishBtn" class="publish-btn" bindtap="onCreate">＋ 发布内容</view>
+  </view>
+
+  <!-- 加载 -->
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <!-- 失败 -->
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">社区内容加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- ═══ 博客 ═══ -->
+    <block wx:if="{{tab === 'blog'}}">
+      <view
+        wx:for="{{blog}}"
+        wx:key="id"
+        class="post-row"
+        data-type="blog"
+        data-id="{{item.id}}"
+        bindtap="onOpen"
+      >
+        <view class="post-thumb {{item.tone}}"></view>
+        <view class="post-main">
+          <view class="post-title">{{item.title}}</view>
+          <view class="post-excerpt">{{item.excerpt}}</view>
+          <view class="post-meta">
+            <text>{{item.author}}</text>
+            <text>{{item.readMin}} 分钟 · {{item.views}} 阅读</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ═══ 论坛 ═══ -->
+    <block wx:elif="{{tab === 'forum'}}">
+      <scroll-view class="chips" scroll-x enable-flex>
+        <view
+          id="board-0"
+          class="chip {{activeBoard === 0 ? 'on' : ''}}"
+          data-id="0"
+          bindtap="onBoard"
+        >全部</view>
+        <view
+          wx:for="{{boards}}"
+          wx:key="id"
+          id="board-{{item.id}}"
+          class="chip {{activeBoard === item.id ? 'on' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onBoard"
+        >{{item.name}}</view>
+      </scroll-view>
+
+      <view
+        wx:for="{{shownThreads}}"
+        wx:key="id"
+        class="thread-row"
+        data-type="thread"
+        data-id="{{item.id}}"
+        bindtap="onOpen"
+      >
+        <view class="thread-head">
+          <text wx:if="{{item.pinned}}" class="pin-tag">置顶</text>
+          <text class="thread-title">{{item.title}}</text>
+        </view>
+        <view class="thread-excerpt">{{item.excerpt}}</view>
+        <view class="post-meta">
+          <text>{{item.author}} · {{item.date}}</text>
+          <text>{{item.replies}} 回复 · {{item.likes}} 赞</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- ═══ 表白墙 ═══ -->
+    <block wx:else>
+      <view wx:for="{{wall}}" wx:key="id" class="wall-card">
+        <view class="wall-body {{item.tone}}">
+          <view class="wall-text">{{item.content}}</view>
+        </view>
+        <view class="wall-foot">
+          <text class="wall-author">{{item.author}}{{item.mine ? ' · 我发的' : ''}} · {{item.date}}</text>
+          <view class="wall-acts">
+            <view
+              class="wall-act {{item.liked ? 'on' : ''}}"
+              data-id="{{item.id}}"
+              catchtap="onLike"
+            ><view class="ico {{item.liked ? 'ico-heart-g' : 'ico-heart ico-dim3'}}"></view>{{item.likes}}</view>
+            <text
+              id="wall-reply-{{item.id}}"
+              class="wall-act"
+              data-type="wall"
+              data-id="{{item.id}}"
+              catchtap="onOpen"
+            >回复 {{item.comments}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view class="safe"></view>
+</view>

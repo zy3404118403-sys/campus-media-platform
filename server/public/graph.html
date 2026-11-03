@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>记忆图谱 · 校园融媒体中心</title>
+<link rel="manifest" href="/manifest.json">
+<style>
+:root{
+  --bg:#f6f7fb;--bg2:#ffffff;--ink:#1a2333;--sub:#5b6b85;--line:#e3e8f2;--accent:#3459e6;
+  --u:#3459e6;--m:#0e9f6e;--b:#ff6b4a;--f:#818cf8;--w:#f87171;--a:#d97706;--t:#059669;--c:#7c3aed;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0d1219;--bg2:#151a23;--ink:#e8edf4;--sub:#8a93a5;--line:rgba(255,255,255,.09)}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--line)}
+header h1{font-size:17px;flex:1}
+header a{font-size:13px;color:var(--accent);text-decoration:none}
+#legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 20px;font-size:12.5px;color:var(--sub);background:var(--bg2);border-bottom:1px solid var(--line)}
+.lg{display:inline-flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+#wrap{flex:1;position:relative}
+canvas{display:block;width:100%;height:100%}
+#tip{position:absolute;pointer-events:none;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.18);display:none;max-width:260px}
+#stat{position:absolute;right:14px;bottom:12px;font-size:12px;color:var(--sub);background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:4px 10px}
+#empty{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--sub);font-size:14px}
+@media (max-width:600px){#legend{gap:8px;font-size:11.5px}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg"><meta name="description" content="记忆图谱 · 校园融媒体中心素材关联可视化，探索素材、标签与人物之间的连接。">
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+<header>
+  <h1>记忆图谱</h1>
+  <span style="font-size:12px;color:var(--sub)">谁创作了什么 · 关联了什么标签 · 参与了什么活动</span>
+  <a href="/index.html">← 返回首页</a>
+</header>
+<div id="legend">
+  <span class="lg"><span class="dot" style="background:var(--u)"></span>成员</span>
+  <span class="lg"><span class="dot" style="background:var(--m)"></span>素材</span>
+  <span class="lg"><span class="dot" style="background:var(--b)"></span>博客</span>
+  <span class="lg"><span class="dot" style="background:var(--f)"></span>论坛帖</span>
+  <span class="lg"><span class="dot" style="background:var(--w)"></span>墙贴</span>
+  <span class="lg"><span class="dot" style="background:var(--a)"></span>活动</span>
+  <span class="lg"><span class="dot" style="background:var(--t)"></span>标签</span>
+  <span class="lg"><span class="dot" style="background:var(--c)"></span>专题</span>
+</div>
+<div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="tip"></div>
+  <div id="stat"></div>
+  <div id="empty">暂无可展示的图谱数据</div>
+</div>
+<script>
+(function(){
+  var COLORS = { user:'var(--u)', material:'var(--m)', blog:'var(--b)', forum:'var(--f)', wall:'var(--w)', activity:'var(--a)', tag:'var(--t)', collection:'var(--c)' }
+  var JUMP = { material:'/material.html?id=', blog:'/community.html?view=blog&id=', forum:'/community.html?view=thread&id=', wall:'/community.html#wall', activity:'/index.html#activities', collection:'/community.html#collections' }
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d')
+  var tip = document.getElementById('tip'), stat = document.getElementById('stat'), empty = document.getElementById('empty')
+  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2)
+  var nodes = [], edges = [], running = true
+
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim() }
+  function resize(){
+    var r = cv.parentElement.getBoundingClientRect()
+    W = r.width; H = r.height
+    cv.width = W * dpr; cv.height = H * dpr
+    cv.style.width = W + 'px'; cv.style.height = H + 'px'
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  }
+  window.addEventListener('resize', function(){ resize(); draw() })
+
+  function radius(n){
+    var base = { user: 7, material: 6, blog: 5.5, forum: 5.5, wall: 5, activity: 6.5, tag: 3.5 + Math.min(6, (n.deg || 0) * 0.8), collection: 6 }
+    return base[n.type] || 5
+  }
+
+  function init(nodesData, edgesData){
+    nodes = nodesData; edges = edgesData
+    // 度数
+    nodes.forEach(function(n){ n.deg = 0 })
+    var byKey = {}
+    nodes.forEach(function(n){ byKey[n.key] = n })
+    edges = edges.filter(function(e){ return byKey[e.s] && byKey[e.d] })
+    edges.forEach(function(e){ byKey[e.s].deg++; byKey[e.d].deg++ })
+    // 初始布局：圆环 + 抖动
+    var R = Math.min(W, H) * 0.36, i = 0
+    nodes.forEach(function(n){
+      var ang = (i++ / nodes.length) * Math.PI * 2
+      n.x = W / 2 + Math.cos(ang) * R + (Math.random() - 0.5) * 40
+      n.y = H / 2 + Math.sin(ang) * R + (Math.random() - 0.5) * 40
+      n.vx = 0; n.vy = 0
+    })
+    stat.textContent = nodes.length + ' 节点 · ' + edges.length + ' 关联'
+    running = true
+    step()
+  }
+
+  function step(){
+    if (!running) return
+    // 弹簧-斥力模型（简化 Barnes-Hut 退化：O(n²)，n≤500 可接受，500 步后冷却）
+    var k = 0
+    for (var i = 0; i < nodes.length; i++){
+      var a = nodes[i]
+      for (var j = i + 1; j < nodes.length; j++){
+        var b = nodes[j]
+        var dx = a.x - b.x, dy = a.y - b.y
+        var d2 = dx * dx + dy * dy + 0.01
+        if (d2 < 40000){
+          var f = 1800 / d2
+          var d = Math.sqrt(d2)
+          var fx = dx / d * f, fy = dy / d * f
+          a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy
+        }
+      }
+    }
+    edges.forEach(function(e){
+      var s = byKey[e.s], t = byKey[e.d]
+      var dx = t.x - s.x, dy = t.y - s.y
+      var d = Math.sqrt(dx * dx + dy * dy) || 1
+      var f = (d - 90) * 0.015
+      var fx = dx / d * f, fy = dy / d * f
+      s.vx += fx; s.vy += fy; t.vx -= fx; t.vy -= fy
+    })
+    nodes.forEach(function(n){
+      // 向心
+      n.vx += (W / 2 - n.x) * 0.003; n.vy += (H / 2 - n.y) * 0.003
+      n.vx *= 0.82; n.vy *= 0.82
+      n.x += Math.max(-8, Math.min(8, n.vx))
+      n.y += Math.max(-8, Math.min(8, n.vy))
+      n.x = Math.max(20, Math.min(W - 20, n.x))
+      n.y = Math.max(20, Math.min(H - 20, n.y))
+    })
+    draw()
+    k++
+    if (k < 500) requestAnimationFrame(step)
+    else running = false
+  }
+
+  var byKey = {}
+  function draw(){
+    ctx.clearRect(0, 0, W, H)
+    var lineColor = css('--line') || '#e3e8f2'
+    ctx.strokeStyle = lineColor; ctx.lineWidth = 1
+    edges.forEach(function(e){
+      var s = byKey[e.s], t = byKey[e.d]
+      if (!s || !t) return
+      ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(t.x, t.y); ctx.stroke()
+    })
+    var ink = css('--ink') || '#1a2333'
+    nodes.forEach(function(n){
+      ctx.beginPath()
+      ctx.arc(n.x, n.y, radius(n), 0, Math.PI * 2)
+      ctx.fillStyle = css(COLORS[n.type]) || '#888'
+      ctx.fill()
+      if (n.deg > 4){ ctx.strokeStyle = ink; ctx.lineWidth = 1.5; ctx.stroke() }
+      if (n.type !== 'tag' || n.deg > 2){
+        ctx.fillStyle = css('--sub') || '#8a93a5'
+        ctx.font = (n.type === 'tag' ? '10.5px' : '11.5px') + ' "Microsoft YaHei",sans-serif'
+        ctx.textAlign = 'center'
+        ctx.fillText(n.label, n.x, n.y + radius(n) + 12)
+      }
+    })
+  }
+
+  function pick(mx, my){
+    for (var i = nodes.length - 1; i >= 0; i--){
+      var n = nodes[i]
+      var dx = n.x - mx, dy = n.y - my
+      if (dx * dx + dy * dy < Math.pow(radius(n) + 4, 2)) return n
+    }
+    return null
+  }
+  cv.addEventListener('mousemove', function(ev){
+    var r = cv.getBoundingClientRect()
+    var n = pick(ev.clientX - r.left, ev.clientY - r.top)
+    if (n){
+      tip.style.display = 'block'
+      tip.style.left = (ev.clientX - r.left + 12) + 'px'
+      tip.style.top = (ev.clientY - r.top + 12) + 'px'
+      tip.textContent = n.label + '（' + ({ user:'成员', material:'素材', blog:'博客', forum:'论坛帖', wall:'墙贴', activity:'活动', tag:'标签', collection:'专题' }[n.type] || n.type) + '）'
+      cv.style.cursor = 'pointer'
+    } else { tip.style.display = 'none'; cv.style.cursor = 'default' }
+  })
+  cv.addEventListener('click', function(ev){
+    var r = cv.getBoundingClientRect()
+    var n = pick(ev.clientX - r.left, ev.clientY - r.top)
+    if (n && JUMP[n.type]){
+      var u = JUMP[n.type]
+      location.href = u + (u.indexOf('#') === -1 ? n.ref : '')
+    }
+  })
+
+  fetch('/api/graph').then(function(r){ return r.json() }).then(function(j){
+    if (!j.ok || !j.data || !j.data.nodes || !j.data.nodes.length){ empty.style.display = 'flex'; return }
+    resize()
+    byKey = {}
+    j.data.nodes.forEach(function(n){ byKey[n.key] = n })
+    init(j.data.nodes, j.data.edges)
+  }).catch(function(){ empty.style.display = 'flex' })
+})()
+</script>
+</body>
+</html>

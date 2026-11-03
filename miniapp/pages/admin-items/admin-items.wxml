@@ -1,0 +1,80 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">PROGRAMS</view>
+      <view class="hdr-title">事项管理</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">仅管理员可用</view>
+      <view class="a-deny-s">发布与结束会直接影响 C 端，只对管理员开放。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">PROGRAMS</view>
+      <view class="hdr-title">事项管理</view>
+      <view class="hdr-sub">草稿 {{draftCount}} · 进行中 {{openCount}} · 已结束 {{endCount}}</view>
+    </view>
+
+    <view class="seg">
+      <view class="seg-item {{kind === 'activity' ? 'on' : ''}}" data-kind="activity" bindtap="onSeg">活动</view>
+      <view class="seg-item {{kind === 'task' ? 'on' : ''}}" data-kind="task" bindtap="onSeg">任务</view>
+    </view>
+
+    <view class="btn" bindtap="onNew">＋ 新建{{kind === 'activity' ? '活动' : '任务'}}</view>
+    <view style="height: 26rpx"></view>
+
+    <view wx:for="{{list}}" wx:key="id" class="row">
+      <view class="row-main">
+        <view class="row-title">
+          {{item.title}}
+          <text class="pill {{item.stateCls}}" style="margin-left: 10rpx">{{item.state}}</text>
+        </view>
+
+        <view class="row-meta">
+          <text class="row-sub">{{item.meta}}</text>
+        </view>
+
+        <view class="row-foot">
+          <text>{{item.sub}}</text>
+        </view>
+
+        <view class="a-acts">
+          <view
+            wx:if="{{item.draft}}"
+            class="a-btn mini gold"
+            data-id="{{item.id}}"
+            bindtap="onPublish"
+          >发布</view>
+          <view
+            wx:elif="{{!item.ended}}"
+            class="a-btn mini no"
+            data-id="{{item.id}}"
+            bindtap="onClose"
+          >{{kind === 'activity' ? '结束' : '截止'}}</view>
+
+          <view class="a-btn mini" data-id="{{item.id}}" bindtap="onEdit">编辑</view>
+
+          <view
+            wx:if="{{!item.locked}}"
+            class="a-btn mini no"
+            data-id="{{item.id}}"
+            bindtap="onRemove"
+          >删除</view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="a-deny">
+      <view class="a-deny-t">还没有{{kind === 'activity' ? '活动' : '任务'}}</view>
+      <view class="a-deny-s">点上面「新建」写一条，先存成草稿，确认后再发布。</view>
+    </view>
+
+    <view class="note">
+      新建的条目先是草稿，只在这里可见；点「发布」后才会出现在 C 端「事项」页与首页。已有报名的活动、已被领取的任务不能删除，只能结束。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

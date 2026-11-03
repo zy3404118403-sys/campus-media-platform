@@ -1,0 +1,120 @@
+<view class="page">
+  <!-- 加载 -->
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk act-hero"></view>
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <!-- 未找到 / 失败 -->
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">活动不存在或已下线</view>
+    <view class="state-desc">可能已被主办方撤回，去看看其他活动吧。</view>
+    <view class="btn state-btn" bindtap="onBack">返回活动列表</view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">活动加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <!-- 正文 -->
+  <block wx:else>
+    <view class="hero act-hero {{act.tone}}">
+      <view class="act-kicker">{{act.kicker}}</view>
+    </view>
+
+    <view class="detail-title">{{act.title}}</view>
+
+    <view class="act-tags">
+      <text class="pill {{ended ? 'pill-mute' : ''}}">{{act.state}}</text>
+      <text class="pill pill-ok">参与可得 {{act.points}} 贡献值</text>
+    </view>
+
+    <view class="meta-list">
+      <view class="meta-item">
+        <text class="meta-k">时间</text>
+        <text class="meta-v">{{act.time}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">地点</text>
+        <text class="meta-v">{{act.place}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">报名截止</text>
+        <text class="meta-v">{{act.deadline}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">主办</text>
+        <text class="meta-v">{{act.organizer}}</text>
+      </view>
+    </view>
+
+    <!-- 名额进度 -->
+    <view class="cap">
+      <view class="cap-top">
+        <text class="cap-num">已报名 {{act.joined}} / {{act.capacity}} 人</text>
+        <text class="gold">{{pct}}%</text>
+      </view>
+      <view class="cap-bar">
+        <view class="cap-fill" style="width: {{pct}}%"></view>
+      </view>
+      <view wx:if="{{pct >= 100}}" class="cap-tip">名额已满，仍可报名候补</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">活动介绍</view></view>
+    <view class="art-body">
+      <view class="art-p">{{act.intro}}</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">流程安排</view></view>
+    <view class="tl">
+      <view wx:for="{{act.agenda}}" wx:key="t" class="tl-item">
+        <view class="tl-rail">
+          <view class="tl-dot"></view>
+          <view wx:if="{{index < act.agenda.length - 1}}" class="tl-line"></view>
+        </view>
+        <view class="tl-body">
+          <view class="tl-t">{{item.t}}</view>
+          <view class="tl-d">{{item.d}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="sec"><view class="sec-title">参与须知</view></view>
+    <view class="notes">
+      <view wx:for="{{act.notes}}" wx:key="*this" class="note-item">
+        <text class="note-idx">{{index + 1}}</text>
+        <text class="note-txt">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="safe-btn"></view>
+
+    <!-- 底栏 -->
+    <view class="bar">
+      <view class="bar-share">
+        <view class="share-glyph ico ico-upload ico-dim2"></view>
+        <text class="share-txt">分享</text>
+        <!-- 透明按钮铺满整块，靠 open-type 触发分享；尺寸不受 button 默认样式干扰 -->
+        <button class="share-hit" open-type="share"></button>
+      </view>
+
+      <view wx:if="{{ended}}" class="btn btn-ghost bar-main row-btn-mute">活动已结束</view>
+
+      <block wx:elif="{{joined}}">
+        <view id="cancelBtn" class="btn btn-ghost bar-cancel" bindtap="onCancel">取消报名</view>
+        <view id="signinBtn" class="btn bar-main {{signedIn ? 'btn-done' : ''}}" bindtap="onSignIn">
+          {{signedIn ? '已签到' : '现场签到'}}
+        </view>
+      </block>
+
+      <view wx:else id="joinBtn" class="btn bar-main {{joining ? 'btn-loading' : ''}}" bindtap="onJoin">立即报名</view>
+    </view>
+  </block>
+
+  <view wx:if="{{state !== 'ready'}}" class="safe"></view>
+</view>

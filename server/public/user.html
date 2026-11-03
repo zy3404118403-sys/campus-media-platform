@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="我的工作室——管理你上传的校园素材：提交审核、查看草稿箱、编辑个人资料。">
+<meta name="theme-color" content="#05070B">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<meta name="color-scheme" content="dark light">
+<title>我的工作室 · 融媒体素材平台</title>
+<link rel="stylesheet" href="/assets/user.css?v=p2v5">
+<script defer src="./gsap.min.js"></script>
+<link rel="stylesheet" href="shared.css?v=14">
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+<link rel="stylesheet" href="/assets/remixicon/remixicon.css">
+
+</head>
+<body>
+
+<a href="#mainContent" class="skip-link" style="position:absolute;top:-100px;left:0;z-index:99999;background:var(--gold);color:#000;padding:8px 16px;font-size:14px;border-radius:0 0 8px 0;transition:top .2s">跳到主要内容</a>
+
+<!-- ═══ 主工作区 ═══ -->
+<div id="mainLayout" class="layout hidden">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleMobileSidebar()" role="button" tabindex="0" aria-label="关闭侧边栏"></div>
+  <button class="sb-handle" id="sbHandle" aria-label="打开侧边导航" onclick="toggleMobileSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+  <aside class="sidebar" id="userSidebar">
+    <div class="sidebar-brand">
+      <div class="logo">融</div>
+      <div><div class="name" data-i18n="brand.name">融媒体素材平台</div><div class="sub" data-i18n="brand.sub">我的工作室</div></div>
+    </div>
+    <nav class="sidebar-nav" aria-label="主导航">
+      <a class="nav-item active" data-tab="dashboard" href="#dashboard" aria-current="page" onclick="switchTab('dashboard');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span data-i18n="nav.dashboard">工作台</span></a>
+      <a class="nav-item" data-tab="materials" href="#materials" onclick="switchTab('materials');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span data-i18n="nav.materials">我的素材</span></a>
+      <a class="nav-item" data-tab="favorites" href="#favorites" onclick="switchTab('favorites');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span data-i18n="nav.favorites">我的收藏</span><span class="badge" id="favBadge" style="display:none">0</span></a>
+      <a class="nav-item" data-tab="drafts" href="#drafts" onclick="switchTab('drafts');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"/></svg><span data-i18n="nav.drafts">草稿箱</span><span class="badge" id="draftBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-tab="downloads" href="#downloads" onclick="switchTab('downloads');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span data-i18n="nav.downloads">下载记录</span></a>
+      <a class="nav-item" data-tab="messages" href="#messages" onclick="switchTab('messages');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span data-i18n="nav.messages">消息中心</span><span class="badge" id="msgBadge" style="display:none">0</span></a>
+      <a class="nav-item" href="/articles.html"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>文稿工作台</span></a>
+      <a class="nav-item" data-tab="profile" href="#profile" onclick="switchTab('profile');return false"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.profile">账号设置</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="specular-button specular-button--sm" onclick="doLogout()" style="width:100%;--sb-radius:8px;--sb-tint:#ffffff;--sb-tint-opacity:.04"><span class="specular-button__fx"></span><span class="specular-button__label" data-i18n="btn.logout">退出登录</span></button>
+      <button class="specular-button specular-button--sm" onclick="location.href='/'" style="width:100%;margin-top:6px;--sb-radius:8px;--sb-tint:#ffffff;--sb-tint-opacity:.04"><span class="specular-button__fx"></span><span class="specular-button__label" data-i18n="btn.home">返回首页</span></button>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="page-title" id="pageTitle" data-i18n="tab.dashboard" role="heading" aria-level="1">工作台</div>
+      </div>
+      <div class="topbar-right">
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="切换语言"><span data-lang="zh" class="active">中</span><span data-lang="en">EN</span></button>
+        <div class="user-info"><span id="userName"></span><div class="user-avatar" id="userAvatar">?</div></div>
+      </div>
+    </header>
+    <div class="content">
+
+      <!-- 工作台 Dashboard -->
+      <div id="tab-dashboard" class="tab-pane">
+        <div class="stats-row" id="statsRow"></div>
+        <div class="card">
+          <h3 data-i18n="sec.recent">最近上传</h3>
+          <div id="recentUploads"></div>
+        </div>
+      </div>
+
+      <!-- 我的素材 -->
+      <div id="tab-materials" class="tab-pane hidden">
+        <div class="toolbar">
+          <div class="search-box"><span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="matSearch" data-i18n-ph="misc.searchPh" placeholder="搜索我的素材..." aria-label="搜索我的素材" oninput="debounceLoadMats()"></div>
+          <select id="matStatusFilter" class="cs-custom" aria-label="筛选状态" onchange="loadMyMaterials()">
+            <option value="all" data-i18n="filter.all">全部状态</option>
+            <option value="published" data-i18n="filter.published">已发布</option>
+            <option value="pending_review" data-i18n="filter.reviewing">审核中</option>
+            <option value="approved" data-i18n="filter.approved">已通过</option>
+            <option value="rejected" data-i18n="filter.rejected">已拒绝</option>
+            <option value="archived" data-i18n="filter.archived">已归档</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn btn-gold btn-sm" onclick="openUploadModal()" data-i18n="sec.upload">上传素材</button>
+        </div>
+        <div class="materials-grid" id="myMaterialsGrid"></div>
+      </div>
+
+      <!-- 我的收藏 -->
+      <div id="tab-favorites" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0" data-i18n="tab.favorites">我的收藏</h3>
+          <div class="spacer"></div>
+          <span class="count-badge" id="favCount"></span>
+        </div>
+        <div class="materials-grid" id="myFavoritesGrid"></div>
+      </div>
+
+      <!-- 草稿箱 -->
+      <div id="tab-drafts" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0" data-i18n="sec.drafts">草稿箱</h3>
+          <div class="spacer"></div>
+          <span class="count-badge" id="draftCount"></span>
+        </div>
+        <div class="materials-grid" id="myDraftsGrid"></div>
+      </div>
+
+      <!-- 下载记录 -->
+      <div id="tab-downloads" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0" data-i18n="tab.downloads">下载记录</h3>
+          <div class="spacer"></div>
+          <span class="count-badge" id="dlCount"></span>
+        </div>
+        <div class="card" id="dlList"></div>
+        <div class="list-footer" id="dlPager" style="display:none"></div>
+      </div>
+
+      <!-- 消息中心 -->
+      <div id="tab-messages" class="tab-pane hidden">
+        <div class="card" id="msgList"><div class="empty-state"><div class="icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><p data-i18n="misc.loading">加载中...</p></div></div>
+      </div>
+
+      <!-- 账号设置 -->
+      <div id="tab-profile" class="tab-pane hidden">
+        <div class="card">
+          <h3 data-i18n="sec.profile">个人资料</h3>
+          <div class="form-group"><label data-i18n="profile.avatar" for="avatarInput">头像</label>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div id="profileAvatarPreview" style="width:64px;height:64px;border-radius:50%;background:var(--bg-warm);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--text-3);background-size:cover">?</div>
+              <div><input type="file" accept="image/*" onchange="uploadAvatar(this)" style="display:none" id="avatarInput" aria-label="选择头像文件"><button class="btn btn-outline btn-sm" onclick="$('avatarInput').click()" data-i18n="profile.changeAvatar">更换头像</button></div>
+            </div>
+          </div>
+          <div class="form-group"><label data-i18n="profile.name" for="pName">姓名</label><input type="text" id="pName" data-i18n-ph="profile.namePh" placeholder="你的姓名"></div>
+          <div class="form-group"><label data-i18n="profile.college" for="pCollege">学院</label><select id="pCollege" class="cs-custom" aria-label="所属学院"></select></div>
+          <div class="form-group"><label data-i18n="profile.grade" for="pGrade">年级</label><select id="pGrade" class="cs-custom" aria-label="年级"><option value="2022级" data-i18n="grade.2022">2022级</option><option value="2023级" data-i18n="grade.2023">2023级</option><option value="2024级" data-i18n="grade.2024">2024级</option><option value="2025级" data-i18n="grade.2025">2025级</option><option value="2026级" data-i18n="grade.2026">2026级</option></select></div>
+          <div class="form-group"><label data-i18n="profile.bio" for="pBio">简介</label><textarea id="pBio" data-i18n-ph="profile.bioPh" placeholder="写一句话介绍自己..." rows="3"></textarea></div>
+          <button class="btn btn-primary" onclick="saveProfile()" data-i18n="profile.save">保存资料</button>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:20px">
+          <h4 style="font-size:14px;font-weight:600;margin-bottom:12px" data-i18n="profile.changePwd">修改密码</h4>
+          <div class="form-group"><label data-i18n="profile.curPwd" for="curPwd">当前密码</label><input type="password" id="curPwd" data-i18n-ph="profile.curPwdPh" placeholder="输入当前密码"></div>
+          <div class="form-group"><label data-i18n="profile.newPwd" for="newPwd">新密码</label><input type="password" id="newPwd" data-i18n-ph="profile.newPwdPh" placeholder="至少8位，含大小写字母和数字"></div>
+          <div class="form-group"><label data-i18n="profile.confirmPwd" for="confirmPwd">确认新密码</label><input type="password" id="confirmPwd" data-i18n-ph="profile.confirmPwdPh" placeholder="再次输入新密码"></div>
+          <button class="btn btn-outline" onclick="changePassword()" data-i18n="profile.changePwdBtn">确认修改</button>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:20px;padding-top:20px">
+          <h4 style="font-size:14px;font-weight:600;margin-bottom:6px">两步验证（2FA）</h4>
+          <p style="font-size:12.5px;color:var(--text-3);margin:0 0 12px;line-height:1.7">启用后登录需额外输入验证器 App 生成的一次性动态码，即使密码泄露也无法登录。支持 Google Authenticator、Microsoft Authenticator、1Password 等 TOTP 应用。</p>
+          <div id="tfaBox"><div style="font-size:13px;color:var(--text-3)">加载中…</div></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ═══ 上传弹窗 ═══ -->
+<div class="modal-overlay hidden" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle" onclick="if(event.target===this)closeModal('uploadModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3 id="uploadModalTitle" data-i18n="sec.upload">上传素材</h3><button class="modal-close" onclick="closeModal('uploadModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div data-i18n="upload.tip" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:#8a6d1a;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px">提交审核后将由管理员审核，通过后公开展示；也可先保存为草稿。</div>
+      <div class="form-group"><label data-i18n="upload.title" for="uploadTitle">素材标题</label><input type="text" id="uploadTitle" data-i18n-ph="upload.titlePh" placeholder="给你的素材起个名字"></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="upload.college" for="uploadCollege">所属学院</label><select id="uploadCollege" class="cs-custom" aria-label="所属学院"><option value="" data-i18n="upload.selectCollege">--请选择--</option></select></div>
+        <div class="form-group"><label data-i18n="upload.type" for="uploadType">素材类型</label>
+          <select id="uploadType" class="cs-custom" aria-label="素材类型" onchange="updateUploadSubOptions(this.value)"><option value="" data-i18n="upload.selectType">--请选择--</option><option value="图片" data-i18n="type.image">图片</option><option value="视频" data-i18n="type.video">视频</option><option value="文档" data-i18n="type.doc">文档</option><option value="音频" data-i18n="type.audio">音频</option><option value="其他" data-i18n="type.other">其他</option></select>
+        </div>
+      </div>
+      <div id="uploadSubOptions" class="upload-sub-options"></div>
+      <div class="form-group"><label data-i18n="upload.desc" for="uploadDesc">素材描述</label><textarea id="uploadDesc" data-i18n-ph="upload.descPh" placeholder="简单描述素材内容、拍摄时间、场景等"></textarea></div>
+      <div class="form-group"><label for="uploadDrive"><span data-i18n="upload.link">网盘链接</span> <span style="font-size:11px;font-weight:400;color:var(--text-3)" data-i18n="upload.linkNote">（大文件可填写网盘链接）</span></label><input type="url" id="uploadDrive" data-i18n-ph="upload.linkPh" placeholder="百度网盘 / 阿里云盘 / 夸克网盘等链接"></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="upload.date" for="uploadDate">拍摄 / 创作时间</label><input type="text" id="uploadDate" data-i18n-ph="upload.datePh" placeholder="如：2026年8月"></div>
+        <div class="form-group"><label data-i18n="upload.tags" for="uploadTags">标签（逗号分隔，最多6个）</label><input type="text" id="uploadTags" data-i18n-ph="upload.tagsPh" placeholder="如：校园,风景,活动"></div>
+      </div>
+      <div class="form-group">
+        <label data-i18n="upload.file" for="uploadFile">上传文件</label>
+        <div class="file-upload-area" id="uploadArea" onclick="document.getElementById('uploadFile').click()" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+          <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <div class="hint" data-i18n="upload.fmt">支持 JPG / PNG / MP4 / PDF / MP3 等格式 · 大文件自动分片上传，视频最大 1GB</div>
+        </div>
+        <input type="file" id="uploadFile" multiple style="display:none" onchange="handleFilesSelect(this.files)" aria-label="选择要上传的文件">
+      </div>
+      <div id="uploadPreview" style="display:none;margin-bottom:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
+          <div id="uploadThumbWrap" style="width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--card-hover);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-3)"></div>
+          <div style="flex:1;min-width:0">
+            <div id="uploadPreviewName" style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+            <div id="uploadPreviewMeta" style="font-size:11px;color:var(--text-3);margin-top:4px;line-height:1.6"></div>
+          </div>
+          <button onclick="clearUploadFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除文件">✕</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="saveDraftBtn" onclick="doUpload(true)" style="flex:1"><span data-i18n="upload.draft">保存草稿</span></button>
+        <button class="btn btn-gold" id="uploadBtn" onclick="doUpload(false)" style="flex:1"><span data-i18n="upload.submit">提交审核</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 素材详情弹窗 ═══ -->
+<div class="modal-overlay hidden" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle" onclick="if(event.target===this)closeModal('detailModal')">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-header"><h3 id="detailTitle" data-i18n="detail.title">素材详情</h3><button class="modal-close" onclick="closeModal('detailModal')" aria-label="关闭">&times;</button></div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer" id="detailFooter"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=20"></script>
+<script src="/assets/qrcode.min.js"></script>
+<script src="/assets/user.js?v=p2v13"></script>
+
+<!-- ═══════ StaggeredMenu ═══════ -->
+
+
+<button id="themeToggle" onclick="toggleTheme()" title="切换主题" aria-label="切换主题">
+  <span id="themeToggleIcon"></span>
+</button>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+</body>
+</html>

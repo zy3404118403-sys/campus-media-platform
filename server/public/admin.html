@@ -1,0 +1,825 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="shared.js?v=20" as="script">
+<link rel="preload" href="/chart.umd.min.js" as="script">
+<meta name="description" content="Creative Studio——融媒体素材管理后台，审核队列、素材库画廊视图、批量操作、数据概览。">
+<meta name="theme-color" content="#0a0a0f">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<meta name="color-scheme" content="dark light">
+<title>Creative Studio · 融媒体中心素材管理平台</title>
+<link rel="stylesheet" href="/assets/admin.css?v=p2v5">
+<script defer src="./gsap.min.js"></script>
+<link rel="stylesheet" href="shared.css?v=14">
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+<link rel="stylesheet" href="/assets/remixicon/remixicon.css">
+
+</head>
+<body>
+<a href="#mainContent" class="skip-link" style="position:absolute;top:-100px;left:0;z-index:99999;background:var(--gold);color:#000;padding:8px 16px;font-size:14px;border-radius:0 0 8px 0;transition:top .2s">跳到主要内容</a>
+<!-- ═══════ 主布局 ═══════ -->
+<div id="mainLayout" class="layout hidden">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+  <aside class="sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <span class="logo">融</span>
+      <div><div class="name" data-i18n="brand.name">Creative Studio</div><div class="sub" data-i18n="brand.sub">ADMIN CONSOLE</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title" data-i18n="nav.group.overview">概览</div>
+        <a class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span class="txt" data-i18n="nav.dashboard">数据概览</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title" data-i18n="nav.group.workbench">素材工作台</div>
+        <a class="nav-item" data-tab="review" onclick="switchTab('review')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><span class="txt" data-i18n="nav.review">审核队列</span><span class="badge" id="pendingBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-tab="materials" onclick="switchTab('materials')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="txt" data-i18n="nav.materials">素材库</span></a>
+        <a class="nav-item" data-tab="gallery" onclick="switchTab('gallery')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="txt" data-i18n="nav.gallery">首页画廊</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title" data-i18n="nav.group.operations">运营管理</div>
+        <a class="nav-item" data-tab="activities" onclick="switchTab('activities')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="txt" data-i18n="nav.activities">活动管理</span></a>
+        <a class="nav-item" data-tab="recruits" onclick="switchTab('recruits')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="txt" data-i18n="nav.recruits">招新管理</span></a>
+        <a class="nav-item" data-tab="users" onclick="switchTab('users')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="txt" data-i18n="nav.users">用户管理</span></a>
+        <a class="nav-item" data-tab="audit" onclick="switchTab('audit')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="txt" data-i18n="nav.audit">操作日志</span></a>
+        <a class="nav-item" data-tab="access" onclick="switchTab('access')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg><span class="txt" data-i18n="nav.access">访问日志</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">融媒体中心</div>
+        <a class="nav-item" data-tab="articleReview" onclick="switchTab('articleReview')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span class="txt">文稿审核</span><span class="badge" id="articlePendingBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-tab="mediaMatrix" onclick="switchTab('mediaMatrix')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span class="txt">新媒体矩阵</span></a>
+        <a class="nav-item" data-tab="sensitiveWords" onclick="switchTab('sensitiveWords')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="txt">敏感词库</span></a>
+        <a class="nav-item" href="/articles.html"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><span class="txt">文稿工作台</span></a>
+        <a class="nav-item" data-tab="profile" onclick="switchTab('profile'); closeMobileSidebar()"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg><span class="txt">账号设置</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">校园社区</div>
+        <a class="nav-item" data-tab="ugcReview" onclick="switchTab('ugcReview')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="txt">UGC审核</span><span class="badge" id="ugcPendingBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-tab="reports" onclick="switchTab('reports')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg><span class="txt">举报管理</span><span class="badge" id="reportPendingBadge" style="display:none">0</span></a>
+        <a class="nav-item" data-tab="forumManage" onclick="switchTab('forumManage')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="txt">论坛管理</span></a>
+        <a class="nav-item" data-tab="wallManage" onclick="switchTab('wallManage')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg><span class="txt">校园墙管理</span></a>
+        <a class="nav-item" data-tab="notifManage" onclick="switchTab('notifManage')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="txt">通知管理</span></a>
+        <a class="nav-item" data-tab="collections" onclick="switchTab('collections')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span class="txt">专题管理</span></a>
+        <a class="nav-item" href="/community.html"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="txt">社区首页</span></a>
+      </div>
+    </nav>
+    <style>
+  /* 顶栏账号区可点（2026-10-23） */
+  .admin-info{cursor:pointer;border-radius:10px;transition:background .2s}
+  .admin-info:hover{background:rgba(128,128,128,.12)}
+</style>
+    <div class="sidebar-footer">
+      <button class="btn btn-dark" onclick="doLogout()" style="width:100%;border-radius:8px"><span data-i18n="btn.logout">退出登录</span></button>
+      <button class="btn btn-dark" onclick="location.href='/'" style="width:100%;margin-top:6px;border-radius:8px"><span data-i18n="btn.home">返回首页</span></button>
+    </div>
+  </aside>
+
+  <main class="main" id="mainContent">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="page-title" id="pageTitle" role="heading" aria-level="1">数据概览</div>
+      </div>
+      <div class="topbar-right">
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()" aria-label="切换语言"><span data-lang="zh" class="active">中</span><span data-lang="en">EN</span></button>
+        <div class="admin-info" onclick="switchTab('profile'); closeMobileSidebar()" title="点此进入账号设置" role="button" tabindex="0" onkeydown="if(event.key==='Enter')switchTab('profile')"><span id="adminName"></span><div class="admin-avatar" id="adminAvatar">?</div></div>
+        <button class="quick-btn" onclick="openModal('pwdModal')" aria-label="修改密码" title="修改密码"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>
+      </div>
+    </header>
+    <div class="content">
+
+      <!-- ── 数据概览 ── -->
+      <div id="tab-dashboard" class="tab-pane">
+        <style>
+          .dash-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+          @media(max-width:1100px){.dash-kpis{grid-template-columns:repeat(2,1fr)}}
+          @media(max-width:640px){.dash-kpis{grid-template-columns:1fr}}
+          .kpi-card{background:var(--card-elev,rgba(255,255,255,.04));border:1px solid var(--border,rgba(255,255,255,.08));border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+          .kpi-card .k-label{font-size:12px;color:var(--text-3,#8a93a5);display:flex;align-items:center;gap:6px}
+          .kpi-card .k-num{font-size:28px;font-weight:800;line-height:1.25;margin:2px 0;font-variant-numeric:tabular-nums}
+          .kpi-card .k-sub{font-size:11.5px;color:var(--text-3,#8a93a5);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+          .kpi-up{color:#34c98e;font-weight:700}.kpi-down{color:#f87171;font-weight:700}
+          .funnel-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:10px;background:rgba(128,128,128,.12)}
+          .funnel-bar i{display:block;height:100%}
+          .funnel-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:var(--text-3,#8a93a5)}
+          .funnel-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:3px;vertical-align:-1px}
+          .dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+          .dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+          @media(max-width:980px){.dash-grid-2,.dash-grid-3{grid-template-columns:1fr}}
+          .dash-todos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+          @media(max-width:640px){.dash-todos{grid-template-columns:1fr}}
+          .todo-pill{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--border,rgba(255,255,255,.08));border-radius:10px;padding:10px 12px;font-size:13px;cursor:pointer;transition:border-color .2s,transform .15s}
+          .todo-pill:hover{border-color:var(--gold,#D4AF37)}
+          .todo-pill:active{transform:scale(.97)}
+          .todo-pill .n{font-weight:800;font-size:16px}
+          .todo-pill.warn .n{color:#fbbf24}.todo-pill.zero .n{color:var(--text-3,#8a93a5)}
+          .hot-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border,rgba(255,255,255,.07));font-size:13px}
+          .hot-row:last-child{border-bottom:none}
+          .hot-rank{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:rgba(212,175,55,.15);color:var(--gold2,#F0D060);flex-shrink:0}
+          .hot-row .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+          .health-row{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--border,rgba(255,255,255,.07))}
+          .health-row:last-child{border-bottom:none}
+          .dash-empty{color:var(--text-3,#8a93a5);font-size:12.5px;text-align:center;padding:28px 0}
+          .active-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border,rgba(255,255,255,.07));font-size:13px}
+          .active-row:last-child{border-bottom:none}
+          .active-rank{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:rgba(45,212,191,.15);color:var(--teal,#2DD4BF);flex-shrink:0}
+          .active-row .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+          .active-row .score{font-size:12px;color:var(--text-2,#9AA3B5);flex-shrink:0}
+          .todo-preview-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+          .todo-preview-overlay.hidden{display:none}
+          .todo-preview-box{background:var(--bg-elev,#12151d);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:16px;padding:20px 22px;width:min(520px,94vw);max-height:80vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+          .tp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--border,rgba(255,255,255,.07));font-size:13px}
+          .tp-row:last-child{border-bottom:none}
+          .tp-row .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+          .tp-row .time{color:var(--text-3,#8a93a5);font-size:11.5px;flex-shrink:0}
+        </style>
+        <div class="dash-kpis" id="dashKpis" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div class="dash-grid-2">
+          <div class="card"><h3 style="font-size:13px;font-weight:600">上传 vs 下载（近 7 日）</h3><canvas id="chartUD" style="max-height:210px" aria-label="上传与下载趋势对比图"></canvas></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">访问趋势（近 7 日）</h3><canvas id="chartVisit" style="max-height:210px" aria-label="访问趋势图"></canvas></div>
+        </div>
+        <div class="dash-grid-3">
+          <div class="card"><h3 style="font-size:13px;font-weight:600">素材类型分布</h3><div id="dashTypeDonut"></div></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">学院贡献 TOP5</h3><div id="dashCollegeBars"></div></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">30 天上传热力</h3><div id="dashHeat"></div></div>
+        </div>
+        <div class="dash-grid-2">
+          <div class="card"><h3 style="font-size:13px;font-weight:600">聚合待办 <span style="font-weight:400;font-size:11px;color:var(--text-3,#8a93a5)">点击查看明细</span></h3><div class="dash-todos" id="dashTodos"></div></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">活跃用户 TOP5（近 7 日）</h3><div id="dashActive"></div></div>
+        </div>
+        <div class="dash-grid-2">
+          <div class="card"><h3 style="font-size:13px;font-weight:600">热门素材 TOP5</h3><div id="dashHot"></div></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">系统健康</h3><div id="dashHealth"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+              <button class="btn btn-gold btn-sm" onclick="copyWeeklyReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>一键生成周报</button>
+              <button class="btn btn-outline btn-sm" onclick="window.open('/api/export/materials')">素材CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="window.open('/api/export/users')">用户CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="window.open('/api/export/recruits')">招新CSV</button>
+            </div>
+          </div>
+        </div>
+        <div class="dash-grid-3">
+          <div class="card"><h3 style="font-size:13px;font-weight:600">核心指标<span style="font-weight:400;font-size:11px;color:var(--text-3,#8a93a5);margin-left:6px">验收指标埋点</span></h3><div id="dashMetrics"></div></div>
+          <div class="card"><h3 style="font-size:13px;font-weight:600">素材治理<span style="font-weight:400;font-size:11px;color:var(--text-3,#8a93a5);margin-left:6px">缺封面/缺海报/缺标签</span></h3><div id="dashGovernance"></div></div>
+          <div class="card"><h3 data-i18n="dash.recentActivity" style="font-size:13px;font-weight:600">最近动态</h3><div id="recentActivity"></div></div>
+        </div>
+      </div>
+      <div id="todoPreview" class="todo-preview-overlay hidden" role="dialog" aria-modal="true" aria-label="待办明细预览" onclick="if(event.target===this)closeTodoPreview()">
+        <div class="todo-preview-box">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 id="tpTitle" style="font-size:15px;font-weight:700;margin:0">待办明细</h3>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" id="tpGo">去处理</button>
+              <button class="btn btn-outline btn-sm" onclick="closeTodoPreview()">关闭</button>
+            </div>
+          </div>
+          <div id="tpBody" style="max-height:60vh;overflow:auto"></div>
+        </div>
+      </div>
+
+      <!-- ── 审核队列 ── -->
+      <div id="tab-review" class="tab-pane hidden">
+        <div class="toolbar">
+          <div class="search-box"><span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="reviewSearch" placeholder="搜索审核中素材..." data-i18n-ph="search.review" aria-label="搜索待审核素材" oninput="debounceLoadReview()"></div>
+          <select id="reviewFilter" class="cs-custom" aria-label="筛选状态" onchange="loadReview()">
+            <option value="pending_review" data-i18n="review.pending">待审核</option>
+            <option value="rejected" data-i18n="review.rejected">已拒绝</option>
+            <option value="approved" data-i18n="review.approvedUnpub">已通过(未发布)</option>
+            <option value="published" data-i18n="review.published">已发布</option>
+            <option value="archived" data-i18n="review.archived">已归档</option>
+            <option value="draft" data-i18n="review.draft">草稿</option>
+          </select>
+          <div class="spacer"></div>
+          <span class="count-badge" id="reviewCount" role="status" aria-live="polite"></span>
+          <div class="view-toggle" id="reviewViewToggle">
+            <button class="active" onclick="setReviewView('list')" data-i18n="view.list">列表</button>
+            <button onclick="setReviewView('gallery')" data-i18n="view.gallery"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>画廊</button>
+          </div>
+        </div>
+        <!-- 运营批（2026-09-22）：审核 SLA 提醒横幅（超 24h 待审计数，loadReview 动态填充） -->
+        <div id="reviewSlaBanner" style="display:none;padding:10px 14px;margin:10px 0;border-radius:10px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4);color:#fbbf24;font-size:13px" role="status" aria-live="polite"></div>
+        <div id="reviewListView">
+          <div class="table-wrap"><table role="table">
+            <thead role="rowgroup"><tr><th scope="col"class="th-check"><input type="checkbox" id="reviewSelectAll" onchange="toggleAllReview()" title="全选" data-i18n-title="th.selectAll"></th><th scope="col">ID</th><th scope="col" data-i18n="th.title">标题</th><th scope="col" data-i18n="th.type">类型</th><th scope="col" data-i18n="th.college">学院</th><th scope="col" data-i18n="th.uploader">上传者</th><th scope="col" data-i18n="th.tags">标签</th><th scope="col" data-i18n="th.time">时间</th><th scope="col" data-i18n="th.actions">操作</th></tr></thead>
+            <tbody id="reviewBody" role="rowgroup"></tbody>
+          </table></div>
+        </div>
+        <div id="reviewGalleryView" class="gallery-grid hidden"></div>
+      </div>
+
+      <!-- ── 素材库 ── -->
+      <div id="tab-materials" class="tab-pane hidden">
+        <div class="toolbar">
+          <div class="search-box"><span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="materialSearch" placeholder="搜索标题、描述、标签..." data-i18n-ph="search.materials" aria-label="搜索素材库" oninput="debounceLoad()"></div>
+          <select id="materialTypeFilter" class="cs-custom" onchange="loadMaterials()" aria-label="素材类型">
+            <option value="" data-i18n="filter.allTypes">全部类型</option>
+            <option value="图片" data-i18n="filter.image">图片</option><option value="视频" data-i18n="filter.video">视频</option><option value="文档" data-i18n="filter.doc">文档</option><option value="音频" data-i18n="filter.audio">音频</option><option value="其他" data-i18n="filter.other">其他</option>
+          </select>
+          <select id="materialCollegeFilter" class="cs-custom" onchange="loadMaterials()" aria-label="所属学院">
+            <option value="" data-i18n="filter.allColleges">全部学院</option>
+          </select>
+          <select id="materialStatusFilter" class="cs-custom" onchange="loadMaterials()" aria-label="素材状态">
+            <option value="all" data-i18n="filter.allStatus">全部状态</option><option value="draft" data-i18n="st.draft">草稿</option><option value="pending_review" data-i18n="st.pending_review">待审核</option><option value="approved" data-i18n="st.approved">已通过</option><option value="published" data-i18n="st.published">已发布</option><option value="archived" data-i18n="st.archived">已归档</option><option value="rejected" data-i18n="st.rejected">已拒绝</option>
+          </select>
+          <div class="spacer"></div>
+          <button class="btn btn-gold" onclick="openUploadModal()" style="gap:6px;padding:9px 18px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span data-i18n="sec.upload">上传素材</span></button>
+          <span class="count-badge" id="materialCount" role="status" aria-live="polite"></span>
+          <div class="view-toggle">
+            <button class="active" id="btnViewList" onclick="setMaterialsView('list')" aria-pressed="true" data-i18n="view.list">列表</button>
+<button id="btnViewGallery" onclick="setMaterialsView('gallery')" aria-pressed="false" data-i18n="view.gallery"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>画廊</button>
+          </div>
+        </div>
+        <div id="matListView">
+          <div class="table-wrap"><table role="table">
+            <thead role="rowgroup"><tr><th scope="col"class="th-check"><input type="checkbox" id="matSelectAll" onchange="toggleAllMat()" title="全选" data-i18n-title="th.selectAll"></th><th scope="col">ID</th><th scope="col" data-i18n="th.title">标题</th><th scope="col" data-i18n="th.type">类型</th><th scope="col" data-i18n="th.college">学院</th><th scope="col" data-i18n="th.author">作者</th><th scope="col" data-i18n="th.status">状态</th><th scope="col" data-i18n="th.downloads">下载</th><th scope="col" data-i18n="th.views">浏览</th><th scope="col" data-i18n="th.actions">操作</th></tr></thead>
+            <tbody id="materialBody" role="rowgroup"></tbody>
+          </table></div>
+        </div>
+        <div id="matGalleryView" class="gallery-grid hidden"></div>
+      </div>
+
+      <!-- ── 活动管理 ── -->
+      <div id="tab-activities" class="tab-pane hidden">
+        <div class="card"><h3 data-i18n="actf.publish">发布新活动</h3>
+          <div class="form-row">
+            <div class="form-group"><label data-i18n="actf.title" for="actTitle">活动标题</label><input type="text" id="actTitle" placeholder="活动标题" data-i18n-ph="actf.title"></div>
+            <div class="form-group"><label data-i18n="actf.date" for="actDate">活动日期</label><input type="text" id="actDate" placeholder="如：2026年9月1日 - 10月1日" data-i18n-ph="actf.datePh"></div>
+          </div>
+          <div class="form-group"><label data-i18n="actf.desc" for="actDesc">活动描述</label><textarea id="actDesc" placeholder="描述活动内容" data-i18n-ph="actf.descPh"></textarea></div>
+          <div class="form-group">
+            <label data-i18n="actf.poster" for="actPosterFile">活动海报</label>
+            <div class="file-upload-area" id="actPosterArea" style="padding:20px" tabindex="0" role="button" aria-label="上传活动海报" onclick="document.getElementById('actPosterFile').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('actPosterFile').click()}">
+              <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+              <div class="hint" data-i18n="actf.posterHint">点击上传活动海报图片（JPG/PNG，建议 16:9 比例）</div>
+            </div>
+            <input type="file" id="actPosterFile" accept="image/*" style="display:none" onchange="handlePosterSelect(this.files)">
+            <div id="actPosterPreview" style="display:none;margin-top:10px">
+              <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
+                <img id="actPosterImg" style="width:120px;height:68px;object-fit:cover;border-radius:6px" alt="">
+                <div style="flex:1">
+                  <div id="actPosterName" style="font-size:13px;font-weight:600"></div>
+                  <div id="actPosterSize" style="font-size:11px;color:var(--text-3);margin-top:2px"></div>
+                </div>
+                <button onclick="clearPosterFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除海报">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label data-i18n="actf.status" for="actStatus">状态</label><select id="actStatus" class="cs-custom" aria-label="活动状态"><option value="upcoming" data-i18n="actf.upcoming">即将开始</option><option value="ongoing" data-i18n="actf.ongoing">进行中</option><option value="ended" data-i18n="actf.ended">已结束</option></select></div>
+            <div class="form-group" style="display:flex;align-items:flex-end"><button class="btn btn-gold" style="width:100%" onclick="publishActivity()" data-i18n="actf.publishBtn">发布活动</button></div>
+          </div>
+        </div>
+        <div class="table-wrap"><table role="table">
+          <thead role="rowgroup"><tr><th scope="col">ID</th><th scope="col" data-i18n="th.poster">海报</th><th scope="col" data-i18n="th.title">标题</th><th scope="col" data-i18n="th.date">日期</th><th scope="col" data-i18n="th.status">状态</th><th scope="col" data-i18n="th.actions">操作</th></tr></thead>
+          <tbody id="activityBody" role="rowgroup"></tbody>
+        </table></div>
+      </div>
+
+      <!-- ── 首页画廊管理（P0-2 CMS 化） ── -->
+      <div id="tab-gallery" class="tab-pane hidden">
+        <div class="card"><h3 data-i18n="gal.add">新增画廊图片</h3>
+          <div class="form-row">
+            <div class="form-group"><label data-i18n="gal.title" for="galTitle">图片标题</label><input type="text" id="galTitle" maxlength="30" placeholder="如：校园全景" data-i18n-ph="gal.titlePh"></div>
+            <div class="form-group"><label data-i18n="gal.layout" for="galWide">布局</label>
+              <div style="display:flex;gap:16px;align-items:center;height:38px">
+                <label style="display:flex;gap:6px;align-items:center;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="galWide"> <span data-i18n="gal.wide">宽幅</span></label>
+                <label style="display:flex;gap:6px;align-items:center;font-size:13px;font-weight:400;cursor:pointer"><input type="checkbox" id="galTall"> <span data-i18n="gal.tall">竖幅</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label data-i18n="gal.image" for="galFile">图片文件</label>
+            <div class="file-upload-area" id="galUploadArea" style="padding:20px" tabindex="0" role="button" aria-label="上传画廊图片" onclick="document.getElementById('galFile').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('galFile').click()}">
+              <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+              <div class="hint" data-i18n="gal.hint">点击上传图片（JPG/PNG/WebP，不超过 2MB，建议压缩至 1000px 宽）</div>
+            </div>
+            <input type="file" id="galFile" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleGallerySelect(this.files)">
+            <div id="galPreview" style="display:none;margin-top:10px">
+              <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
+                <img id="galPreviewImg" style="width:120px;height:68px;object-fit:cover;border-radius:6px" alt="">
+                <div style="flex:1">
+                  <div id="galPreviewName" style="font-size:13px;font-weight:600"></div>
+                  <div id="galPreviewSize" style="font-size:11px;color:var(--text-3);margin-top:2px"></div>
+                </div>
+                <button onclick="clearGalleryFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除图片">✕</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-gold" style="width:100%" onclick="addGalleryItem(this)" data-i18n="gal.addBtn">添加到画廊</button>
+        </div>
+        <div class="toolbar"><h3 style="margin:0" data-i18n="gal.manage">画廊列表</h3><div class="spacer"></div><span class="count-badge" id="galCount"></span></div>
+        <div class="card"><div id="galList" class="gal-grid"></div></div>
+      </div>
+
+      <!-- ── 招新 / 用户 / 审计 ── -->
+      <div id="tab-recruits" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0" data-i18n="recruit.title">报名申请</h3><div class="spacer"></div><span class="count-badge" id="recruitCount"></span></div>
+        <div class="table-wrap"><table role="table"><thead role="rowgroup"><tr><th scope="col" data-i18n="th.name">姓名</th><th scope="col" data-i18n="th.sid">学号</th><th scope="col" data-i18n="th.grade">年级</th><th scope="col" data-i18n="th.college">学院</th><th scope="col" data-i18n="th.email">邮箱</th><th scope="col" data-i18n="th.resume">简历</th><th scope="col" data-i18n="th.submitTime">提交时间</th><th scope="col" data-i18n="th.actions">操作</th></tr></thead><tbody id="recruitBody" role="rowgroup"></tbody></table></div>
+      </div>
+      <div id="tab-users" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0" data-i18n="users.title">注册用户</h3><div class="spacer"></div>
+          <select id="userRoleFilter" onchange="loadUsers()" style="width:auto;min-width:80px;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text)">
+            <option value="" data-i18n="users.allRoles">全部</option><option value="admin" data-i18n="users.admin">管理员</option><option value="student" data-i18n="users.student">学生</option>
+          </select>
+          <input type="text" id="userSearch" placeholder="搜索..." data-i18n-ph="search.users" aria-label="搜索用户" oninput="loadUsers()" style="width:160px;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text)">
+          <span class="count-badge" id="userCount" style="margin-left:8px"></span></div>
+        <div class="table-wrap"><table role="table"><thead role="rowgroup"><tr><th scope="col" data-i18n="th.sid">学号</th><th scope="col" data-i18n="th.name">姓名</th><th scope="col" data-i18n="th.college">学院</th><th scope="col" data-i18n="th.grade">年级</th><th scope="col" data-i18n="th.role">角色</th><th scope="col" data-i18n="th.registerTime">注册时间</th><th scope="col" data-i18n="th.actions">操作</th></tr></thead><tbody id="userBody" role="rowgroup"></tbody></table></div>
+      </div>
+      <div id="tab-profile" class="tab-pane hidden">
+        <style>
+          .acc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+          @media(max-width:980px){.acc-grid{grid-template-columns:1fr}}
+          .acc-card{background:var(--card-elev,rgba(255,255,255,.04));border:1px solid var(--border,rgba(255,255,255,.08));border-radius:14px;padding:18px 20px}
+          .acc-card h3{margin:0 0 4px;font-size:15px}
+          .acc-hint{font-size:12px;color:var(--text-3,#8a93a5);margin:0 0 16px;line-height:1.65}
+          .acc-field{margin-bottom:12px}
+          .acc-field label{display:block;font-size:12.5px;color:var(--text-2,#9aa3b5);margin-bottom:5px}
+          .acc-field input,.acc-field select,.acc-field textarea{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--border,rgba(255,255,255,.1));background:var(--bg,#0f1420);color:var(--text,#e7ebf3);font-size:13.5px;outline:none;font-family:inherit}
+          .acc-field input:focus,.acc-field select:focus,.acc-field textarea:focus{border-color:var(--gold,#D4AF37)}
+          .acc-field input[readonly]{opacity:.65;cursor:not-allowed}
+          .acc-avatar-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+          .acc-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#8A6D2B);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#1a1405;background-size:cover;background-position:center;flex:0 0 auto}
+          .acc-btn{padding:9px 16px;border-radius:9px;border:1px solid var(--border,rgba(255,255,255,.12));background:var(--card-elev,rgba(255,255,255,.06));color:var(--text,#e7ebf3);font-size:13px;cursor:pointer;font-weight:600}
+          .acc-btn.primary{background:linear-gradient(135deg,#D4AF37,#B8912E);color:#1a1405;border:none}
+          .acc-btn:hover{opacity:.92}
+        </style>
+        <div class="acc-grid">
+          <div class="acc-card">
+            <h3>个人资料</h3>
+            <p class="acc-hint">修改后同步显示在平台的作者署名与个人主页。</p>
+            <div class="acc-avatar-row">
+              <div class="acc-avatar" id="accAvatar">?</div>
+              <div>
+                <input type="file" accept="image/*" id="accAvatarInput" style="display:none" onchange="uploadAccountAvatar(this)">
+                <button class="acc-btn" onclick="document.getElementById('accAvatarInput').click()">更换头像</button>
+                <div style="font-size:11.5px;color:var(--text-3,#8a93a5);margin-top:5px">支持 jpg / png / webp，5MB 以内</div>
+              </div>
+            </div>
+            <div class="acc-field"><label for="accSid">学号（不可修改）</label><input type="text" id="accSid" readonly></div>
+            <div class="acc-field"><label for="accRole">账号角色</label><input type="text" id="accRole" readonly></div>
+            <div class="acc-field"><label for="accName">姓名</label><input type="text" id="accName" placeholder="你的姓名"></div>
+            <div class="acc-field"><label for="accCollege">学院</label><select id="accCollege"></select></div>
+            <div class="acc-field"><label for="accGrade">年级</label><select id="accGrade">
+              <option value="2022级">2022级</option><option value="2023级">2023级</option><option value="2024级">2024级</option><option value="2025级">2025级</option><option value="2026级">2026级</option>
+            </select></div>
+            <div class="acc-field"><label for="accBio">简介</label><textarea id="accBio" rows="3" placeholder="写一句话介绍自己…"></textarea></div>
+            <button class="acc-btn primary" onclick="saveAccountProfile()">保存资料</button>
+          </div>
+          <div class="acc-card">
+            <h3>修改密码</h3>
+            <p class="acc-hint">建议 8 位以上、包含大小写字母与数字。修改后当前登录不会掉线，其他设备需用新密码重新登录。</p>
+            <div class="acc-field"><label for="accCurPwd">当前密码</label><input type="password" id="accCurPwd" placeholder="输入当前密码" autocomplete="current-password"></div>
+            <div class="acc-field"><label for="accNewPwd">新密码</label><input type="password" id="accNewPwd" placeholder="至少 8 位，含大小写字母和数字" autocomplete="new-password"></div>
+            <div class="acc-field"><label for="accConfirmPwd">确认新密码</label><input type="password" id="accConfirmPwd" placeholder="再次输入新密码" autocomplete="new-password"></div>
+            <button class="acc-btn primary" onclick="saveAccountPassword()">确认修改</button>
+          </div>
+        </div>
+      </div>
+      <div id="tab-audit" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0" data-i18n="audit.title">素材状态操作日志</h3><div class="spacer"></div><span class="count-badge" id="auditCount"></span></div>
+        <div class="table-wrap"><table role="table"><thead role="rowgroup"><tr><th scope="col">ID</th><th scope="col" data-i18n="th.matId">素材ID</th><th scope="col" data-i18n="th.matTitle">素材标题</th><th scope="col" data-i18n="th.action">动作</th><th scope="col" data-i18n="th.statusChange">状态变更</th><th scope="col" data-i18n="th.operator">操作者</th><th scope="col" data-i18n="th.reason">原因</th><th scope="col" data-i18n="th.time">时间</th></tr></thead><tbody id="auditBody" role="rowgroup"></tbody></table></div>
+      </div>
+      <div id="tab-access" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0" data-i18n="access.title">访问日志</h3>
+          <div class="spacer"></div>
+          <select id="accessDateFilter" class="cs-custom" aria-label="日期范围" onchange="loadAccessLogs()">
+            <option value="30" data-i18n="access.days30">近30天</option>
+            <option value="7" data-i18n="access.days7">近7天</option>
+            <option value="1" data-i18n="access.today">今天</option>
+          </select>
+        </div>
+        <div id="accessStatsRow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+          <div>
+            <h4 style="margin:0 0 10px;font-size:14px" data-i18n="access.regionStats">区域访问统计</h4>
+            <div id="accessRegionStats" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;max-height:320px;overflow-y:auto;scrollbar-width:none"></div>
+          </div>
+          <div>
+            <h4 style="margin:0 0 10px;font-size:14px" data-i18n="access.pageStats">页面访问统计</h4>
+            <div id="accessPageStats" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;max-height:320px;overflow-y:auto;scrollbar-width:none"></div>
+          </div>
+        </div>
+        <div class="toolbar" style="margin-bottom:12px">
+          <input type="text" id="accessIPSearch" placeholder="IP 地址" data-i18n-ph="access.ipPh" style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text);font-size:13px;outline:none;width:180px" aria-label="按IP搜索" oninput="debounceLoadAccess()">
+          <input type="text" id="accessRegionSearch" placeholder="区域" data-i18n-ph="access.regionPh" style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text);font-size:13px;outline:none;width:160px" aria-label="按地区搜索" oninput="debounceLoadAccess()">
+          <div class="spacer"></div>
+          <span class="count-badge" id="accessCount" role="status" aria-live="polite"></span>
+        </div>
+        <div class="table-wrap"><table role="table"><thead role="rowgroup"><tr><th scope="col">ID</th><th scope="col" data-i18n="access.thIP">IP 地址</th><th scope="col" data-i18n="access.thRegion">归属地</th><th scope="col" data-i18n="access.thPage">访问页面</th><th scope="col" data-i18n="access.thUser">用户</th><th scope="col" data-i18n="access.thUA">User-Agent</th><th scope="col" data-i18n="access.thTime">访问时间</th></tr></thead><tbody id="accessBody" role="rowgroup"></tbody></table></div>
+        <div id="accessPager" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px"></div>
+      </div>
+
+      <!-- ── 文稿审核 ── -->
+      <div id="tab-articleReview" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0">文稿审核</h3>
+          <div class="spacer"></div>
+          <select id="articleReviewFilter" class="cs-custom" aria-label="筛选审核状态" onchange="loadArticleReviewQueue()">
+            <option value="">全部待审</option>
+            <option value="pending_l1">初审</option>
+            <option value="pending_l2">复审</option>
+            <option value="pending_l3">终审</option>
+          </select>
+        </div>
+        <div id="reviewStatsRow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px"></div>
+        <div id="articleBatchBar" style="display:none;align-items:center;gap:10px;padding:10px 16px;margin-bottom:12px;border:1px solid var(--border);border-radius:10px;background:var(--card-elev);flex-wrap:wrap">
+          <span style="font-size:13px;font-weight:600;color:var(--primary)">已选 <span id="articleBatchCount">0</span> 篇</span>
+          <button class="btn btn-success btn-sm" onclick="batchArticleReview('approve')">批量通过</button>
+          <button class="btn btn-outline btn-sm" style="color:#fbbf24" onclick="openArticleBatchReject()">批量退回</button>
+          <button class="btn btn-outline btn-sm" onclick="selectedArticles.clear();updateArticleBatchBar()">取消选择</button>
+        </div>
+        <div class="table-wrap"><table role="table"><thead role="rowgroup"><tr><th scope="col" style="width:36px"><input type="checkbox" onclick="toggleAllArticleSelect(this)" aria-label="全选"></th><th scope="col">ID</th><th scope="col">标题</th><th scope="col">作者</th><th scope="col">分类</th><th scope="col">审核级别</th><th scope="col">状态</th><th scope="col">更新时间</th><th scope="col">操作</th></tr></thead><tbody id="articleReviewBody" role="rowgroup"></tbody></table></div>
+      </div>
+
+      <!-- ── 新媒体矩阵 ── -->
+      <div id="tab-mediaMatrix" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0">新媒体矩阵</h3>
+          <div class="spacer"></div>
+          <button class="btn btn-primary btn-sm" onclick="openMediaAccountModal()">+ 添加账号</button>
+        </div>
+        <div id="mediaAccountGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
+      </div>
+
+      <!-- ── 敏感词库 ── -->
+      <div id="tab-sensitiveWords" class="tab-pane hidden">
+        <div class="toolbar">
+          <h3 style="margin:0">敏感词库管理</h3>
+          <div class="spacer"></div>
+          <button class="btn btn-outline btn-sm" onclick="openSwImportModal()">批量导入</button>
+          <button class="btn btn-primary btn-sm" onclick="openSwAddModal()">+ 添加敏感词</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <input type="text" id="swSearch" placeholder="搜索敏感词..." style="background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text);font-size:13px;outline:none;width:200px" oninput="debounceLoadSW()">
+          <select id="swLevelFilter" class="cs-custom" style="width:140px" aria-label="筛选级别" onchange="loadSensitiveWords()">
+            <option value="">全部级别</option>
+            <option value="high">高级</option>
+            <option value="medium">中级</option>
+            <option value="low">低级</option>
+          </select>
+          <span class="count-badge" id="swCount" role="status" aria-live="polite" style="margin-left:auto;align-self:center"></span>
+        </div>
+        <div id="swList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+
+      <!-- ── UGC审核 ── -->
+      <div id="tab-ugcReview" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">UGC内容审核</h3></div>
+        <div id="ugcReviewContent" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ── 举报管理 ── -->
+      <div id="tab-reports" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">举报管理</h3></div>
+        <div id="reportsContent" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ── 论坛管理 ── -->
+      <div id="tab-forumManage" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">论坛管理</h3></div>
+        <div id="forumManageContent" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ── 校园墙管理 ── -->
+      <div id="tab-wallManage" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">校园墙管理</h3></div>
+        <div id="wallManageContent" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ── 通知管理 ── -->
+      <div id="tab-notifManage" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">通知管理</h3></div>
+        <div id="notifManageContent" style="margin-top:16px"></div>
+      </div>
+
+      <!-- ── 专题管理 ── -->
+      <div id="tab-collections" class="tab-pane hidden">
+        <div class="toolbar"><h3 style="margin:0">专题管理</h3></div>
+        <div class="card" style="margin-top:16px">
+          <h3 style="font-size:14px;margin:0 0 12px">新建专题</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="colTitle" placeholder="专题标题（必填）" style="flex:2;min-width:200px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--card-elev);color:var(--text)">
+            <input type="text" id="colDesc" placeholder="专题描述（可选）" style="flex:3;min-width:240px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--card-elev);color:var(--text)">
+            <input type="color" id="colColor" value="#1D3A6B" title="专题主色" style="width:44px;height:38px;border:none;background:none;cursor:pointer">
+            <button class="btn btn-gold btn-sm" onclick="createCollection()">创建专题</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3 style="font-size:14px;margin:0 0 12px">专题列表</h3>
+          <div id="collectionsAdminList"></div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ── 批量操作栏 ── -->
+    <div class="batch-bar" id="batchBar">
+      <span class="batch-count" id="batchCount">已选 0 项</span>
+      <div class="batch-actions">
+        <button class="btn btn-success btn-sm" onclick="batchAction('approve')" data-i18n="batch.approve"> 批量通过</button>
+        <button class="btn btn-outline btn-sm" style="color:#fbbf24" onclick="openBatchReject()"> 批量退回</button>
+        <button class="btn btn-gold btn-sm" onclick="batchAction('publish')" data-i18n="batch.publish"> 批量发布</button>
+        <button class="btn btn-outline btn-sm" onclick="batchAction('archive')" data-i18n="batch.archive"> 批量归档</button>
+        <button class="btn btn-danger btn-sm" onclick="batchAction('delete')" data-i18n="batch.delete"> 批量删除</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 批量退回原因面板 -->
+<div id="batchRejectModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center" onclick="if(event.target===this)closeBatchReject()">
+  <div class="modal-box" style="max-width:460px;padding:26px">
+    <h3 style="margin:0 0 14px;font-size:17px">批量退回 <span id="brCount" style="color:var(--gold);font-size:13px"></span></h3>
+    <div id="brFormArea">
+    <div class="form-group"><label for="brTemplate">常见原因（可先选再补充）</label>
+      <select class="cs-custom" id="brTemplate" onchange="document.getElementById('brReason').value=this.value">
+        <option value="">— 选择模板 —</option>
+        <option value="图片清晰度不足，请重新拍摄后提交">图片清晰度不足</option>
+        <option value="构图或内容不符合投稿要求，请调整后重新提交">构图/内容不符合要求</option>
+        <option value="标题、描述或标签信息不完整，请补充后提交">信息填写不完整</option>
+        <option value="素材涉及人物隐私或肖像权问题，请确认授权后重新提交">涉及隐私/肖像问题</option>
+        <option value="文件损坏或无法正常打开，请检查后重新上传">文件损坏无法打开</option>
+        <option value="与已有素材重复，请勿重复投稿">重复投稿</option>
+      </select>
+    </div>
+    <div class="form-group"><label for="brReason">退回原因（将应用到所有选中素材）</label>
+      <textarea class="form-input" id="brReason" rows="3" style="width:100%;resize:vertical" placeholder="填写退回原因…"></textarea>
+    </div>
+    </div>
+    <div id="brInfo" style="display:none"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">
+      <button class="btn btn-outline btn-sm" onclick="closeBatchReject()">取消</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmBatchReject()">确认退回</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 上传弹窗 ═══ -->
+<div class="modal-overlay hidden" id="uploadModal" onclick="if(event.target===this)closeModal('uploadModal')">
+  <div class="modal-box">
+    <div class="modal-header"><h3 data-i18n="sec.upload">上传素材</h3><button class="modal-close" onclick="closeModal('uploadModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div data-i18n="upload.tip" style="background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:#8a6d1a;padding:10px 14px;border-radius:10px;font-size:12px;margin-bottom:14px">提交审核后将由管理员审核，通过后公开展示；也可先保存为草稿。</div>
+      <div class="form-group"><label data-i18n="upload.title" for="uploadTitle">素材标题</label><input type="text" id="uploadTitle" data-i18n-ph="upload.titlePh" placeholder="给你的素材起个名字"></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="upload.college" for="uploadCollege">所属学院</label><select id="uploadCollege" class="cs-custom" aria-label="所属学院"><option value="" data-i18n="upload.selectCollege">--请选择--</option></select></div>
+        <div class="form-group"><label data-i18n="upload.type" for="uploadType">素材类型</label>
+          <select id="uploadType" class="cs-custom" aria-label="素材类型" onchange="updateUploadSubOptions(this.value)"><option value="" data-i18n="upload.selectType">--请选择--</option><option value="图片" data-i18n="type.image">图片</option><option value="视频" data-i18n="type.video">视频</option><option value="文档" data-i18n="type.doc">文档</option><option value="音频" data-i18n="type.audio">音频</option><option value="其他" data-i18n="type.other">其他</option></select>
+        </div>
+      </div>
+      <div id="uploadSubOptions" class="upload-sub-options"></div>
+      <div class="form-group"><label data-i18n="upload.desc" for="uploadDesc">素材描述</label><textarea id="uploadDesc" data-i18n-ph="upload.descPh" placeholder="简单描述素材内容、拍摄时间、场景等"></textarea></div>
+      <div class="form-group"><label for="uploadDrive"><span data-i18n="upload.link">网盘链接</span> <span style="font-size:11px;font-weight:400;color:var(--text-3)" data-i18n="upload.linkNote">（大文件可填写网盘链接）</span></label><input type="url" id="uploadDrive" data-i18n-ph="upload.linkPh" placeholder="百度网盘 / 阿里云盘 / 夸克网盘等链接"></div>
+      <div class="form-row">
+        <div class="form-group"><label data-i18n="upload.date" for="uploadDate">拍摄 / 创作时间</label><input type="text" id="uploadDate" data-i18n-ph="upload.datePh" placeholder="如：2026年8月"></div>
+        <div class="form-group"><label data-i18n="upload.tags" for="uploadTags">标签（逗号分隔，最多6个）</label><input type="text" id="uploadTags" data-i18n-ph="upload.tagsPh" placeholder="如：校园,风景,活动"></div>
+      </div>
+      <div class="form-group">
+        <label data-i18n="upload.file" for="uploadFile">上传文件</label>
+        <div class="file-upload-area" id="uploadArea" tabindex="0" role="button" onclick="document.getElementById('uploadFile').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('uploadFile').click()}">
+          <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <div class="hint" data-i18n="upload.fmt">支持 JPG / PNG / MP4 / PDF / MP3 等格式 · 大文件自动分片上传，视频最大 20GB</div>
+        </div>
+        <input type="file" id="uploadFile" multiple style="display:none" onchange="handleFilesSelect(this.files)">
+      </div>
+      <div id="uploadPreview" style="display:none;margin-bottom:14px">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
+          <div id="uploadThumbWrap" style="width:80px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--card-hover);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-3)"></div>
+          <div style="flex:1;min-width:0">
+            <div id="uploadPreviewName" style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+            <div id="uploadPreviewMeta" style="font-size:11px;color:var(--text-3);margin-top:4px;line-height:1.6"></div>
+          </div>
+          <button onclick="clearUploadFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除文件">✕</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="saveDraftBtn" onclick="doUpload(true)" style="flex:1"><span data-i18n="upload.draft">保存草稿</span></button>
+        <button class="btn btn-gold" id="uploadBtn" onclick="doUpload(false)" style="flex:1"><span data-i18n="upload.submit">提交审核</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="shared.js?v=20"></script>
+<script src="/assets/qrcode.min.js"></script>
+<script src="/chart.umd.min.js?v=4.5.0"></script>
+<script src="/assets/admin.js?v=p2v27"></script>
+
+<!-- ═══════ StaggeredMenu ═══════ -->
+
+
+
+<!-- ── 编辑素材弹窗 ── -->
+<div id="editMatModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center" onclick="if(event.target===this)closeEditMat()">
+  <div class="modal-box" style="max-width:560px;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px" data-i18n="edit.matTitle">编辑素材</h3>
+      <button onclick="closeEditMat()" style="background:none;border:none;font-size:18px;color:var(--text-3);cursor:pointer" aria-label="关闭">✕</button>
+    </div>
+    <input type="hidden" id="editMatId">
+    <div class="form-group"><label data-i18n="th.title" for="editMatTitle">标题</label><input type="text" id="editMatTitle" class="modal-input"></div>
+    <div class="form-row">
+      <div class="form-group"><label data-i18n="edit.matType" for="editMatType">素材类型</label>
+        <select id="editMatType" class="cs-custom" aria-label="素材类型" onchange="updateEditSubOptions(this.value)">
+          <option value="图片" data-i18n="type.image">图片</option>
+          <option value="视频" data-i18n="type.video">视频</option>
+          <option value="文档" data-i18n="type.doc">文档</option>
+          <option value="音频" data-i18n="type.audio">音频</option>
+          <option value="其他" data-i18n="type.other">其他</option>
+        </select>
+      </div>
+      <div class="form-group"><label data-i18n="edit.matCollege" for="editMatCollege">所属学院</label>
+        <select id="editMatCollege" class="cs-custom" aria-label="所属学院"></select>
+      </div>
+    </div>
+    <div id="editMatSubOptions" class="upload-sub-options"></div>
+    <div class="form-group"><label data-i18n="edit.matDesc" for="editMatDesc">素材描述</label><textarea id="editMatDesc" rows="3" class="modal-input" style="resize:vertical"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label data-i18n="edit.matDate" for="editMatShotDate">拍摄日期</label><input type="text" id="editMatShotDate" class="modal-input"></div>
+      <div class="form-group"><label data-i18n="edit.matDriveUrl" for="editMatDriveUrl">网盘链接</label><input type="text" id="editMatDriveUrl" class="modal-input"></div>
+    </div>
+    <div class="form-group"><label data-i18n="edit.matTags" for="editMatTags">标签（逗号分隔）</label><input type="text" id="editMatTags" class="modal-input"></div>
+    <div class="form-group">
+      <label data-i18n="edit.coverCurrent">当前封面</label>
+      <div id="editMatCoverCurrent" style="margin-bottom:8px"></div>
+    </div>
+    <div class="form-group">
+      <label data-i18n="edit.coverReplace" for="editMatCoverFile">替换封面（留空保持不变）</label>
+      <div class="file-upload-area" style="padding:16px" tabindex="0" role="button" onclick="document.getElementById('editMatCoverFile').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('editMatCoverFile').click()}">
+        <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="hint" data-i18n="actf.posterHint">点击上传封面图片（JPG/PNG，建议 16:9 比例）</div>
+      </div>
+      <input type="file" id="editMatCoverFile" accept="image/*" style="display:none" onchange="handleEditCoverSelect(this.files)">
+      <div id="editMatCoverPreview" style="display:none;margin-top:10px">
+        <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
+          <img id="editMatCoverImg" style="width:120px;height:68px;object-fit:cover;border-radius:6px" alt="">
+          <div style="flex:1"><div id="editMatCoverName" style="font-size:13px;font-weight:600"></div><div id="editMatCoverSize" style="font-size:11px;color:var(--text-3);margin-top:2px"></div></div>
+          <button onclick="clearEditCoverFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除封面">✕</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:20px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeEditMat()" data-i18n="btn.cancel">取消</button>
+      <button class="btn btn-gold" style="flex:1" onclick="saveEditMat()" id="editMatSaveBtn" data-i18n="edit.save">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 编辑活动弹窗 ── -->
+<div id="editActModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center" onclick="if(event.target===this)closeEditAct()">
+  <div class="modal-box" style="max-width:520px;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 style="margin:0;font-size:18px" data-i18n="edit.actTitle">编辑活动</h3>
+      <button onclick="closeEditAct()" style="background:none;border:none;font-size:18px;color:var(--text-3);cursor:pointer" aria-label="关闭">✕</button>
+    </div>
+    <input type="hidden" id="editActId">
+    <div class="form-group"><label data-i18n="actf.title" for="editActTitle">活动标题</label><input type="text" id="editActTitle" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-1)"></div>
+    <div class="form-row">
+      <div class="form-group"><label data-i18n="actf.date" for="editActDate">活动日期</label><input type="text" id="editActDate" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-1)"></div>
+      <div class="form-group"><label data-i18n="actf.status" for="editActStatus">状态</label><select id="editActStatus" class="cs-custom" aria-label="活动状态"><option value="upcoming" data-i18n="actf.upcoming">即将开始</option><option value="ongoing" data-i18n="actf.ongoing">进行中</option><option value="ended" data-i18n="actf.ended">已结束</option></select></div>
+    </div>
+    <div class="form-group"><label data-i18n="edit.actDesc" for="editActDesc">活动描述</label><textarea id="editActDesc" rows="3" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-1);resize:vertical"></textarea></div>
+    <div class="form-group">
+      <label data-i18n="edit.posterCurrent">当前海报</label>
+      <div id="editActPosterCurrent" style="margin-bottom:8px"></div>
+    </div>
+    <div class="form-group">
+      <label data-i18n="edit.posterReplace" for="editActPosterFile">替换海报（留空保持不变）</label>
+      <div class="file-upload-area" style="padding:16px" tabindex="0" role="button" onclick="document.getElementById('editActPosterFile').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();document.getElementById('editActPosterFile').click()}">
+        <div class="hint" data-i18n="actf.posterHint">点击上传活动海报图片（JPG/PNG，建议 16:9 比例）</div>
+      </div>
+      <input type="file" id="editActPosterFile" accept="image/*" style="display:none" onchange="handleEditPosterSelect(this.files)">
+      <div id="editActPosterPreview" style="display:none;margin-top:10px">
+        <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--card);border-radius:10px;border:1px solid var(--border)">
+          <img id="editActPosterImg" style="width:120px;height:68px;object-fit:cover;border-radius:6px" alt="">
+          <div style="flex:1"><div id="editActPosterName" style="font-size:13px;font-weight:600"></div><div id="editActPosterSize" style="font-size:11px;color:var(--text-3);margin-top:2px"></div></div>
+          <button onclick="clearEditPosterFile()" style="background:none;border:none;font-size:16px;color:var(--text-3);cursor:pointer;padding:4px" aria-label="移除海报">✕</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:20px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeEditAct()" data-i18n="btn.cancel">取消</button>
+      <button class="btn btn-gold" style="flex:1" onclick="saveEditAct()" id="editActSaveBtn" data-i18n="edit.save">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<button id="themeToggle" onclick="toggleTheme()" title="切换主题" aria-label="切换主题">
+  <span id="themeToggleIcon"></span>
+</button>
+
+<!-- 修改密码弹窗 -->
+<div class="modal-overlay hidden" id="pwdModal" onclick="if(event.target===this)closeModal('pwdModal')">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-header"><h3 data-i18n="profile.changePwd">修改密码</h3><button class="modal-close" onclick="closeModal('pwdModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label for="curPwd" data-i18n="profile.curPwd">当前密码</label><input type="password" id="curPwd" class="modal-input" data-i18n-ph="profile.curPwdPh" placeholder="输入当前密码"></div>
+      <div class="form-group"><label for="newPwd" data-i18n="profile.newPwd">新密码</label><input type="password" id="newPwd" class="modal-input" data-i18n-ph="profile.newPwdPh" placeholder="至少8位，含大小写字母和数字"></div>
+      <div class="form-group"><label for="confirmPwd" data-i18n="profile.confirmPwd">确认新密码</label><input type="password" id="confirmPwd" class="modal-input" data-i18n-ph="profile.confirmPwdPh" placeholder="再次输入新密码"></div>
+      <button class="btn btn-primary" onclick="changePassword()" style="width:100%" data-i18n="profile.changePwdBtn">确认修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- 文稿审核弹窗 -->
+<div class="modal-overlay hidden" id="articleReviewModal" onclick="if(event.target===this)closeModal('articleReviewModal')">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-header"><h3>文稿审核</h3><button class="modal-close" onclick="closeModal('articleReviewModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label for="arComment">审核意见（选填）</label><textarea id="arComment" class="modal-input" style="min-height:80px;resize:vertical" placeholder="输入审核意见..."></textarea></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('articleReviewModal')">取消</button>
+      <button class="btn btn-outline" style="background:rgba(107,114,128,.15);color:#9ca3af" onclick="doArticleReview('return')">退回修改</button>
+      <button class="btn btn-outline" style="background:rgba(239,68,68,.15);color:#ef4444" onclick="doArticleReview('reject')">拒绝</button>
+      <button class="btn btn-primary" onclick="doArticleReview('approve')">通过</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新媒体账号弹窗 -->
+<div class="modal-overlay hidden" id="mediaAccountModal" onclick="if(event.target===this)closeModal('mediaAccountModal')">
+  <div class="modal-box" style="max-width:460px">
+    <div class="modal-header"><h3 id="maModalTitle">添加新媒体账号</h3><button class="modal-close" onclick="closeModal('mediaAccountModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="maId">
+      <div class="form-group"><label for="maPlatform">平台</label>
+        <select id="maPlatform" class="modal-input">
+          <option value="wechat">微信公众号</option>
+          <option value="weibo">微博</option>
+          <option value="douyin">抖音</option>
+          <option value="bilibili">B站</option>
+          <option value="website">官方网站</option>
+          <option value="xhs">小红书</option>
+        </select>
+      </div>
+      <div class="form-group"><label for="maAccountName">账号名称</label><input type="text" id="maAccountName" class="modal-input" placeholder="如：CCIBE官方号"></div>
+      <div class="form-group"><label for="maAccountId">账号ID</label><input type="text" id="maAccountId" class="modal-input" placeholder="平台账号ID（选填）"></div>
+      <div class="form-group"><label for="maOwnerName">负责人</label><input type="text" id="maOwnerName" class="modal-input" placeholder="运营负责人姓名"></div>
+      <div class="form-group"><label for="maDepartment">所属部门</label><input type="text" id="maDepartment" class="modal-input" placeholder="如：融媒体中心"></div>
+      <div class="form-group"><label for="maQrCode">二维码/链接</label><input type="text" id="maQrCode" class="modal-input" placeholder="二维码图片URL或主页链接（选填）"></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('mediaAccountModal')">取消</button>
+      <button class="btn btn-primary" onclick="saveMediaAccount()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 添加敏感词弹窗 -->
+<div class="modal-overlay hidden" id="swAddModal" onclick="if(event.target===this)closeModal('swAddModal')">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-header"><h3>添加敏感词</h3><button class="modal-close" onclick="closeModal('swAddModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label for="swWord">敏感词</label><input type="text" id="swWord" class="modal-input" placeholder="输入敏感词"></div>
+      <div class="form-group"><label for="swLevel">级别</label>
+        <select id="swLevel" class="modal-input">
+          <option value="high">高级（阻断发布）</option>
+          <option value="medium" selected>中级（警告提示）</option>
+          <option value="low">低级（记录备案）</option>
+        </select>
+      </div>
+      <div class="form-group"><label for="swCategory">分类（选填）</label><input type="text" id="swCategory" class="modal-input" placeholder="如：政治、暴力、隐私"></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('swAddModal')">取消</button>
+      <button class="btn btn-primary" onclick="addSensitiveWord()">添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量导入敏感词弹窗 -->
+<div class="modal-overlay hidden" id="swImportModal" onclick="if(event.target===this)closeModal('swImportModal')">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-header"><h3>批量导入敏感词</h3><button class="modal-close" onclick="closeModal('swImportModal')" aria-label="关闭">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label for="swImportLevel">默认级别</label>
+        <select id="swImportLevel" class="modal-input">
+          <option value="high">高级</option>
+          <option value="medium" selected>中级</option>
+          <option value="low">低级</option>
+        </select>
+      </div>
+      <div class="form-group"><label for="swImportText">敏感词列表（每行一个，或用逗号/分号分隔）</label><textarea id="swImportText" class="modal-input" style="min-height:160px;resize:vertical" placeholder="敏感词1&#10;敏感词2&#10;敏感词3"></textarea></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal('swImportModal')">取消</button>
+      <button class="btn btn-primary" onclick="importSensitiveWords()">导入</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+</body>
+</html>

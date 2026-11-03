@@ -1,0 +1,329 @@
+/* ═══════════════════════════════════════════════════════════════
+   Solid Glass 质感层 · 校园融媒体平台
+   参数来源：deeplethe/solid-glass (MIT) · 深色为主设计，浅色同源
+   手法：去边框 → 5 层 box-shadow（rim/inner/edge/contact/shade）+ 毛玻璃
+   本文件为叠加层：删除各页面对此文件的引用即可完整回滚
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  /* 深色（主设计）——取自 solid-glass.css 的 .dark */
+  --sg-rim:rgba(255,255,255,.16);        /* 顶缘光 */
+  --sg-inner:rgba(255,255,255,.04);      /* 内侧细线 */
+  --sg-edge:rgba(255,255,255,.06);       /* 外缘发丝线 */
+  --sg-contact:rgba(0,0,0,.10);          /* 接触阴影 */
+  --sg-shade:rgba(0,0,0,.60);            /* 悬浮阴影 */
+  --sg-lift:rgba(0,0,0,.22);             /* hover 抬升阴影 */
+  --sg-card-bg:rgba(49,49,54,.46);       /* 卡片玻璃 */
+  --sg-panel-bg:rgba(255,255,255,.045);  /* 最薄面板 */
+  --sg-popover-bg:rgba(34,34,40,.96);    /* 弹窗（近实） */
+  --sg-blur:26px;
+  --sg-radius:14px;
+  --sg-top-light:rgba(255,255,255,.09);  /* 顶部高光渐变峰值 */
+}
+[data-theme="light"]{
+  --sg-rim:rgba(255,255,255,.90);
+  --sg-inner:rgba(255,255,255,.35);
+  --sg-edge:rgba(60,65,80,.10);
+  --sg-contact:rgba(40,45,60,.06);
+  --sg-shade:rgba(60,65,80,.28);
+  --sg-lift:rgba(60,65,80,.14);
+  --sg-card-bg:rgba(255,255,255,.60);
+  --sg-panel-bg:rgba(255,255,255,.44);
+  --sg-popover-bg:rgba(255,255,255,.96);
+  --sg-top-light:rgba(255,255,255,.55);
+}
+
+/* ── 核心：5 层阴影组合（border 让位给 box-shadow 画线）── */
+.material-card,
+.activity-card,
+.hot-card,
+.college-card,
+.cat-card,
+.msg-list,
+.glass-panel,
+.glass-card,
+.card,
+.stat-card,
+.gallery-card,
+.gal-card{
+  background:var(--sg-card-bg);
+  backdrop-filter:blur(var(--sg-blur)) saturate(1.15);
+  -webkit-backdrop-filter:blur(var(--sg-blur)) saturate(1.15);
+  border-color:transparent;
+  border-radius:var(--sg-radius);
+  box-shadow:
+    inset 0 1px 0 var(--sg-rim),
+    inset 0 0 0 1px var(--sg-inner),
+    0 0 0 1px var(--sg-edge),
+    0 1px 2px var(--sg-contact),
+    0 12px 32px -14px var(--sg-shade);
+  position:relative;
+}
+
+/* 顶缘高光渐变：让"厚度"在视觉上可感知（克制：峰值 9%）*/
+.material-card::before,
+.activity-card::before,
+.cat-card::before,
+.glass-panel::before,
+.glass-card::before,
+.card::before,
+.gallery-card::before,
+.gal-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg,var(--sg-top-light),transparent 22%);
+  opacity:.9;
+  transition:opacity .3s;
+}
+
+/* hover：阴影抬升（--glass-lift 语义）*/
+.material-card:hover,
+.activity-card:hover,
+.glass-card:hover,
+.card:hover,
+.stat-card:hover{
+  box-shadow:
+    inset 0 1px 0 var(--sg-rim),
+    inset 0 0 0 1px var(--sg-inner),
+    0 0 0 1px var(--sg-edge),
+    0 2px 4px var(--sg-contact),
+    0 18px 44px -16px var(--sg-lift),
+    0 12px 32px -14px var(--sg-shade);
+}
+
+/* ── 弹窗：最厚的玻璃（popover 档，近实 + 更深的落影）── */
+.modal{
+  background:var(--sg-popover-bg);
+  backdrop-filter:blur(30px) saturate(1.2);
+  -webkit-backdrop-filter:blur(30px) saturate(1.2);
+  border-color:transparent;
+  box-shadow:
+    inset 0 1px 0 var(--sg-rim),
+    inset 0 0 0 1px var(--sg-inner),
+    0 0 0 1px var(--sg-edge),
+    0 2px 6px var(--sg-contact),
+    0 32px 80px -18px var(--sg-shade);
+}
+.modal::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg,var(--sg-top-light),transparent 16%);
+}
+
+/* ── 导航 / 顶栏（最薄面板档）── */
+.topbar,
+.site-header,
+nav.header{
+  background:var(--sg-panel-bg);
+  backdrop-filter:blur(var(--sg-blur)) saturate(1.1);
+  -webkit-backdrop-filter:blur(var(--sg-blur)) saturate(1.1);
+  border-bottom-color:transparent;
+  box-shadow:
+    inset 0 -1px 0 var(--sg-edge),
+    0 1px 2px var(--sg-contact);
+}
+
+/* ── 下拉 / 弹出菜单（clear glass 档）── */
+.cs-dropdown,
+.dropdown-menu{
+  background:var(--sg-popover-bg);
+  backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px);
+  border-color:transparent;
+  box-shadow:
+    inset 0 1px 0 var(--sg-rim),
+    0 0 0 1px var(--sg-edge),
+    0 16px 40px -14px var(--sg-shade);
+}
+
+/* RemixIcon 分类图标字号（2026-10-23）*/
+.cat-ic i{font-size:26px;line-height:1}
+
+/* ═══════════════════════════════════════════════════════════════
+   触控目标可达性（2026-10-25）
+   依据 WCAG 2.5.5 Target Size / Apple HIG：可点区域 ≥44×44px
+   仅对「粗指针」生效（手机 / 平板 / 触屏笔记本），鼠标端保持原有紧凑密度
+   只调 min-height / min-width + 间距，不放大图标视觉尺寸
+   ═══════════════════════════════════════════════════════════════ */
+@media (pointer: coarse) {
+  /* 主要操作按钮：下载 / 点赞 / 收藏 / 分享 / 通用图标按钮 */
+  .act-primary,
+  .act-sec,
+  .icon-btn,
+  .like-btn,
+  .btn,
+  .btn-sm,
+  .ghost-btn,
+  .es-cta,
+  .nav-item,
+  .tab-item,
+  .cat-card,
+  .file-upload-area {
+    min-height: 44px;
+  }
+
+  /* 纯图标按钮补足正方命中区（否则只有高度够、宽度不足） */
+  .icon-btn {
+    min-width: 44px;
+    justify-content: center;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* 详情页三个并排操作按钮：拉开间距，降低误触 */
+  .act-row {
+    gap: 12px;
+  }
+
+  /* 卡片内的小操作按钮（点赞 / 收藏 / 下载） */
+  .material-card .like-btn,
+  .activity-card button,
+  .hot-card button {
+    min-height: 44px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  /* 筛选芯片：略放宽（横向排布，高度 40 即可辨识） */
+  .filter-chip,
+  .fchip,
+  .tag-chip {
+    min-height: 40px;
+  }
+
+  /* 关闭 / 取消类小按钮同样放大命中区 */
+  .modal-close,
+  .close-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   设计 Token 体系（2026-10-25）
+   说明：仅新增变量供「新代码」引用，不覆盖既有 --gold/--radius 等旧变量，
+        避免影响现有页面。旧代码可逐步迁移。
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* 间距：4px 基准 */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px;
+
+  /* 字号梯度（约 1.25 比例，正文 15px 起步） */
+  --text-2xs: 11px; --text-xs: 12px; --text-sm: 13px; --text-base: 15px;
+  --text-lg: 17px;  --text-xl: 20px; --text-2xl: 24px; --text-3xl: 30px;
+  --leading-tight: 1.25; --leading-normal: 1.6; --leading-relaxed: 1.75;
+
+  /* 圆角等级 */
+  --radius-xs: 6px; --radius-sm: 10px; --radius-md: 14px;
+  --radius-lg: 18px; --radius-xl: 24px; --radius-pill: 999px;
+
+  /* 阴影等级 */
+  --shadow-1: 0 1px 2px rgba(0,0,0,.10);
+  --shadow-2: 0 2px 6px rgba(0,0,0,.14);
+  --shadow-3: 0 8px 20px -8px rgba(0,0,0,.28);
+  --shadow-4: 0 18px 44px -16px rgba(0,0,0,.45);
+  --shadow-glow-gold: 0 6px 22px -8px rgba(212,175,55,.45);
+
+  /* 语义状态色（统一前台/后台/社区） */
+  --state-success: #34d399;
+  --state-warn: #fbbf24;
+  --state-danger: #f87171;
+  --state-info: #60a5fa;
+
+  /* 动效时长与曲线 */
+  --dur-fast: 150ms; --dur-base: 240ms; --dur-slow: 360ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-inout: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* 尊重系统「减少动效」偏好 */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   焦点可见性（2026-10-25）· WCAG 2.4.7 Focus Visible
+   仅键盘导航时出现焦点环，鼠标点击不显示（避免视觉噪音）
+   ═══════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--gold, #D4AF37);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* 元素自身的 outline:none 不得覆盖键盘焦点环 */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, summary:focus-visible, [tabindex]:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--gold, #D4AF37) !important;
+  outline-offset: 2px !important;
+}
+/* 键盘聚焦的卡片：加柔光更好辨识 */
+.material-card:focus-visible,
+.cat-card:focus-visible,
+.rel-card:focus-visible {
+  outline: 2px solid var(--gold, #D4AF37) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(212, 175, 55, .18) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   按钮状态反馈（2026-10-25）
+   用法：btn.classList.add('is-loading') / 'is-success' / 'is-error'
+   ═══════════════════════════════════════════════════════════════ */
+.is-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+  opacity: .85;
+}
+.is-loading > * { visibility: hidden; }
+.is-loading::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 15px; height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  color: var(--gold, #D4AF37);
+  animation: sgSpin .65s linear infinite;
+}
+@keyframes sgSpin { to { transform: rotate(360deg); } }
+
+.is-success {
+  border-color: var(--state-success, #34d399) !important;
+  color: var(--state-success, #34d399) !important;
+}
+.is-error {
+  border-color: var(--state-danger, #f87171) !important;
+  color: var(--state-danger, #f87171) !important;
+  animation: sgShake .32s cubic-bezier(.36,.07,.19,.97);
+}
+@keyframes sgShake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+/* 减少动效时不做抖动 */
+@media (prefers-reduced-motion: reduce) {
+  .is-error { animation: none; }
+  .is-loading::after { animation-duration: 1.6s; }
+}

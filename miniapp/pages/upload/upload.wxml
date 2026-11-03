@@ -1,0 +1,130 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">UPLOAD</view>
+    <view class="hdr-title">上传素材</view>
+    <view class="hdr-sub">提交后进入审核队列，通过后归档进素材库</view>
+  </view>
+
+  <!-- 类型 -->
+  <view class="seg">
+    <view
+      wx:for="{{types}}"
+      wx:key="*this"
+      id="type-{{item}}"
+      class="seg-item {{type === item ? 'on' : ''}}"
+      data-v="{{item}}"
+      bindtap="onType"
+    >{{item}}</view>
+  </view>
+
+  <!-- 文件选择 -->
+  <view wx:if="{{!file}}" id="pickBtn" class="drop" bindtap="onPick">
+    <view class="drop-plus">＋</view>
+    <view class="drop-main">选择{{type}}文件</view>
+    <view class="drop-sub">{{limitText}} · 支持相册、拍摄或聊天文件</view>
+  </view>
+
+  <view wx:else class="file-card">
+    <view class="file-icon {{type === '图片' ? 'q-3' : (type === '文档' ? 'q-2' : 'q-1')}}">
+      <view class="ico {{type === '视频' ? 'ico-video' : (type === '图片' ? 'ico-image' : 'ico-file')}}"></view>
+    </view>
+    <view class="file-main">
+      <view class="file-name">{{file.name}}</view>
+      <view class="file-meta">{{file.sizeText}}{{file.duration ? ' · ' + file.duration : ''}}</view>
+    </view>
+    <view id="removeFileBtn" class="file-x" catchtap="onRemoveFile"><view class="ico ico-close ico-dim3"></view></view>
+  </view>
+
+  <!-- 标题 -->
+  <view class="field">
+    <view class="field-lbl">标题（必填）</view>
+    <view class="input-wrap">
+      <input
+        id="titleInput"
+        class="input"
+        value="{{title}}"
+        placeholder="例：2026 迎新晚会 · 舞台全景"
+        placeholder-class="input-ph"
+        maxlength="40"
+        cursor-spacing="24"
+        bindinput="onTitle"
+      />
+    </view>
+  </view>
+
+  <!-- 描述 -->
+  <view class="field">
+    <view class="field-lbl">描述（必填）</view>
+    <view class="input-wrap ta-wrap">
+      <textarea
+        id="descInput"
+        class="ta ta-short"
+        value="{{desc}}"
+        placeholder="拍了什么、多长、可用于什么场景，写清楚能加快审核"
+        placeholder-class="input-ph"
+        maxlength="300"
+        cursor-spacing="24"
+        auto-height
+        bindinput="onDesc"
+      />
+    </view>
+    <view class="ta-count">{{desc.length}} / 300</view>
+  </view>
+
+  <!-- 学院 -->
+  <view class="field">
+    <view class="field-lbl">归属学院 / 部门</view>
+    <picker mode="selector" range="{{colleges}}" value="{{collegeIndex}}" bindchange="onCollege">
+      <view class="input-wrap picker-wrap">
+        <text class="picker-val">{{colleges[collegeIndex]}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 标签 -->
+  <view class="field">
+    <view class="field-lbl">标签（最多 5 个，便于被检索到）</view>
+    <view class="tag-wrap">
+      <view
+        wx:for="{{hotTags}}"
+        wx:key="*this"
+        class="tag-pill {{tags.indexOf(item) > -1 ? 'on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onTag"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{err}}" class="err-tip err-upload">{{err}}</view>
+
+  <view class="note upload-note">
+    上传即表示同意素材用于校内教学与宣传；涉及同学肖像需取得本人同意，引用他人素材须标注来源。
+  </view>
+
+  <view class="safe-bar"></view>
+
+  <!-- 上传中遮罩 -->
+  <view wx:if="{{state === 'uploading'}}" class="up-mask">
+    <view class="up-box">
+      <view class="up-title">正在上传</view>
+      <view class="up-name">{{file.name}}</view>
+      <view class="up-bar"><view class="up-fill" style="width: {{progress}}%"></view></view>
+      <view class="up-row">
+        <text>{{progress}}%</text>
+        <text>{{file.sizeText}}</text>
+      </view>
+      <view class="up-tip">上传期间请勿关闭页面或切换网络</view>
+    </view>
+  </view>
+
+  <!-- 底栏：存草稿 + 提交 -->
+  <view class="bar">
+    <view id="saveDraftBtn" class="btn btn-ghost bar-side" bindtap="onSaveDraft">
+      {{fromDraft ? '更新草稿' : '存草稿'}}
+    </view>
+    <view id="submitUploadBtn" class="btn bar-main {{submitting ? 'btn-loading' : ''}}" bindtap="onSubmit">
+      {{submitting ? '提交中…' : '提交审核'}}
+    </view>
+  </view>
+</view>

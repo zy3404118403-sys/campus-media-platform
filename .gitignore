@@ -1,0 +1,10 @@
+node_modules/
+*.db
+*.db-wal
+*.log
+.env
+.seedance-data/
+uploads/
+__pycache__/
+.DS_Store
+Thumbs.db

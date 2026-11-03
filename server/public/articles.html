@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<link rel="preload" href="shared.js?v=20" as="script">
+<link rel="stylesheet" href="shared.css?v=14">
+<meta name="description" content="融媒体文稿工作台——创建、编辑、提交审核、发布管理。">
+<meta name="theme-color" content="#05070B">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<title>融媒体文稿工作台 · Creative Studio</title>
+<style>
+:root{
+  --primary:#3b82f6;--primary-dark:#2563eb;--primary-light:#60a5fa;--primary-glow:rgba(59,130,246,.35);
+  --accent:#06b6d4;--aurora:#8b5cf6;
+  --gold:#d4af37;--gold-light:#f0d060;
+  --bg:#05070B;--bg-warm:#0f0a0e;
+  --card:rgba(255,255,255,.03);--card-hover:rgba(255,255,255,.06);--bg-elevated:rgba(255,255,255,.06);
+  --text:#e8eaed;--text-2:#9aa0b0;--text-3:#868c99;
+  --border:rgba(255,255,255,.06);--border-strong:rgba(255,255,255,.1);
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);--shadow-md:0 8px 40px rgba(0,0,0,.5);
+  --sidebar-w:230px;
+  --glass:rgba(255,255,255,.04);
+}
+[data-theme="light"]{
+  --primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#3b82f6;--primary-glow:rgba(37,99,235,.2);
+  --accent:#0891b2;--aurora:#7c3aed;
+  --gold:#b8860b;--gold-light:#daa520;
+  --bg:#f4f5f8;--bg-warm:#e8e9ed;
+  --card:rgba(0,0,0,.025);--card-hover:rgba(0,0,0,.05);--bg-elevated:rgba(0,0,0,.04);
+  --text:#1a1a2e;--text-2:#4a5060;--text-3:#5f6570;
+  --border:rgba(0,0,0,.08);--border-strong:rgba(0,0,0,.12);
+  --shadow:0 4px 24px rgba(0,0,0,.08);--shadow-md:0 8px 40px rgba(0,0,0,.12);
+  --glass:rgba(255,255,255,.6);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Inter","SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 70% 0%,rgba(59,130,246,.06) 0%,transparent 50%),radial-gradient(ellipse at 30% 100%,rgba(139,92,246,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
+[data-theme="light"] body{background:var(--bg);color:var(--text)}
+[data-theme="light"] body::before{background:radial-gradient(ellipse at 70% 0%,rgba(59,130,246,.06) 0%,transparent 50%),radial-gradient(ellipse at 30% 100%,rgba(212,175,55,.05) 0%,transparent 50%)}
+
+/* ── 布局 ── */
+.app{display:flex;min-height:100vh;min-height:100dvh;position:relative;z-index:1}
+.sidebar{width:var(--sidebar-w);background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;padding:20px 0}
+[data-theme="light"] .sidebar{background:rgba(255,255,255,.7)}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 20px 20px;border-bottom:1px solid var(--border)}
+.sidebar-brand .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--aurora));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.sidebar-brand .name{font-size:15px;font-weight:700;color:var(--text)}
+.sidebar-brand .sub{font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 12px;scrollbar-width:none;-ms-overflow-style:none}
+.sidebar-nav::-webkit-scrollbar{display:none}
+.nav-group{margin-bottom:16px}
+.nav-group-title{font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;padding:0 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text-2);cursor:pointer;transition:all .15s;text-decoration:none;margin-bottom:2px;min-height:40px}
+.nav-item:hover{background:var(--card-hover);color:var(--text)}
+.nav-item.active{background:rgba(59,130,246,.12);color:var(--primary)}
+[data-theme="light"] .nav-item.active{background:rgba(37,99,235,.1);color:var(--primary)}
+.nav-item svg{flex-shrink:0;opacity:.7}
+.nav-item.active svg{opacity:1}
+.nav-item .badge{margin-left:auto;background:rgba(245,158,11,.2);color:#f59e0b;font-size:11px;padding:1px 7px;border-radius:10px;font-weight:600}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-outline{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
+.btn-outline:hover{background:var(--card-hover);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-dark{background:var(--card);color:var(--text-2);border:1px solid var(--border)}
+.btn-dark:hover{background:var(--card-hover)}
+
+.main{flex:1;margin-left:var(--sidebar-w);min-width:0}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);min-height:56px}
+[data-theme="light"] .topbar{background:rgba(255,255,255,.8)}
+.page-title{font-size:17px;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.user-chip{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:20px;background:var(--card);border:1px solid var(--border)}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--aurora));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+.user-name{font-size:13px;color:var(--text-2)}
+.content{padding:24px;max-width:1200px}
+
+/* ── 文稿列表 ── */
+.article-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.article-card .article-actions{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.article-card .article-actions .btn{padding:4px 10px;font-size:12px}
+
+/* ── 编辑器视图 ── */
+.editor-view{display:none}
+.editor-view.active{display:block}
+.list-view.hidden{display:none}
+.editor-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.editor-title-input{width:100%;font-size:22px;font-weight:700;color:var(--text);background:transparent;border:none;outline:none;padding:8px 0;border-bottom:2px solid transparent;transition:border-color .2s;font-family:inherit}
+.editor-title-input:focus{border-bottom-color:var(--primary)}
+.editor-title-input::placeholder{color:var(--text-3)}
+.editor-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
+.editor-meta .meta-field{display:flex;flex-direction:column;gap:4px}
+.editor-meta label{font-size:12px;font-weight:600;color:var(--text-3)}
+.editor-meta input,.editor-meta select{padding:8px 12px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:inherit;outline:none}
+.editor-meta input:focus,.editor-meta select:focus{border-color:var(--primary)}
+.editor-body{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:8px}
+.editor-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding:16px 0;border-top:1px solid var(--border)}
+.sensitive-result{margin-top:12px;padding:12px;border-radius:8px;font-size:13px;display:none}
+.sensitive-result.show{display:block}
+.sensitive-result.has-hits{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.sensitive-result.clean{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2)}
+.sensitive-result h4{font-size:13px;margin-bottom:6px}
+.sensitive-hits{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+
+/* ── 详情视图 ── */
+.detail-view{display:none}
+.detail-view.active{display:block}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.detail-title{font-size:24px;font-weight:700;color:var(--text);line-height:1.3}
+.detail-meta{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:13px;color:var(--text-3)}
+.detail-content{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;font-size:15px;line-height:1.8;color:var(--text);min-height:200px}
+.detail-content h1{font-size:1.5em;font-weight:700;margin:.6em 0 .3em}
+.detail-content h2{font-size:1.3em;font-weight:600;margin:.6em 0 .3em}
+.detail-content h3{font-size:1.15em;font-weight:600;margin:.5em 0 .25em}
+.detail-content p{margin:.5em 0}
+.detail-content ul,.detail-content ol{margin:.5em 0;padding-left:1.8em}
+.detail-content blockquote{border-left:3px solid var(--primary);padding-left:14px;margin:.6em 0;color:var(--text-2);font-style:italic}
+.detail-content img{max-width:100%;border-radius:8px;margin:.5em 0}
+.detail-content a{color:var(--primary);text-decoration:underline}
+.detail-content code{background:var(--bg-elevated);padding:2px 6px;border-radius:4px;font-size:.9em;font-family:monospace}
+.detail-section{margin-top:24px}
+.detail-section h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px}
+
+/* ── 模态框 ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-warm);border:1px solid var(--border-strong);border-radius:16px;padding:28px;max-width:500px;width:100%;box-shadow:var(--shadow-md);animation:modalIn .3s ease}
+[data-theme="light"] .modal-box{background:#fff}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.modal-body{margin-bottom:20px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px}
+.modal-input{width:100%;padding:10px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit;outline:none;margin-bottom:8px}
+.modal-input:focus{border-color:var(--primary)}
+.modal-textarea{width:100%;padding:10px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit;outline:none;min-height:80px;resize:vertical}
+
+/* ── 响应式 ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .editor-meta{grid-template-columns:1fr}
+  .content{padding:16px}
+  .article-grid{grid-template-columns:1fr}
+  .menu-toggle{display:flex !important}
+}
+.menu-toggle{display:none;width:40px;height:40px;border-radius:8px;background:var(--card);border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;color:var(--text)}
+
+.hidden{display:none !important}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(90px);background:rgba(138,8,22,.92);color:#fff;padding:13px 30px;border-radius:14px;font-size:14px;z-index:300;opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.2);max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+[data-theme="light"] .toast{background:var(--bg-warm);color:var(--text);border:1px solid var(--border)}
+#themeToggle{position:fixed;bottom:24px;right:24px;z-index:9998;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-strong);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .3s;box-shadow:var(--shadow)}
+#themeToggle:hover{transform:scale(1.1)}
+</style>
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+
+<div class="app">
+  <!-- 侧边栏 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">CS</div>
+      <div><div class="name">Creative Studio</div><div class="sub">文稿工作台</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title">文稿</div>
+        <a class="nav-item active" onclick="showListView()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>我的文稿</span>
+          <span class="badge" id="draftBadge" style="display:none">0</span>
+        </a>
+        <a class="nav-item" onclick="showEditorView()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>新建文稿</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">导航</div>
+        <a class="nav-item" href="/">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>返回首页</span>
+        </a>
+        <a class="nav-item" href="/admin.html" id="adminLink" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>管理后台</span>
+        </a>
+        <a class="nav-item" href="/user.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>个人中心</span>
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-dark" onclick="doLogout()" style="width:100%;border-radius:8px">退出登录</button>
+    </div>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="菜单">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="page-title" id="pageTitle">我的文稿</div>
+      </div>
+      <div class="topbar-right">
+        <a href="/admin.html" id="backToAdmin" class="btn btn-outline btn-sm" style="display:none;gap:6px;align-items:center;text-decoration:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          返回管理后台
+        </a>
+        <div class="user-chip">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <span class="user-name" id="userName">加载中...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="sub-nav" id="subNav" style="display:none">
+      <div class="sub-nav-item active" data-subtab="articles" onclick="switchSubTab('articles')">我的文稿</div>
+      <div class="sub-nav-item" data-subtab="review" onclick="switchSubTab('review')">文稿审核</div>
+      <div class="sub-nav-item" data-subtab="sensitive" onclick="switchSubTab('sensitive')">敏感词库</div>
+    </div>
+
+    <div class="content">
+      <!-- ── 列表视图 ── -->
+      <div id="listView" class="list-view">
+        <div class="article-filters">
+          <div class="filter-chip active" data-filter="all" onclick="setFilter('all')">全部</div>
+          <div class="filter-chip" data-filter="draft" onclick="setFilter('draft')">草稿</div>
+          <div class="filter-chip" data-filter="pending" onclick="setFilter('pending')">审核中</div>
+          <div class="filter-chip" data-filter="published_ready" onclick="setFilter('published_ready')">待发布</div>
+          <div class="filter-chip" data-filter="published" onclick="setFilter('published')">已发布</div>
+          <div class="filter-chip" data-filter="rejected" onclick="setFilter('rejected')">已拒绝</div>
+          <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showEditorView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            新建文稿
+          </button>
+        </div>
+        <div class="article-grid" id="articleGrid">
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── 编辑器视图 ── -->
+      <div id="editorView" class="editor-view">
+        <div class="editor-header">
+          <button class="btn btn-outline btn-sm" onclick="showListView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            返回列表
+          </button>
+          <div id="editorMode" style="font-size:13px;color:var(--text-3)">新建文稿</div>
+        </div>
+        <input type="text" class="editor-title-input" id="articleTitle" placeholder="输入文稿标题..." maxlength="200">
+        <div class="editor-meta">
+          <div class="meta-field">
+            <label>分类</label>
+            <select id="articleCategory">
+              <option value="news">校园新闻</option>
+              <option value="notice">通知公告</option>
+              <option value="feature">专题报道</option>
+              <option value="activity">活动宣传</option>
+              <option value="culture">文化生活</option>
+              <option value="academic">学术科研</option>
+            </select>
+          </div>
+          <div class="meta-field">
+            <label>审核级别</label>
+            <select id="articleReviewLevel">
+              <option value="1">一级审核（快速发布）</option>
+              <option value="2">二级审核（部门审核）</option>
+              <option value="3">三级审核（三审三校）</option>
+            </select>
+          </div>
+          <div class="meta-field">
+            <label>封面图URL</label>
+            <input type="text" id="articleCover" placeholder="可选，输入图片URL">
+          </div>
+        </div>
+        <div style="margin:16px 0">
+          <label style="font-size:12px;font-weight:600;color:var(--text-3);display:block;margin-bottom:6px">摘要</label>
+          <textarea id="articleSummary" placeholder="一句话概括文稿内容（选填，最多200字）" maxlength="200" style="width:100%;padding:10px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:13px;font-family:inherit;outline:none;min-height:60px;resize:vertical"></textarea>
+        </div>
+        <div class="editor-body">
+          <div class="rte-toolbar">
+            <button class="rte-btn" onclick="rteCmd('bold')" title="加粗"><b>B</b></button>
+            <button class="rte-btn" onclick="rteCmd('italic')" title="斜体"><i>I</i></button>
+            <button class="rte-btn" onclick="rteCmd('underline')" title="下划线"><u>U</u></button>
+            <button class="rte-btn" onclick="rteCmd('strikeThrough')" title="删除线"><s>S</s></button>
+            <div class="rte-divider"></div>
+            <button class="rte-btn" onclick="rteCmd('formatBlock','h1')" title="一级标题">H1</button>
+            <button class="rte-btn" onclick="rteCmd('formatBlock','h2')" title="二级标题">H2</button>
+            <button class="rte-btn" onclick="rteCmd('formatBlock','h3')" title="三级标题">H3</button>
+            <button class="rte-btn" onclick="rteCmd('formatBlock','p')" title="正文">P</button>
+            <div class="rte-divider"></div>
+            <button class="rte-btn" onclick="rteCmd('insertUnorderedList')" title="无序列表">•</button>
+            <button class="rte-btn" onclick="rteCmd('insertOrderedList')" title="有序列表">1.</button>
+            <button class="rte-btn" onclick="rteCmd('formatBlock','blockquote')" title="引用">"</button>
+            <div class="rte-divider"></div>
+            <button class="rte-btn" onclick="insertLink()" title="插入链接"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            <button class="rte-btn" onclick="insertImage()" title="插入图片"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+            <button class="rte-btn" onclick="rteCmd('removeFormat')" title="清除格式">⌫</button>
+          </div>
+          <div class="rte-editor" id="rteEditor" contenteditable="true" data-placeholder="开始撰写文稿内容..." oninput="onEditorInput()"></div>
+        </div>
+        <div id="sensitiveResult" class="sensitive-result"></div>
+        <div class="editor-footer">
+          <button class="btn btn-outline" onclick="checkSensitive()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            敏感词检测
+          </button>
+          <span id="autosaveStatus" style="font-size:12px;color:var(--text-3,#8a93a5)"></span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline" onclick="showVersions()" id="verBtn" style="display:none">历史版本</button>
+            <button class="btn btn-outline" onclick="saveDraft()">保存草稿</button>
+            <button class="btn btn-primary" onclick="submitForReview()">提交审核</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 详情视图 ── -->
+      <div id="detailView" class="detail-view">
+        <div class="detail-header">
+          <button class="btn btn-outline btn-sm" onclick="showListView()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            返回列表
+          </button>
+          <div id="detailActions" style="display:flex;gap:8px"></div>
+        </div>
+        <h1 class="detail-title" id="detailTitle"></h1>
+        <div class="detail-meta" id="detailMeta"></div>
+        <div class="detail-section">
+          <h3>正文内容</h3>
+          <div class="detail-content" id="detailContent"></div>
+        </div>
+        <div class="detail-section" id="detailReviewSection" style="display:none">
+          <h3>审核记录</h3>
+          <div class="review-timeline" id="reviewTimeline"></div>
+        </div>
+        <div class="detail-section" id="scheduleSection" style="display:none">
+          <h3>定时发布</h3>
+          <div id="scheduleBody"></div>
+        </div>
+        <div class="detail-section" id="detailPublishSection" style="display:none">
+          <h3>发布日志</h3>
+          <div id="publishLogList"></div>
+        </div>
+      </div>
+
+      <!-- ── 文稿审核视图 ── -->
+      <div id="reviewView" class="list-view" style="display:none">
+        <div class="article-filters">
+          <div class="filter-chip active" data-review-filter="pending_l1" onclick="setReviewFilter('pending_l1')">一审待审</div>
+          <div class="filter-chip" data-review-filter="pending_l2" onclick="setReviewFilter('pending_l2')">二审待审</div>
+          <div class="filter-chip" data-review-filter="pending_l3" onclick="setReviewFilter('pending_l3')">三审待审</div>
+          <div class="filter-chip" data-review-filter="published_ready" onclick="setReviewFilter('published_ready')">待发布</div>
+          <div class="filter-chip" data-review-filter="rejected" onclick="setReviewFilter('rejected')">已拒绝</div>
+        </div>
+        <div class="article-grid" id="reviewGrid">
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+          <div class="sk-card"><div class="skeleton sk-thumb"></div><div class="sk-pad"><div class="skeleton sk-line w80"></div><div class="skeleton sk-line w60"></div><div class="skeleton sk-line w40"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── 敏感词库视图 ── -->
+      <div id="sensitiveView" style="display:none">
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="newSensitiveWord" placeholder="输入敏感词" style="flex:1;min-width:200px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px">
+          <select id="newSensitiveLevel" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px">
+            <option value="high">高级（禁止发布）</option>
+            <option value="medium" selected>中级（警告提示）</option>
+            <option value="low">低级（记录备案）</option>
+          </select>
+          <select id="newSensitiveCategory" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px">
+            <option value="政治">政治</option>
+            <option value="色情">色情</option>
+            <option value="暴力">暴力</option>
+            <option value="广告">广告</option>
+            <option value="其他">其他</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="addSensitiveWord()">添加</button>
+          <button class="btn btn-outline btn-sm" onclick="exportSensitiveWords()">导出</button>
+        </div>
+        <div id="sensitiveGrid" style="display:flex;flex-wrap:wrap;gap:8px">
+          <div class="skeleton" style="height:32px;width:96px"></div><div class="skeleton" style="height:32px;width:120px"></div><div class="skeleton" style="height:32px;width:84px"></div><div class="skeleton" style="height:32px;width:110px"></div><div class="skeleton" style="height:32px;width:92px"></div><div class="skeleton" style="height:32px;width:104px"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 审核操作模态框 -->
+<div class="modal-overlay" id="versionsModal">
+  <div class="modal-box" style="max-width:460px">
+    <div class="modal-title">历史版本</div>
+    <div class="modal-body" style="max-height:340px;overflow:auto">
+      <div id="versionsList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('versionsModal')">关闭</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-box">
+    <div class="modal-title" id="reviewModalTitle">审核操作</div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px">
+        <label style="font-size:13px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">审核意见</label>
+        <textarea class="modal-textarea" id="reviewComment" placeholder="请输入审核意见（选填）"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('reviewModal')">取消</button>
+      <button class="btn btn-outline" style="background:rgba(107,114,128,.15);color:#9ca3af" onclick="doReview('return')">退回修改</button>
+      <button class="btn btn-outline" style="background:rgba(239,68,68,.15);color:#ef4444" onclick="doReview('reject')">拒绝</button>
+      <button class="btn btn-primary" onclick="doReview('approve')">通过</button>
+    </div>
+  </div>
+</div>
+
+<!-- 发布模态框 -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal-box">
+    <div class="modal-title">发布并推送</div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;font-size:13px;color:var(--text-2)">选择推送目标平台：</div>
+      <div id="publishTargets" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('publishModal')">取消</button>
+      <button class="btn btn-primary" onclick="doPublish()">确认发布</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+<button id="themeToggle" onclick="toggleTheme()" aria-label="切换主题">
+  <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></svg>
+</button>
+
+<script src="shared.js?v=20"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   文稿工作台 · 核心逻辑
+   ═══════════════════════════════════════════════════════════════ */
+
+var currentUser = null
+var currentFilter = 'all'
+var editingArticleId = null
+var currentArticleDetail = null
+var pendingReviewAction = null
+
+var STATUS_MAP = {
+  'draft': {text:'草稿', cls:'draft'},
+  'pending_l1': {text:'一审中', cls:'pending_l1'},
+  'pending_l2': {text:'二审中', cls:'pending_l2'},
+  'pending_l3': {text:'三审中', cls:'pending_l3'},
+  'published_ready': {text:'待发布', cls:'published_ready'},
+  'published': {text:'已发布', cls:'published'},
+  'rejected': {text:'已拒绝', cls:'rejected'},
+}
+
+var STAGE_MAP = {
+  'submit': {text:'提交审核', icon:'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>', cls:'submit'},
+  'first_review': {text:'初审', icon:'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', cls:'first_review'},
+  'second_review': {text:'复审', icon:'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>', cls:'second_review'},
+  'third_review': {text:'终审', icon:'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>️', cls:'third_review'},
+  'approve': {text:'通过', icon:'✓', cls:'approve'},
+  'reject': {text:'拒绝', icon:'✗', cls:'reject'},
+  'return': {text:'退回', icon:'↩', cls:'return'},
+}
+
+var CATEGORY_MAP = {
+  'news':'校园新闻','notice':'通知公告','feature':'专题报道',
+  'activity':'活动宣传','culture':'文化生活','academic':'学术科研',
+}
+
+var PLATFORM_MAP = {
+  'website':'官方网站','wechat':'微信公众号','weibo':'微博',
+  'douyin':'抖音','bilibili':'B站','xhs':'小红书',
+}
+
+/* ── 初始化 ── */
+async function init(){
+  await loadCurrentUser()
+  await loadArticles()
+  updateThemeIcon()
+}
+
+async function loadCurrentUser(){
+  var res = await api('/api/me')
+  if(!res || !res.ok || !res.user){
+    location.href = '/login.html?redirect=' + encodeURIComponent('/articles.html')
+    return
+  }
+  currentUser = res.user
+  $('userName').textContent = currentUser.name
+  $('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase()
+  if(currentUser.is_admin){
+    $('adminLink').style.display = 'flex'
+    $('backToAdmin').style.display = 'inline-flex'
+    $('subNav').style.display = 'flex'
+  }
+}
+
+/* ── 文稿列表 ── */
+async function loadArticles(){
+  var res = await api('/api/articles?mine=1')
+  if(!res || !res.ok){
+    $('articleGrid').innerHTML = emptyStateHTML({icon:'warn', title:'加载失败', desc:'请刷新重试', ctaText:'重新加载', ctaOnclick:'loadArticles()'})
+    return
+  }
+  var articles = res.data || []
+  var filtered = articles
+  if(currentFilter === 'pending'){
+    filtered = articles.filter(function(a){return ['pending_l1','pending_l2','pending_l3'].includes(a.status)})
+  } else if(currentFilter !== 'all'){
+    filtered = articles.filter(function(a){return a.status === currentFilter})
+  }
+
+  // 更新草稿badge
+  var draftCount = articles.filter(function(a){return a.status === 'draft'}).length
+  if(draftCount > 0){
+    $('draftBadge').textContent = draftCount
+    $('draftBadge').style.display = 'inline-block'
+  } else {
+    $('draftBadge').style.display = 'none'
+  }
+
+  if(filtered.length === 0){
+    $('articleGrid').innerHTML = emptyStateHTML({icon:'doc', title:'暂无文稿', desc:'写下第一篇，让校园听见你的声音', ctaText:'新建文稿', ctaOnclick:'showEditorView()'})
+    return
+  }
+
+  var html = filtered.map(function(a){
+    var st = STATUS_MAP[a.status] || STATUS_MAP['draft']
+    var coverHtml = a.cover_image ? '<img class="article-cover" src="'+escurl(a.cover_image)+'" alt="" onerror="this.style.display=\'none\'">' : ''
+    var summaryHtml = a.summary ? '<div class="article-summary">'+esc(a.summary)+'</div>' : ''
+    var catText = CATEGORY_MAP[a.category] || '未分类'
+    return '<div class="article-card" onclick="showDetailView('+a.id+')">'+
+      coverHtml+
+      '<div class="article-title">'+esc(a.title)+'</div>'+
+      summaryHtml+
+      '<div class="article-meta">'+
+        '<span class="article-status '+st.cls+'">'+st.text+'</span>'+
+        '<span>'+esc(catText)+'</span>'+
+        '<span>'+formatDate(a.updated_at)+'</span>'+
+      '</div>'+
+      '<div class="article-actions">'+
+        (['draft','rejected'].includes(a.status) ? '<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();editArticle('+a.id+')">编辑</button>' : '')+
+        (['draft','rejected'].includes(a.status) ? '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();submitExisting('+a.id+')">提交审核</button>' : '')+
+        (!['published'].includes(a.status) ? '<button class="btn btn-outline btn-sm" style="color:#ef4444" onclick="event.stopPropagation();deleteArticle('+a.id+')">删除</button>' : '')+
+      '</div>'+
+    '</div>'
+  }).join('')
+  $('articleGrid').innerHTML = html
+  applyStagger($('articleGrid'))
+}
+
+function setFilter(filter){
+  currentFilter = filter
+  document.querySelectorAll('.filter-chip').forEach(function(c){c.classList.remove('active')})
+  document.querySelector('.filter-chip[data-filter="'+filter+'"]').classList.add('active')
+  loadArticles()
+}
+
+/* ── 视图切换 ── */
+function showListView(){
+  $('listView').classList.remove('hidden')
+  $('editorView').classList.remove('active')
+  $('detailView').classList.remove('active')
+  $('pageTitle').textContent = '我的文稿'
+  loadArticles()
+}
+
+function showEditorView(){
+  $('listView').classList.add('hidden')
+  $('editorView').classList.add('active')
+  $('detailView').classList.remove('active')
+  $('pageTitle').textContent = '新建文稿'
+  editingArticleId = null
+  $('editorMode').textContent = '新建文稿'
+  $('articleTitle').value = ''
+  $('articleCategory').value = 'news'
+  $('articleReviewLevel').value = '1'
+  $('articleCover').value = ''
+  $('articleSummary').value = ''
+  $('rteEditor').innerHTML = ''
+  $('sensitiveResult').classList.remove('show','has-hits','clean')
+  $('verBtn').style.display = 'none'
+  $('autosaveStatus').textContent = ''
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')})
+}
+
+async function showDetailView(id){
+  var res = await api('/api/articles/'+id)
+  if(!res || !res.ok){
+    toast(res && res.message || '加载失败')
+    return
+  }
+  currentArticleDetail = res.data
+  var a = res.data
+  var st = STATUS_MAP[a.status] || STATUS_MAP['draft']
+
+  $('listView').classList.add('hidden')
+  $('editorView').classList.remove('active')
+  $('detailView').classList.add('active')
+  $('pageTitle').textContent = '文稿详情'
+
+  $('detailTitle').textContent = a.title
+  $('detailMeta').innerHTML = '<span class="article-status '+st.cls+'">'+st.text+'</span>'+
+    '<span>'+esc(CATEGORY_MAP[a.category]||'未分类')+'</span>'+
+    '<span>作者：'+esc(a.author_name||'未知')+'</span>'+
+    '<span>'+formatDate(a.created_at)+'</span>'+
+    (a.published_at ? '<span>发布于：'+formatDate(a.published_at)+'</span>' : '')
+
+  $('detailContent').innerHTML = a.content || '<div style="color:var(--text-3);text-align:center;padding:40px">暂无内容</div>'
+
+  // 审核记录
+  var reviewRes = await api('/api/articles/'+id+'/reviews')
+  if(reviewRes && reviewRes.ok && reviewRes.data && reviewRes.data.length > 0){
+    var timelineHtml = reviewRes.data.map(function(r){
+      var stage = STAGE_MAP[r.review_stage] || {text:r.review_stage, icon:'•', cls:'submit'}
+      var actionIcon = r.action === 'approve' ? '✓' : r.action === 'reject' ? '✗' : r.action === 'return' ? '↩' : '<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'
+      var actionCls = r.action === 'approve' ? 'approve' : r.action === 'reject' ? 'reject' : r.action === 'return' ? 'return' : 'submit'
+      return '<div class="review-item">'+
+        '<div class="review-dot '+actionCls+'">'+actionIcon+'</div>'+
+        '<div class="review-content">'+
+          '<div class="review-stage">'+esc(stage.text)+' — '+esc(r.reviewer_name||'系统')+'</div>'+
+          '<div class="review-info">'+formatDate(r.created_at)+'</div>'+
+          (r.comment ? '<div class="review-comment">'+esc(r.comment)+'</div>' : '')+
+        '</div>'+
+      '</div>'
+    }).join('')
+    $('reviewTimeline').innerHTML = timelineHtml
+    $('detailReviewSection').style.display = 'block'
+  } else {
+    $('detailReviewSection').style.display = 'none'
+  }
+
+  // 发布日志
+  if(a.status === 'published' || a.publish_targets !== '[]'){
+    var pubRes = await api('/api/articles/'+id+'/publish-logs')
+    // ── 定时发布区（仅审核通过/已定时的文稿显示） ──
+    if(['approved','scheduled'].includes(a.status)){
+      $('scheduleSection').style.display = 'block'
+      var dtLocal = a.scheduled_at ? String(a.scheduled_at).slice(0,16).replace(' ','T') : ''
+      $('scheduleBody').innerHTML =
+        (a.status === 'scheduled' && dtLocal
+          ? '<p style="font-size:12.5px;color:#F0D060;margin:0 0 8px">⏰ 已定时：<b>'+esc(dtLocal.replace('T',' '))+'</b> 自动发布</p>'
+          : '<p style="font-size:12.5px;color:var(--text-3);margin:0 0 8px">审核已通过，可设定时间自动发布到各平台。</p>')+
+        '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+          '<input type="datetime-local" id="scheduleTime" value="'+dtLocal+'" style="padding:7px 10px;border:1px solid var(--border-strong);border-radius:8px;background:var(--card);color:var(--text);font-size:13px">'+
+          '<button class="btn btn-gold btn-sm" onclick="applySchedule('+a.id+')">设定</button>'+
+          (a.status === 'scheduled' ? '<button class="btn btn-outline btn-sm" onclick="cancelSchedule('+a.id+')">取消定时</button>' : '')+
+        '</div>'
+    } else {
+      $('scheduleSection').style.display = 'none'
+    }
+    if(pubRes && pubRes.ok && pubRes.data && pubRes.data.length > 0){
+      var pubHtml = pubRes.data.map(function(l){
+        var platform = PLATFORM_MAP[l.platform] || l.platform
+        var statusText = l.status === 'success' ? '<span style="color:#22c55e">成功</span>' : l.status === 'failed' ? '<span style="color:#ef4444">失败</span>' : '<span style="color:#f59e0b">待处理</span>'
+        return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:8px;border:1px solid var(--border);margin-bottom:8px">'+
+          '<div class="media-icon '+l.platform+'" style="width:36px;height:36px;font-size:16px">'+getPlatformIcon(l.platform)+'</div>'+
+          '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+esc(platform)+'</div><div style="font-size:12px;color:var(--text-3)">'+formatDate(l.published_at)+'</div></div>'+
+          '<div>'+statusText+'</div>'+
+          (l.error_msg ? '<div style="font-size:12px;color:var(--text-3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escurl(l.error_msg)+'">'+esc(l.error_msg)+'</div>' : '')+
+        '</div>'
+      }).join('')
+      $('publishLogList').innerHTML = pubHtml
+      $('detailPublishSection').style.display = 'block'
+    } else {
+      $('detailPublishSection').style.display = 'none'
+    }
+  } else {
+    $('detailPublishSection').style.display = 'none'
+  }
+
+  // 操作按钮
+  var actionsHtml = ''
+  if(['draft','rejected'].includes(a.status) && a.author_id === currentUser.id){
+    actionsHtml += '<button class="btn btn-outline btn-sm" onclick="editArticle('+a.id+')">编辑</button>'
+    actionsHtml += '<button class="btn btn-primary btn-sm" onclick="submitExisting('+a.id+')">提交审核</button>'
+  }
+  if(currentUser.is_admin && a.status === 'published_ready'){
+    actionsHtml += '<button class="btn btn-primary btn-sm" onclick="openPublishModal('+a.id+')">发布</button>'
+  }
+  if(currentUser.is_admin && ['pending_l1','pending_l2','pending_l3'].includes(a.status)){
+    actionsHtml += '<button class="btn btn-primary btn-sm" onclick="openReviewModal('+a.id+')">审核</button>'
+  }
+  if(currentUser.is_admin && a.status === 'published'){
+    actionsHtml += '<button class="btn btn-outline btn-sm" onclick="unpublishArticle('+a.id+')">下架</button>'
+  }
+  $('detailActions').innerHTML = actionsHtml
+
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')})
+}
+
+/* ── 编辑器 ── */
+async function editArticle(id){
+  var res = await api('/api/articles/'+id)
+  if(!res || !res.ok){
+    toast(res && res.message || '加载失败')
+    return
+  }
+  var a = res.data
+  if(!['draft','rejected'].includes(a.status)){
+    toast('当前状态不可编辑')
+    return
+  }
+  editingArticleId = id
+  $('listView').classList.add('hidden')
+  $('editorView').classList.add('active')
+  $('detailView').classList.remove('active')
+  $('pageTitle').textContent = '编辑文稿'
+  $('editorMode').textContent = '编辑：'+a.title
+  $('articleTitle').value = a.title
+  $('articleCategory').value = a.category || 'news'
+  $('articleReviewLevel').value = String(a.review_level || 1)
+  $('articleCover').value = a.cover_image || ''
+  $('articleSummary').value = a.summary || ''
+  $('rteEditor').innerHTML = a.content || ''
+  $('sensitiveResult').classList.remove('show','has-hits','clean')
+  $('verBtn').style.display = ''
+  $('autosaveStatus').textContent = ''
+}
+
+function rteCmd(cmd, val){
+  document.execCommand(cmd, false, val || null)
+  $('rteEditor').focus()
+}
+
+var _autoSaveT = null, _dirty = false
+function onEditorInput(){
+  _dirty = true
+  $('autosaveStatus').textContent = '编辑中…'
+  if(_autoSaveT) clearTimeout(_autoSaveT)
+  _autoSaveT = setTimeout(autoSave, 2500)
+}
+async function autoSave(){
+  if(!_dirty || !editingArticleId) return
+  var title = $('articleTitle').value.trim()
+  if(!title){ $('autosaveStatus').textContent = ''; return }
+  var res = await api('/api/articles/'+editingArticleId, {
+    method:'PUT',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ title: title, content: $('rteEditor').innerHTML, summary: $('articleSummary').value.trim(), category: $('articleCategory').value, cover_image: $('articleCover').value.trim(), silent: true })
+  })
+  if(res && res.ok){ _dirty = false; $('autosaveStatus').textContent = '✓ 已自动保存 ' + (res.savedAt || '') }
+  else $('autosaveStatus').textContent = '自动保存失败，请手动保存'
+}
+
+var _verArticleId = null
+async function showVersions(){
+  if(!editingArticleId){ toast('请先保存草稿'); return }
+  _verArticleId = editingArticleId
+  $('versionsList').innerHTML = '<p style="text-align:center;color:var(--text-3);padding:16px">加载中…</p>'
+  openModal('versionsModal')
+  var res = await api('/api/articles/'+_verArticleId+'/versions')
+  var rows = (res && res.ok && res.data) || []
+  if(!rows.length){ $('versionsList').innerHTML = '<p style="text-align:center;color:var(--text-3);padding:16px">暂无历史版本<br><span style="font-size:11.5px">每次保存间隔超过 5 分钟会自动留一版</span></p>'; return }
+  $('versionsList').innerHTML = rows.map(function(v){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px dashed rgba(128,128,128,.2);gap:8px">'+
+      '<div style="min-width:0"><div style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(v.title||'(无标题)')+'</div>'+
+      '<div style="font-size:11.5px;color:var(--text-3)">'+esc(v.created_at)+' · 约 '+v.chars+' 字</div></div>'+
+      '<button class="btn btn-outline btn-sm" onclick="restoreVersion('+v.id+')">恢复</button></div>'
+  }).join('')
+}
+async function restoreVersion(vid){
+  if(!confirm('确定恢复到此版本？当前未保存的修改将丢失。')) return
+  var res = await api('/api/articles/'+_verArticleId+'/restore', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ version_id: vid })
+  })
+  if(res && res.ok){
+    toast(res.message)
+    closeModal('versionsModal')
+    editArticle(_verArticleId)
+  } else toast(res && res.message || '恢复失败')
+}
+
+/* ── 定时发布 ── */
+async function applySchedule(aid){
+  var v = $('scheduleTime').value
+  if(!v){ toast('请选择发布时间'); return }
+  var iso = v.replace('T', ' ') + ':00'
+  var res = await api('/api/articles/'+aid, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ scheduled_at: iso })
+  })
+  toast(res && res.ok ? '已设定 '+iso+' 自动发布' : (res && res.message || '设置失败'))
+  if(res && res.ok) showDetailView(aid)
+}
+async function cancelSchedule(aid){
+  var res = await api('/api/articles/'+aid, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ scheduled_at: '' })
+  })
+  toast(res && res.ok ? '已取消定时' : '操作失败')
+  if(res && res.ok) showDetailView(aid)
+}
+
+function insertLink(){
+  var url = prompt('输入链接URL：')
+  if(url) rteCmd('createLink', url)
+}
+
+function insertImage(){
+  var url = prompt('输入图片URL：')
+  if(url) rteCmd('insertImage', url)
+}
+
+/* ── 敏感词检测 ── */
+async function checkSensitive(){
+  var title = $('articleTitle').value
+  var summary = $('articleSummary').value
+  var content = $('rteEditor').innerText
+  var fullText = title + ' ' + summary + ' ' + content
+
+  if(!fullText.trim()){
+    toast('请先输入内容')
+    return
+  }
+
+  var res = await api('/api/articles/check-sensitive', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({text: fullText})
+  })
+
+  var el = $('sensitiveResult')
+  if(!res || !res.ok){
+    el.className = 'sensitive-result show has-hits'
+    el.innerHTML = '<h4 style="color:#ef4444">检测失败</h4><div>'+(res&&res.message||'请稍后重试')+'</div>'
+    return
+  }
+
+  var hits = (res.data && res.data.hits) ? res.data.hits : (Array.isArray(res.data) ? res.data : [])
+  if(hits.length === 0){
+    el.className = 'sensitive-result show clean'
+    el.innerHTML = '<h4 style="color:#22c55e">✓ 未检测到敏感词</h4><div style="color:var(--text-2)">内容安全，可以提交审核</div>'
+  } else {
+    var highCount = hits.filter(function(h){return h.level==='high'}).length
+    var medCount = hits.filter(function(h){return h.level==='medium'}).length
+    var lowCount = hits.filter(function(h){return h.level==='low'}).length
+    var hitsHtml = hits.map(function(h){
+      return '<span class="sw-tag '+h.level+'">'+esc(h.word)+' ('+esc(h.level)+')</span>'
+    }).join('')
+    el.className = 'sensitive-result show has-hits'
+    el.innerHTML = '<h4 style="color:#ef4444"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 4a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> 检测到 '+hits.length+' 个敏感词</h4>'+
+      '<div style="color:var(--text-2);font-size:12px">高级 '+highCount+' · 中级 '+medCount+' · 低级 '+lowCount+'</div>'+
+      '<div class="sensitive-hits">'+hitsHtml+'</div>'+
+      (highCount > 0 ? '<div style="margin-top:8px;color:#ef4444;font-size:12px">包含高级敏感词，无法提交审核，请修改后重试</div>' : '<div style="margin-top:8px;color:var(--text-3);font-size:12px">仅含中/低级敏感词，可提交但建议修改</div>')
+  }
+}
+
+/* ── 保存草稿 ── */
+async function saveDraft(){
+  var title = $('articleTitle').value.trim()
+  if(!title){
+    toast('标题不能为空')
+    return
+  }
+
+  var data = {
+    title: title,
+    content: $('rteEditor').innerHTML,
+    summary: $('articleSummary').value.trim(),
+    category: $('articleCategory').value,
+    cover_image: $('articleCover').value.trim(),
+  }
+
+  var res
+  if(editingArticleId){
+    res = await api('/api/articles/'+editingArticleId, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    })
+  } else {
+    res = await api('/api/articles', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    })
+    if(res && res.ok){
+      editingArticleId = res.data.id
+      $('editorMode').textContent = '编辑：'+title
+    }
+  }
+
+  if(res && res.ok){
+    toast('草稿已保存')
+  } else {
+    toast(res && res.message || '保存失败')
+  }
+}
+
+/* ── 提交审核 ── */
+async function submitForReview(){
+  var title = $('articleTitle').value.trim()
+  if(!title){
+    toast('标题不能为空')
+    return
+  }
+
+  // 先保存
+  var saveData = {
+    title: title,
+    content: $('rteEditor').innerHTML,
+    summary: $('articleSummary').value.trim(),
+    category: $('articleCategory').value,
+    cover_image: $('articleCover').value.trim(),
+  }
+
+  var saveRes
+  if(editingArticleId){
+    saveRes = await api('/api/articles/'+editingArticleId, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(saveData)
+    })
+  } else {
+    saveRes = await api('/api/articles', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(saveData)
+    })
+    if(saveRes && saveRes.ok){
+      editingArticleId = saveRes.data.id
+    }
+  }
+
+  if(!saveRes || !saveRes.ok){
+    toast(saveRes && saveRes.message || '保存失败')
+    return
+  }
+
+  // 提交审核
+  var reviewLevel = parseInt($('articleReviewLevel').value)
+  var subRes = await api('/api/articles/'+editingArticleId+'/submit', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({review_level: reviewLevel})
+  })
+
+  if(subRes && subRes.ok){
+    toast(subRes.message || '已提交审核')
+    showListView()
+  } else {
+    toast(subRes && subRes.message || '提交失败')
+  }
+}
+
+async function submitExisting(id){
+  var res = await api('/api/articles/'+id+'/submit', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({})
+  })
+  if(res && res.ok){
+    toast(res.message || '已提交审核')
+    loadArticles()
+  } else {
+    toast(res && res.message || '提交失败')
+  }
+}
+
+/* ── 删除 ── */
+async function deleteArticle(id){
+  if(!confirm('确认删除这篇文稿？此操作不可恢复。')) return
+  var res = await api('/api/articles/'+id, {method:'DELETE'})
+  if(res && res.ok){
+    toast('已删除')
+    loadArticles()
+  } else {
+    toast(res && res.message || '删除失败')
+  }
+}
+
+/* ── 审核（管理员） ── */
+function openReviewModal(id){
+  pendingReviewAction = id
+  $('reviewComment').value = ''
+  openModal('reviewModal')
+}
+
+async function doReview(action){
+  if(!pendingReviewAction) return
+  var comment = $('reviewComment').value.trim()
+  var res = await api('/api/articles/'+pendingReviewAction+'/review', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action: action, comment: comment})
+  })
+  closeModal('reviewModal')
+  if(res && res.ok){
+    toast(res.message || '操作成功')
+    showDetailView(pendingReviewAction)
+  } else {
+    toast(res && res.message || '操作失败')
+  }
+  pendingReviewAction = null
+}
+
+/* ── 发布（管理员） ── */
+function openPublishModal(id){
+  pendingReviewAction = id
+  var targetsHtml = Object.keys(PLATFORM_MAP).map(function(k){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text)">'+
+      '<input type="checkbox" value="'+k+'" '+(k==='website'?'checked':'')+' style="width:16px;height:16px">'+
+      '<span class="media-icon '+k+'" style="width:32px;height:32px;font-size:14px">'+getPlatformIcon(k)+'</span>'+
+      '<span>'+esc(PLATFORM_MAP[k])+'</span>'+
+    '</label>'
+  }).join('')
+  $('publishTargets').innerHTML = targetsHtml
+  openModal('publishModal')
+}
+
+async function doPublish(){
+  if(!pendingReviewAction) return
+  var targets = []
+  document.querySelectorAll('#publishTargets input:checked').forEach(function(c){targets.push(c.value)})
+  if(targets.length === 0){
+    toast('请至少选择一个推送平台')
+    return
+  }
+  var res = await api('/api/articles/'+pendingReviewAction+'/publish', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({targets: targets})
+  })
+  closeModal('publishModal')
+  if(res && res.ok){
+    toast(res.message || '发布成功')
+    showDetailView(pendingReviewAction)
+  } else {
+    toast(res && res.message || '发布失败')
+  }
+  pendingReviewAction = null
+}
+
+async function unpublishArticle(id){
+  if(!confirm('确认下架这篇文稿？')) return
+  var res = await api('/api/articles/'+id+'/unpublish', {method:'POST'})
+  if(res && res.ok){
+    toast(res.message || '已下架')
+    showDetailView(id)
+  } else {
+    toast(res && res.message || '操作失败')
+  }
+}
+
+/* ── 辅助函数 ── */
+function formatDate(s){
+  if(!s) return ''
+  var d = new Date(s.replace(' ','T'))
+  if(isNaN(d)) return s
+  var now = new Date()
+  var diff = (now - d) / 1000
+  if(diff < 60) return '刚刚'
+  if(diff < 3600) return Math.floor(diff/60)+'分钟前'
+  if(diff < 86400) return Math.floor(diff/3600)+'小时前'
+  if(diff < 604800) return Math.floor(diff/86400)+'天前'
+  return (d.getMonth()+1)+'月'+d.getDate()+'日'
+}
+
+function getPlatformIcon(platform){
+  var icons = {
+    'website':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>','wechat':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>','weibo':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>','douyin':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>','bilibili':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>','xhs':'<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'
+  }
+  return icons[platform] || '<svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
+}
+
+function openModal(id){$(id).classList.add('show')}
+function closeModal(id){$(id).classList.remove('show')}
+
+function doLogout(){
+  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  document.cookie = 'csrf=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+  location.href = '/login.html'
+}
+
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute('data-theme')
+  var next = cur === 'light' ? 'dark' : 'light'
+  document.documentElement.setAttribute('data-theme', next)
+  localStorage.setItem('theme', next)
+  updateThemeIcon()
+}
+
+function updateThemeIcon(){
+  var isLight = document.documentElement.getAttribute('data-theme') === 'light'
+  $('themeIcon').innerHTML = isLight ?
+    '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>' :
+    '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+}
+
+// ESC关闭模态框
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal-overlay.show').forEach(function(m){m.classList.remove('show')})
+  }
+})
+
+// 点击遮罩关闭
+document.querySelectorAll('.modal-overlay').forEach(function(m){
+  m.addEventListener('click', function(e){
+    if(e.target === m) m.classList.remove('show')
+  })
+})
+
+/* ── 子标签切换 ── */
+var currentSubTab = 'articles'
+var currentReviewFilter = 'pending_l1'
+
+function switchSubTab(tab){
+  currentSubTab = tab
+  document.querySelectorAll('.sub-nav-item').forEach(function(el){
+    el.classList.toggle('active', el.getAttribute('data-subtab') === tab)
+  })
+  $('listView').style.display = tab === 'articles' ? '' : 'none'
+  $('reviewView').style.display = tab === 'review' ? '' : 'none'
+  $('sensitiveView').style.display = tab === 'sensitive' ? 'none' : 'none'
+  if(tab === 'sensitive') $('sensitiveView').style.display = ''
+  if(tab === 'review') loadReviewArticles()
+  if(tab === 'sensitive') loadSensitiveWords()
+  var titles = {articles:'我的文稿', review:'文稿审核', sensitive:'敏感词库'}
+  $('pageTitle').textContent = titles[tab] || '文稿工作台'
+}
+
+/* ── 文稿审核 ── */
+function setReviewFilter(filter){
+  currentReviewFilter = filter
+  document.querySelectorAll('[data-review-filter]').forEach(function(el){
+    el.classList.toggle('active', el.getAttribute('data-review-filter') === filter)
+  })
+  loadReviewArticles()
+}
+
+async function loadReviewArticles(){
+  var res = await api('/api/articles?status=' + currentReviewFilter + '&limit=100')
+  var grid = $('reviewGrid')
+  if(!res || !res.ok){
+    grid.innerHTML = emptyStateHTML({icon:'warn', title:'加载失败', desc:'请刷新重试', ctaText:'重新加载', ctaOnclick:'loadReviewArticles()'})
+    return
+  }
+  var articles = res.data || []
+  if(articles.length === 0){
+    grid.innerHTML = emptyStateHTML({icon:'check', title:'暂无待审文稿', desc:'当前筛选条件下没有需要处理的内容'})
+    return
+  }
+  grid.innerHTML = articles.map(renderReviewCard).join('')
+  applyStagger(grid)
+}
+
+function renderReviewCard(a){
+  var statusLabels = {
+    pending_l1:'一审待审', pending_l2:'二审待审', pending_l3:'三审待审',
+    published_ready:'待发布', rejected:'已拒绝'
+  }
+  var statusClass = a.status === 'rejected' ? 'rejected' :
+    (a.status === 'published_ready' ? 'published_ready' : a.status)
+  var actions = ''
+  if(a.status && a.status.indexOf('pending_') === 0){
+    actions = '<div style="display:flex;gap:6px;margin-top:8px">'+
+      '<button class="btn btn-primary btn-sm" onclick="reviewArticle('+a.id+',\'approve\')">通过</button>'+
+      '<button class="btn btn-outline btn-sm" onclick="reviewArticle('+a.id+',\'return\')">退回</button>'+
+      '<button class="btn btn-outline btn-sm" style="color:#ef4444;border-color:rgba(239,68,68,.3)" onclick="reviewArticle('+a.id+',\'reject\')">拒绝</button>'+
+      '<button class="btn btn-outline btn-sm" onclick="showReviewDetail('+a.id+')">查看</button>'+
+    '</div>'
+  } else {
+    actions = '<div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-outline btn-sm" onclick="showReviewDetail('+a.id+')">查看详情</button></div>'
+  }
+  return '<div class="article-card" style="cursor:default">'+
+    '<span class="article-status '+statusClass+'">'+escHtml(statusLabels[a.status]||a.status)+'</span>'+
+    '<h3 class="article-card-title" style="margin-top:8px">'+escHtml(a.title)+'</h3>'+
+    '<div class="article-card-meta">'+
+      '<span>'+escHtml(a.author_name||'未知')+'</span>'+
+      '<span>'+escHtml(a.category||'')+'</span>'+
+      '<span>'+formatTime(a.created_at)+'</span>'+
+    '</div>'+
+    actions+
+  '</div>'
+}
+
+async function showReviewDetail(id){
+  showDetailView(id)
+}
+
+async function reviewArticle(id, action){
+  var actionLabels = {approve:'通过', reject:'拒绝', return:'退回'}
+  var comment = ''
+  if(action !== 'approve'){
+    comment = prompt('请输入'+actionLabels[action]+'原因（可选）：') || ''
+  }
+  var res = await api('/api/articles/'+id+'/review', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action:action, comment:comment})
+  })
+  if(res && res.ok){
+    toast(res.message || '操作成功')
+    loadReviewArticles()
+  } else {
+    toast(res && res.message || '操作失败')
+  }
+}
+
+/* ── 敏感词库 ── */
+async function loadSensitiveWords(){
+  var res = await api('/api/sensitive-words?limit=500')
+  var grid = $('sensitiveGrid')
+  if(!res || !res.ok){
+    grid.innerHTML = emptyStateHTML({icon:'warn', title:'加载失败', desc:'请刷新重试', ctaText:'重新加载', ctaOnclick:'loadSensitiveWords()'})
+    return
+  }
+  var words = res.data || []
+  if(words.length === 0){
+    grid.innerHTML = emptyStateHTML({sm:true, icon:'folder', title:'暂无敏感词', desc:'添加敏感词后，文稿发布前将自动检测'})
+    return
+  }
+  grid.innerHTML = words.map(function(w){
+    var levelColors = {high:'#ef4444', medium:'#f59e0b', low:'#6b7280'}
+    var levelLabels = {high:'高', medium:'中', low:'低'}
+    var color = levelColors[w.level] || '#6b7280'
+    return '<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--card,rgba(255,255,255,.03));border:1px solid var(--border,rgba(255,255,255,.06));font-size:13px">'+
+      '<span style="width:6px;height:6px;border-radius:50%;background:'+color+';flex-shrink:0"></span>'+
+      '<span style="color:var(--text,#e8eaed)">'+escHtml(w.word)+'</span>'+
+      '<span style="font-size:11px;color:'+color+'">'+levelLabels[w.level]+'</span>'+
+      '<span style="font-size:11px;color:var(--text-3,#6b7280)">'+escHtml(w.category||'')+'</span>'+
+      '<button onclick="deleteSensitiveWord('+w.id+')" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:0 2px;line-height:1">×</button>'+
+    '</div>'
+  }).join('')
+}
+
+async function addSensitiveWord(){
+  var word = $('newSensitiveWord').value.trim()
+  if(!word){ toast('请输入敏感词'); return }
+  var level = $('newSensitiveLevel').value
+  var category = $('newSensitiveCategory').value
+  var res = await api('/api/admin/sensitive-words', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({word:word, level:level, category:category})
+  })
+  if(res && res.ok){
+    toast('已添加')
+    $('newSensitiveWord').value = ''
+    loadSensitiveWords()
+  } else {
+    toast(res && res.message || '添加失败')
+  }
+}
+
+async function deleteSensitiveWord(id){
+  if(!confirm('确认删除此敏感词？')) return
+  var res = await api('/api/admin/sensitive-words/'+id, {method:'DELETE'})
+  if(res && res.ok){
+    toast('已删除')
+    loadSensitiveWords()
+  } else {
+    toast(res && res.message || '删除失败')
+  }
+}
+
+function exportSensitiveWords(){
+  window.open('/api/sensitive-words?limit=1000&format=csv', '_blank')
+}
+
+function escHtml(s){
+  if(!s) return ''
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+init()
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+</body>
+</html>

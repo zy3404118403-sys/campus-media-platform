@@ -1,0 +1,69 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">MESSAGES</view>
+    <view class="hdr-title">消息</view>
+    <view class="hdr-sub">{{subtitle}}</view>
+  </view>
+
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <view wx:elif="{{state === 'guest'}}" class="state">
+    <view class="state-mark">🔒</view>
+    <view class="state-title">登录后查看</view>
+    <view class="state-desc">登录学号账号后，可以收到审核结果、评论与私信提醒。</view>
+    <view class="btn state-btn" bindtap="onLogin">立即登录</view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">消息加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <block wx:else>
+    <!-- 系统通知固定在第一条 -->
+    <view id="noticeEntry" class="conv-row notice-row" bindtap="onOpenNotices">
+      <view class="conv-avatar notice-avatar">✉</view>
+      <view class="conv-main">
+        <view class="conv-head">
+          <text class="conv-name">系统通知</text>
+          <text class="conv-time">审核 · 评论 · 公告</text>
+        </view>
+        <view class="conv-last">
+          {{unreadNotice > 0 ? unreadNotice + ' 条未读通知' : '暂无新通知'}}
+        </view>
+      </view>
+      <view wx:if="{{unreadNotice > 0}}" class="badge-dot">{{unreadNotice}}</view>
+    </view>
+
+    <view class="sec"><view class="sec-title">私信</view></view>
+
+    <view
+      wx:for="{{conversations}}"
+      wx:key="id"
+      id="conv-{{item.id}}"
+      class="conv-row"
+      data-id="{{item.id}}"
+      bindtap="onOpenChat"
+    >
+      <view class="conv-avatar {{item.tone}}">{{item.initial}}</view>
+      <view class="conv-main">
+        <view class="conv-head">
+          <text class="conv-name">{{item.name}}</text>
+          <text class="conv-time">{{item.time}}</text>
+        </view>
+        <view class="conv-last">{{item.last}}</view>
+      </view>
+      <view wx:if="{{item.unread > 0}}" class="badge-dot">{{item.unread}}</view>
+    </view>
+
+    <view class="note msg-note">私信目前仅支持中心成员之间沟通，如需联系管理员请在「关于」页面查看联系方式。</view>
+  </block>
+
+  <view class="safe"></view>
+</view>

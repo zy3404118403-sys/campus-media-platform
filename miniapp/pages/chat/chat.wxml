@@ -1,0 +1,60 @@
+<view class="chat-page">
+  <view wx:if="{{state === 'empty'}}" class="state">
+    <view class="state-mark">◍</view>
+    <view class="state-title">会话不存在</view>
+    <view class="state-desc">可能对方已注销或会话被清理。</view>
+    <view class="btn state-btn" bindtap="onBack">返回消息</view>
+  </view>
+
+  <block wx:else>
+    <scroll-view
+      class="chat-scroll"
+      scroll-y
+      scroll-into-view="{{anchor}}"
+      scroll-with-animation
+    >
+      <view class="chat-tip">与「{{conv.name}}」的对话 · 仅双方可见</view>
+
+      <view
+        wx:for="{{list}}"
+        wx:key="id"
+        id="msg-{{item.id}}"
+        class="msg-row {{item.from === 'me' ? 'mine' : ''}}"
+      >
+        <view wx:if="{{item.from !== 'me'}}" class="msg-avatar {{conv.tone}}">{{conv.initial}}</view>
+        <view class="msg-body">
+          <view class="bubble {{item.from === 'me' ? 'bubble-me' : 'bubble-peer'}}">{{item.text}}</view>
+          <view class="msg-time">{{item.time}}</view>
+        </view>
+        <view wx:if="{{item.from === 'me'}}" class="msg-avatar me-avatar">我</view>
+      </view>
+
+      <view class="chat-bottom-pad"></view>
+    </scroll-view>
+
+    <view class="chat-bar">
+      <view class="input-wrap chat-input-wrap">
+        <input
+          id="chatInput"
+          class="input"
+          value="{{draft}}"
+          placeholder="发消息…"
+          placeholder-class="input-ph"
+          maxlength="500"
+          cursor-spacing="24"
+          adjust-position="{{true}}"
+          confirm-type="send"
+          bindinput="onDraft"
+          bindconfirm="onSend"
+        />
+      </view>
+      <view
+        id="chatSendBtn"
+        class="btn row-btn {{sending ? 'btn-loading' : ''}}"
+        bindtap="onSend"
+      >发送</view>
+    </view>
+  </block>
+
+  <view wx:if="{{state === 'empty'}}" class="safe"></view>
+</view>

@@ -1,0 +1,144 @@
+<view class="page">
+  <view class="dg-kicker">DEVICE SELF-CHECK</view>
+  <view class="dg-h1">设备自检</view>
+  <view class="dg-sub">真机专属项自动测出，滚到底点「复制报告」发我</view>
+  <view class="dg-build">{{build}}</view>
+
+  <!-- 1. 设备与安全区 -->
+  <view class="sec">
+    <text class="sec-title">设备与安全区</text>
+  </view>
+  <view class="card dg-card">
+    <view wx:for="{{rows}}" wx:key="k" class="dg-row">
+      <text class="dg-k">{{item.k}}</text>
+      <text class="dg-v">{{item.v}}</text>
+    </view>
+  </view>
+
+  <!-- 2. 触控目标 -->
+  <view class="sec">
+    <text class="sec-title">触控目标尺寸</text>
+    <text class="dg-hint">标准 ≥ 44px</text>
+  </view>
+  <view class="card dg-card">
+    <view wx:for="{{taps}}" wx:key="name" class="dg-row">
+      <text class="dg-k">{{item.name}}</text>
+      <text class="dg-v {{item.state}}">{{item.px}} · {{item.note}}</text>
+    </view>
+    <view wx:if="{{!taps.length}}" class="dg-row">
+      <text class="dg-k">测量中…</text>
+      <text class="dg-v">—</text>
+    </view>
+  </view>
+
+  <!-- 3. 键盘遮挡 -->
+  <view class="sec">
+    <text class="sec-title">键盘遮挡</text>
+    <text class="dg-hint">点底部输入框</text>
+  </view>
+  <view class="card dg-card">
+    <view class="dg-row">
+      <text class="dg-k">当前</text>
+      <text class="dg-v">{{kb.now}}</text>
+    </view>
+    <view class="dg-row">
+      <text class="dg-k">最近一次判定</text>
+      <text class="dg-v {{kb.state}}">{{kb.last || '尚未测量'}}</text>
+    </view>
+    <view wx:if="{{kb.trace}}" class="dg-row">
+      <text class="dg-k">事件序列</text>
+      <text class="dg-v">{{kb.trace}}</text>
+    </view>
+    <view id="diagRetryKbBtn" class="btn btn-ghost dg-btn" bindtap="onRetryKb">重新弹出键盘测一次</view>
+    <view class="dg-note">
+      进页面会自动弹一次键盘；若没弹，点上面的按钮重试。⚠️ 接了外接键盘（妙控键盘 / 键盘保护套）时系统不会弹软键盘，这项就测不出来，请先断开。
+    </view>
+    <view id="diagChatBtn" class="btn btn-ghost dg-btn" bindtap="onGoChat">去聊天页实测（100vh 布局，风险最高）</view>
+    <view class="dg-note">合格标准：键盘弹起后，输入框与底栏都应在键盘上方。测完直接点「复制报告」，判定会保留。</view>
+  </view>
+
+  <!-- 4. 原生相册选择器 -->
+  <view class="sec">
+    <text class="sec-title">原生选择器</text>
+  </view>
+  <view class="card dg-card">
+    <view class="dg-row">
+      <text class="dg-k">结果</text>
+      <text class="dg-v {{pick.state}}">{{pick.text}}</text>
+    </view>
+    <view id="diagPickBtn" class="btn btn-ghost dg-btn" bindtap="onPick">我来选一张照片试试</view>
+    <view class="dg-note">点开相册后直接取消也算通过——说明选择器能被拉起。</view>
+  </view>
+
+  <!-- 5. 网络 -->
+  <view class="sec">
+    <text class="sec-title">网络</text>
+  </view>
+  <view class="card dg-card">
+    <view class="dg-row">
+      <text class="dg-k">状态</text>
+      <text class="dg-v {{net.state}}">{{net.text}}</text>
+    </view>
+    <view class="dg-note">可开飞行模式再关掉，观察这里是否跟着变化。</view>
+  </view>
+
+  <!-- 6. 渲染开销 -->
+  <view class="sec">
+    <text class="sec-title">渲染开销</text>
+  </view>
+  <view class="card dg-card">
+    <view class="dg-row">
+      <text class="dg-k">结果</text>
+      <text class="dg-v {{perf.state}}">{{perf.text}}</text>
+    </view>
+    <view id="diagPerfBtn" class="btn btn-ghost dg-btn" bindtap="onPerf">生成 100 行压力列表</view>
+    <view class="dg-note">生成后快速上下滑动，看是否明显掉帧。</view>
+  </view>
+
+  <!-- 7. 进入方式 -->
+  <view class="sec">
+    <text class="sec-title">进入方式</text>
+  </view>
+  <view class="card dg-card">
+    <view class="dg-row">
+      <text class="dg-k">启动参数</text>
+      <text class="dg-v">{{launch}}</text>
+    </view>
+  </view>
+
+  <!-- 压力列表 -->
+  <view wx:if="{{stress.length}}" class="card dg-card dg-stress">
+    <view wx:for="{{stress}}" wx:key="i" class="dg-stress-row">{{item.text}}</view>
+  </view>
+
+  <!-- 筛选胶囊（触控目标样本） -->
+  <view class="sec">
+    <text class="sec-title">触控样本</text>
+  </view>
+  <view class="dg-chips">
+    <view id="diagTapChip" class="chip">胶囊按钮</view>
+  </view>
+
+  <view id="diagSpacer" class="safe-bar"></view>
+</view>
+
+<!-- 固定底栏：同时用于「键盘遮挡」与「底栏高度」测量 -->
+<view id="diagBar" class="bar">
+  <view id="diagTapAct" class="bar-act">
+    <view class="bar-icon ico ico-settings ico-dim3"></view>
+    <text class="bar-text">图标</text>
+  </view>
+  <view id="diagInputWrap" class="input-wrap dg-input-wrap">
+    <input
+      id="diagKbInput"
+      class="input"
+      placeholder="点这里测键盘遮挡"
+      placeholder-class="input-ph"
+      focus="{{kb.focus}}"
+      adjust-position="{{true}}"
+      cursor-spacing="24"
+      confirm-type="done"
+    />
+  </view>
+  <view id="diagTapBtn" class="btn dg-copy" bindtap="onCopy">{{copying ? '复制中' : '复制报告'}}</view>
+</view>

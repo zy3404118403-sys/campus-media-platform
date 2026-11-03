@@ -1,0 +1,80 @@
+<view class="page login-page">
+  <view class="hdr">
+    <view class="hdr-kicker">CCIBE CAMPUS MEDIA CENTER</view>
+    <view class="hdr-title">{{step === 'pwd' ? '登录' : '两步验证'}}</view>
+    <view class="hdr-sub">{{step === 'pwd' ? '使用学号登录，访问素材库与任务' : '请输入 6 位动态验证码或备用恢复码'}}</view>
+  </view>
+
+  <block wx:if="{{step === 'pwd'}}">
+    <view class="field">
+      <view class="field-lbl">学号</view>
+      <view class="input-wrap {{error ? 'err' : ''}}">
+        <input
+          id="sidInput"
+          class="input"
+          type="text"
+          value="{{sid}}"
+          placeholder="请输入学号"
+          placeholder-class="input-ph"
+          maxlength="20"
+          bindinput="onSid"
+        />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="field-lbl">密码</view>
+      <view class="input-wrap {{error ? 'err' : ''}}">
+        <input
+          id="pwdInput"
+          class="input"
+          password="{{!showPwd}}"
+          value="{{pwd}}"
+          placeholder="请输入密码"
+          placeholder-class="input-ph"
+          maxlength="64"
+          bindinput="onPwd"
+        />
+        <text class="pwd-eye" bindtap="onTogglePwd">{{showPwd ? '隐藏' : '显示'}}</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="field">
+      <view class="field-lbl">验证码</view>
+      <view class="input-wrap {{error ? 'err' : ''}}">
+        <input
+          id="codeInput"
+          class="input"
+          type="text"
+          value="{{code}}"
+          placeholder="6 位动态码或恢复码"
+          placeholder-class="input-ph"
+          maxlength="32"
+          bindinput="onCode"
+        />
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{error}}" class="err-tip">{{error}}</view>
+
+  <view wx:if="{{mock}}" class="form-note">
+    原型模式：尚未配置服务器地址，输入任意学号与密码即可体验（不发网络请求）。
+  </view>
+
+  <view wx:if="{{step === 'pwd'}}" id="submitBtn" class="btn btn-block {{loading ? 'btn-loading' : ''}}" bindtap="onSubmit">
+    {{loading ? '登录中…' : '登录'}}
+  </view>
+  <view wx:else id="submitBtn" class="btn btn-block {{loading ? 'btn-loading' : ''}}" bindtap="onVerify">
+    {{loading ? '验证中…' : '验证并登录'}}
+  </view>
+
+  <view wx:if="{{step === '2fa'}}" class="link" bindtap="onBackStep">返回上一步</view>
+  <view wx:else class="link" bindtap="onGuest">暂不登录，先逛逛</view>
+
+  <view class="login-foot">
+    登录代表你同意平台使用规范；账号信息仅用于身份识别，不对外提供。
+  </view>
+</view>

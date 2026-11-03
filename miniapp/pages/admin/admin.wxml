@@ -1,0 +1,78 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">ADMIN CONSOLE</view>
+      <view class="hdr-title">管理后台</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">当前身份：{{roleText}}</view>
+      <view class="a-deny-s">管理功能仅对管理员与审核员开放。</view>
+      <view class="a-deny-s">如需审核权限，请联系融媒体中心管理员开通。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">ADMIN CONSOLE</view>
+      <view class="hdr-title">管理后台</view>
+      <view class="hdr-sub">{{roleText}}视图 · 数据来自本机原型库</view>
+    </view>
+
+    <!-- 指标 -->
+    <view class="a-kpis">
+      <view class="a-kpi {{kpi.pending ? 'warn' : ''}}">
+        <view class="a-kpi-num">{{kpi.pending}}</view>
+        <view class="a-kpi-lbl">待审核</view>
+      </view>
+      <view class="a-kpi">
+        <view class="a-kpi-num">{{kpi.materials}}</view>
+        <view class="a-kpi-lbl">素材总数</view>
+      </view>
+      <view class="a-kpi">
+        <view class="a-kpi-num">{{kpi.users}}</view>
+        <view class="a-kpi-lbl">开通账号</view>
+      </view>
+      <view class="a-kpi">
+        <view class="a-kpi-num">{{kpi.offline}}</view>
+        <view class="a-kpi-lbl">已下架</view>
+      </view>
+    </view>
+
+    <!-- 待办 -->
+    <view class="a-sec">待处理</view>
+    <view class="a-todo">
+      <view
+        wx:for="{{todos}}"
+        wx:key="key"
+        class="a-todo-item"
+        data-i="{{index}}"
+        bindtap="onTodo"
+      >
+        <text class="a-todo-lbl">{{item.label}}</text>
+        <view class="a-todo-n {{item.n ? 'warn' : 'zero'}}">{{item.n}}</view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 模块 -->
+    <view class="a-sec">管理模块</view>
+    <view class="a-entries">
+      <view
+        wx:for="{{entries}}"
+        wx:key="key"
+        class="a-entry {{item.off ? 'off' : ''}}"
+        data-i="{{index}}"
+        bindtap="onEntry"
+      >
+        <view class="a-entry-t">{{item.t}}</view>
+        <view class="a-entry-s">{{item.off ? '仅管理员可用' : item.s}}</view>
+      </view>
+    </view>
+
+    <view class="note">
+      小程序端只保留手机上会真正执行的操作。Web 后台另有「招新管理、审计日志、访问统计、媒体矩阵、文章工作台」——那些依赖大表格与长流程，手机上操作效率反而更低，请在电脑端处理。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

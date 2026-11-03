@@ -1,0 +1,189 @@
+/* 贡献值中心 */
+
+/* ── 总览大卡 ── */
+.pt-hero {
+  padding: 46rpx 36rpx 30rpx;
+  border-radius: var(--r-lg);
+  background: linear-gradient(160deg, rgba(216, 180, 106, 0.16), rgba(216, 180, 106, 0.03));
+  border: 1rpx solid var(--line-gold);
+  text-align: center;
+}
+.pt-num {
+  font-size: 96rpx;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -3rpx;
+  color: var(--gold-2);
+}
+.pt-label {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  letter-spacing: 3rpx;
+  color: var(--text-3);
+}
+.pt-meta {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: var(--text-2);
+}
+.pt-gold {
+  color: var(--gold);
+  font-weight: 600;
+}
+.pt-bar {
+  margin: 26rpx 0 14rpx;
+  height: 10rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.pt-bar-fill {
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, var(--gold), var(--gold-2));
+}
+.pt-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+
+/* ── 规则列表 ── */
+.pt-rules {
+  border-radius: var(--r-md);
+  background: var(--bg-1);
+  border: 1rpx solid var(--line);
+  overflow: hidden;
+}
+.pt-rule {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 26rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.pt-rule:last-child {
+  border-bottom: none;
+}
+.pt-rule-ico {
+  font-size: 34rpx;
+}
+.pt-rule-text {
+  flex: 1;
+  font-size: 27rpx;
+  color: var(--text-1);
+}
+.pt-rule-pt {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ── 排行榜 ── */
+.pt-ranks {
+  border-radius: var(--r-md);
+  background: var(--bg-1);
+  border: 1rpx solid var(--line);
+  overflow: hidden;
+}
+.pt-rank {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 22rpx 26rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.pt-rank:last-child {
+  border-bottom: none;
+}
+.pt-rank.on {
+  background: var(--gold-soft);
+}
+.pt-rank-no {
+  width: 42rpx;
+  flex: none;
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--text-3);
+}
+.pt-rank.on .pt-rank-no {
+  color: var(--gold);
+  font-weight: 700;
+}
+.pt-rank-av {
+  width: 68rpx;
+  height: 68rpx;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 28rpx;
+  color: var(--gold);
+  background: rgba(216, 180, 106, 0.14);
+  border: 1rpx solid var(--line-gold);
+}
+.pt-rank-main {
+  flex: 1;
+  min-width: 0;
+}
+.pt-rank-name {
+  font-size: 27rpx;
+  color: var(--text-1);
+}
+.pt-me {
+  margin-left: 10rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+  font-size: 18rpx;
+  background: var(--gold);
+  color: #1a1408;
+}
+.pt-rank-college {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--text-3);
+}
+.pt-rank-pt {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ── 流水 ── */
+.pt-logs {
+  border-radius: var(--r-md);
+  background: var(--bg-1);
+  border: 1rpx solid var(--line);
+  overflow: hidden;
+}
+.pt-log {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 24rpx 26rpx;
+  border-bottom: 1rpx solid var(--line);
+}
+.pt-log:last-child {
+  border-bottom: none;
+}
+.pt-log-main {
+  flex: 1;
+  min-width: 0;
+}
+.pt-log-text {
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: var(--text-1);
+}
+.pt-log-sub {
+  margin-top: 6rpx;
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+.pt-log-pt {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--gold);
+}

@@ -1,0 +1,92 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">PUBLISH</view>
+    <view class="hdr-title">发布内容</view>
+    <view class="hdr-sub">发布后会出现在社区对应分区，可随时联系管理员删除</view>
+  </view>
+
+  <view class="seg">
+    <view
+      wx:for="{{types}}"
+      wx:key="key"
+      id="ptype-{{item.key}}"
+      class="seg-item {{type === item.key ? 'on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onType"
+    >{{item.text}}</view>
+  </view>
+
+  <!-- 论坛需要选板块 -->
+  <view wx:if="{{rule.needBoard}}" class="field">
+    <view class="field-lbl">发布到板块</view>
+    <picker mode="selector" range="{{boards}}" range-key="name" value="{{boardIndex}}" bindchange="onBoard">
+      <view class="input-wrap picker-wrap">
+        <text class="picker-val">{{boards[boardIndex].name}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 标题 -->
+  <view wx:if="{{rule.needTitle}}" class="field">
+    <view class="field-lbl">标题（至少 {{rule.minTitle}} 字）</view>
+    <view class="input-wrap">
+      <input
+        id="postTitle"
+        class="input"
+        value="{{title}}"
+        placeholder="一句话说清这篇讲什么"
+        placeholder-class="input-ph"
+        maxlength="50"
+        cursor-spacing="24"
+        bindinput="onTitle"
+      />
+    </view>
+  </view>
+
+  <!-- 正文 -->
+  <view class="field">
+    <view class="field-lbl">
+      正文（至少 {{rule.minBody}} 字）
+    </view>
+    <view class="input-wrap ta-wrap">
+      <textarea
+        id="postBody"
+        class="ta ta-tall"
+        value="{{body}}"
+        placeholder="{{rule.ph}}"
+        placeholder-class="input-ph"
+        maxlength="3000"
+        cursor-spacing="24"
+        auto-height
+        bindinput="onBody"
+      />
+    </view>
+    <view class="ta-count">{{body.length}} / 3000</view>
+  </view>
+
+  <!-- 表白墙可选匿名 -->
+  <view wx:if="{{type === 'wall'}}" class="field anon-row">
+    <view class="anon-main">
+      <view class="anon-title">匿名发布</view>
+      <view class="anon-sub">开启后显示为「匿名」，管理员仍可追溯</view>
+    </view>
+    <switch checked="{{anonymous}}" color="#d8b46a" bindchange="onAnon" />
+  </view>
+
+  <view wx:if="{{err}}" class="err-tip err-upload">{{err}}</view>
+
+  <view class="note upload-note">
+    请勿发布未经证实的消息、他人隐私信息或不当内容；社区内容会经过管理员巡查。
+  </view>
+
+  <view class="safe-bar"></view>
+
+  <view class="bar">
+    <view
+      id="publishSubmit"
+      class="btn bar-main {{submitting ? 'btn-loading' : ''}}"
+      bindtap="onSubmit"
+    >{{submitting ? '发布中…' : '发布'}}</view>
+  </view>
+</view>

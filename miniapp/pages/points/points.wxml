@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">CONTRIBUTION</view>
+    <view class="hdr-title">贡献值</view>
+    <view class="hdr-sub">上传 · 任务 · 精选，都会累积</view>
+  </view>
+
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-short"></view>
+    <view class="sk sk-short"></view>
+    <view class="sk sk-short"></view>
+  </view>
+
+  <view wx:elif="{{state === 'guest'}}" class="state">
+    <view class="state-mark ico ico-award"></view>
+    <view class="state-title">登录后查看贡献值</view>
+    <view class="state-desc">上传素材、领取任务、发布文章都会计入贡献值</view>
+    <view class="btn state-btn" bindtap="onLogin">去登录</view>
+  </view>
+
+  <block wx:else>
+    <!-- 总览 -->
+    <view class="pt-hero">
+      <view class="pt-num">{{ov.total}}</view>
+      <view class="pt-label">我的贡献值</view>
+      <view class="pt-meta">
+        当前排名 <text class="pt-gold">#{{ov.rank}}</text> · 共 {{ov.totalUsers}} 人
+      </view>
+      <view class="pt-bar">
+        <view class="pt-bar-fill" style="width: {{pct}}%"></view>
+      </view>
+      <view class="pt-foot">
+        <text>本月新增 +{{ov.month}}</text>
+        <text wx:if="{{gap > 0}}">距下一档还差 {{gap}}</text>
+        <text wx:else>已达最高档</text>
+      </view>
+    </view>
+
+    <!-- 规则 -->
+    <view class="sec"><view class="sec-title">贡献值怎么赚</view></view>
+    <view class="pt-rules">
+      <view wx:for="{{rules}}" wx:key="key" class="pt-rule">
+        <view class="pt-rule-ico ico {{item.ico}}"></view>
+        <text class="pt-rule-text">{{item.text}}</text>
+        <text class="pt-rule-pt">+{{item.points}}</text>
+      </view>
+    </view>
+
+    <!-- 排行榜 -->
+    <view class="sec"><view class="sec-title">排行榜</view></view>
+    <view class="pt-ranks">
+      <view wx:for="{{rank}}" wx:key="id" class="pt-rank {{item.mine ? 'on' : ''}}">
+        <view class="pt-rank-no">{{index + 1}}</view>
+        <view class="pt-rank-av">{{item.initial}}</view>
+        <view class="pt-rank-main">
+          <view class="pt-rank-name">{{item.name}}<text wx:if="{{item.mine}}" class="pt-me">我</text></view>
+          <view class="pt-rank-college">{{item.college}}</view>
+        </view>
+        <view class="pt-rank-pt">{{item.points}}</view>
+      </view>
+    </view>
+
+    <!-- 流水 -->
+    <view class="sec"><view class="sec-title">收支流水</view></view>
+    <view class="pt-logs">
+      <view wx:for="{{logs}}" wx:key="id" class="pt-log">
+        <view class="pt-log-main">
+          <view class="pt-log-text">{{item.text}}</view>
+          <view class="pt-log-sub">{{item.sub}} · {{item.time}}</view>
+        </view>
+        <view class="pt-log-pt">+{{item.points}}</view>
+      </view>
+    </view>
+
+    <view class="note">贡献值为功能演示数据。接入真实接口后由后台按审核结果自动结算。</view>
+  </block>
+
+  <view class="safe"></view>
+</view>

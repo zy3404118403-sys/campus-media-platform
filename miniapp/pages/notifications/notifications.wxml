@@ -1,0 +1,75 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">NOTIFICATIONS</view>
+    <view class="hdr-title">通知</view>
+    <view class="hdr-sub">{{subtitle}}</view>
+  </view>
+
+  <view wx:if="{{state !== 'guest'}}" class="notice-toolbar">
+    <view class="seg seg-narrow">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        id="ntab-{{item.key}}"
+        class="seg-item {{tab === item.key ? 'on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onTab"
+      >{{item.text}}</view>
+    </view>
+    <view id="markAllBtn" class="mark-all" bindtap="onMarkAll">全部已读</view>
+  </view>
+
+  <view wx:if="{{state === 'loading'}}">
+    <view class="sk sk-row-152"></view>
+    <view class="sk sk-row-152"></view>
+  </view>
+
+  <view wx:elif="{{state === 'guest'}}" class="state">
+    <view class="state-mark">🔒</view>
+    <view class="state-title">登录后查看</view>
+    <view class="state-desc">登录学号账号后，审核结果与互动提醒会出现在这里。</view>
+    <view class="btn state-btn" bindtap="onLogin">立即登录</view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">通知加载失败</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重新加载</view>
+  </view>
+
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark ico ico-file"></view>
+    <view class="state-title">{{tab === 'unread' ? '没有未读通知' : '还没有通知'}}</view>
+    <view class="state-desc">审核结果、评论与公告都会推送到这里。</view>
+    <view wx:if="{{tab === 'unread'}}" class="btn state-btn" data-key="all" bindtap="onTab">看全部通知</view>
+  </view>
+
+  <block wx:else>
+    <view
+      wx:for="{{shown}}"
+      wx:key="id"
+      id="nt-{{item.id}}"
+      class="nt-row {{item.read ? 'read' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="onOpen"
+    >
+      <view class="nt-icon {{item.kindCls}}"><view class="ico {{item.ico}}"></view></view>
+      <view class="nt-main">
+        <view class="nt-head">
+          <text class="nt-title">{{item.title}}</text>
+          <text class="nt-time">{{item.time}}</text>
+        </view>
+        <view class="nt-body">{{item.body}}</view>
+        <view class="nt-foot">
+          <text class="nt-kind">{{item.kindText}}</text>
+          <text wx:if="{{!item.read}}" class="nt-unread">未读</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="note nt-note">通知保留最近 90 天，重要审核结果请同时查看「我的投稿」。</view>
+  </block>
+
+  <view class="safe"></view>
+</view>

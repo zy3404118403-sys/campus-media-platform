@@ -1,0 +1,75 @@
+/* 内容关系（列表版图谱） */
+
+.g-node {
+  margin-bottom: 18rpx;
+  padding: 24rpx 26rpx;
+  border-radius: var(--r-md);
+  background: var(--bg-1);
+  border: 1rpx solid var(--line);
+}
+.g-node-flat {
+  padding: 20rpx 26rpx;
+}
+.g-node-hd {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+.g-node-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  line-height: 1.45;
+  color: var(--text-1);
+}
+.g-hash {
+  color: var(--gold);
+  font-weight: 600;
+}
+.g-badge {
+  flex: none;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1rpx solid var(--line);
+}
+.g-node-sub {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+/* 素材节点上的标签胶囊 */
+.g-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+.g-chip {
+  padding: 5rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  color: var(--gold);
+  background: var(--gold-soft);
+  border: 1rpx solid var(--line-gold);
+}
+
+/* 标签节点展开后的关联素材 */
+.g-linked {
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid var(--line);
+}
+.g-linked-item {
+  padding: 10rpx 0;
+  font-size: 24rpx;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.g-linked-item:active {
+  color: var(--gold);
+}

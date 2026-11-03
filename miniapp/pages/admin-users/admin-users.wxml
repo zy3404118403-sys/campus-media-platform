@@ -1,0 +1,79 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">MEMBERS</view>
+      <view class="hdr-title">成员管理</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">仅管理员可用</view>
+      <view class="a-deny-s">角色与上传限制涉及账号权限，只对管理员开放。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">MEMBERS</view>
+      <view class="hdr-title">成员管理</view>
+      <view class="hdr-sub">共 {{total}} 人 · 管理员 {{roleCount.admin}} · 审核员 {{roleCount.reviewer}}</view>
+    </view>
+
+    <view class="field">
+      <view class="input-wrap">
+        <input
+          class="input"
+          value="{{keyword}}"
+          placeholder="搜索姓名、学院或学号后四位"
+          placeholder-class="input-ph"
+          bindinput="onSearch"
+        />
+      </view>
+    </view>
+
+    <view class="chips">
+      <view
+        wx:for="{{filters}}"
+        wx:key="*this"
+        class="chip {{filter === item ? 'on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onFilter"
+      >{{item}}</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="row" data-id="{{item.id}}" bindtap="onMember">
+      <view class="row-thumb ph-4 av">{{item.name[0]}}</view>
+      <view class="row-main">
+        <view class="row-title">
+          {{item.name}}
+          <text wx:if="{{item.isMe}}" class="pill pill-ok" style="margin-left: 10rpx">本人</text>
+        </view>
+
+        <view class="row-meta">
+          <text class="pill {{item.role === 'admin' ? 'pill-ok' : (item.role === 'reviewer' ? 'pill' : 'pill-mute')}}">
+            {{item.roleText}}
+          </text>
+          <text class="row-sub">{{item.status === '正常' ? '' : item.status}}</text>
+        </view>
+
+        <view class="row-foot">
+          <text>{{item.sidMask}}</text>
+          <text>投稿 {{item.uploads}} 件</text>
+        </view>
+
+        <view class="row-foot">
+          <text>{{item.college}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="a-deny">
+      <view class="a-deny-t">没有匹配的成员</view>
+      <view class="a-deny-s">换个关键词，或切回「全部」看看。</view>
+    </view>
+
+    <view class="note">
+      学号全程以脱敏形式展示，页面不提供查看完整学号的入口——后台截图外流时不会暴露真实学号。原型仅载入 6 条示例，真实接口按页加载。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

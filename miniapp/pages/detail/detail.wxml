@@ -1,0 +1,106 @@
+<view class="page">
+  <view wx:if="{{state === 'loading'}}" class="grid">
+    <view class="col"><view class="sk sk-tall"></view></view>
+    <view class="col"><view class="sk sk-short"></view><view class="sk sk-short"></view></view>
+  </view>
+
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">⚠</view>
+    <view class="state-title">素材加载失败</view>
+    <view class="state-desc">该素材可能已被移动或删除</view>
+    <view class="btn btn-ghost state-btn" bindtap="onBack">返回列表</view>
+  </view>
+
+  <block wx:else>
+    <view class="hero {{item.tone}}">
+      <view wx:if="{{item.type === '视频'}}" class="tag tag-play hero-play"><view class="ico ico-play"></view></view>
+      <view class="tag hero-type">{{item.type}}</view>
+    </view>
+
+    <view class="detail-title">{{item.title}}</view>
+
+    <view class="meta-list">
+      <view class="meta-item">
+        <text class="meta-k">学院</text>
+        <text class="meta-v">{{item.college}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">拍摄日期</text>
+        <text class="meta-v">{{item.shotDate}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">{{item.type === '视频' ? '时长' : '文件大小'}}</text>
+        <text class="meta-v">{{item.type === '视频' ? item.duration : item.size}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-k">数据</text>
+        <text class="meta-v">{{item.downloads}} 次下载 · {{item.likes}} 次点赞</text>
+      </view>
+    </view>
+
+    <view class="tags">
+      <view wx:for="{{item.tags}}" wx:key="*this" class="tag-pill">{{item}}</view>
+    </view>
+
+    <view class="sec">
+      <text class="sec-title">相关推荐</text>
+      <text class="sec-more">同学院 · 同标签</text>
+    </view>
+    <view class="rel-list">
+      <view
+        wx:for="{{related}}"
+        wx:key="id"
+        class="rel-item"
+        data-id="{{item.id}}"
+        bindtap="onRelated"
+      >
+        <view class="rel-thumb {{item.tone}}"></view>
+        <view class="rel-main">
+          <view class="rel-title">{{item.title}}</view>
+          <view class="rel-why">{{item.why}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="safe-btn"></view>
+
+    <view class="bar">
+      <view id="dLikeBtn" class="bar-act {{liked ? 'on' : ''}}" bindtap="onLike">
+        <view class="bar-icon ico {{liked ? 'ico-heart-g' : 'ico-heart ico-dim3'}}"></view>
+        <text class="bar-text">{{liked ? '已赞' : '点赞'}}</text>
+      </view>
+      <view id="dFavBtn" class="bar-act {{fav ? 'on' : ''}}" bindtap="onFav">
+        <view class="bar-icon ico {{fav ? 'ico-star-g' : 'ico-star ico-dim3'}}"></view>
+        <text class="bar-text">{{fav ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view id="dDownloadBtn" class="btn bar-main" bindtap="onDownload">下载</view>
+    </view>
+
+    <!-- 下载使用规范（自绘：原生 showModal 放不了勾选框） -->
+    <view wx:if="{{dlOpen}}" class="dl-mask" catchtouchmove="noop" bindtap="onDlClose">
+      <view class="dl-box" catchtap="noop">
+        <view class="dl-title">下载前请确认使用规范</view>
+        <view class="dl-list">
+          <view class="dl-item"><text class="dl-num">1</text><text class="dl-txt">仅限校园宣传、教学与经授权的用途使用</text></view>
+          <view class="dl-item"><text class="dl-num">2</text><text class="dl-txt">涉及人物肖像、校徽、活动版权时，须另行取得许可</text></view>
+          <view class="dl-item"><text class="dl-num">3</text><text class="dl-txt">不得用于商业冒用、违法用途或损害学校形象的内容</text></view>
+          <view class="dl-item"><text class="dl-num">4</text><text class="dl-txt">对外发布时请注明素材来源：融媒体中心</text></view>
+        </view>
+
+        <view id="dlAgreeRow" class="dl-check" bindtap="onDlAgree">
+          <view class="dl-box-ic {{dlAgree ? 'on' : ''}}">{{dlAgree ? '✓' : ''}}</view>
+          <text class="dl-check-txt">我已阅读并同意上述使用规范</text>
+        </view>
+
+        <view class="dl-foot">
+          <view id="dlCancel" class="btn btn-ghost dl-btn" bindtap="onDlClose">取消</view>
+          <view
+            id="dlConfirm"
+            class="btn dl-btn {{dlAgree ? '' : 'dl-btn-off'}}"
+            bindtap="onDlConfirm"
+          >同意并下载</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

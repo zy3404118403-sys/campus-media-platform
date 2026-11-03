@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="shared.css?v=14">
+<meta name="description" content="创作任务大厅与贡献值中心——领取任务、提交成果、累积贡献。">
+<meta name="theme-color" content="#05070B">
+<link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+<title>任务大厅 · 贡献值中心</title>
+<style>
+:root{
+  --primary:#3b82f6;--primary-dark:#2563eb;--primary-light:#60a5fa;--primary-glow:rgba(59,130,246,.35);
+  --accent:#06b6d4;--aurora:#8b5cf6;
+  --gold:#d4af37;--gold-light:#f0d060;
+  --bg:#05070B;--card:rgba(255,255,255,.03);--card-hover:rgba(255,255,255,.06);
+  --text:#e8eaed;--text-2:#9aa0b0;--text-3:#868c99;
+  --border:rgba(255,255,255,.06);--border-strong:rgba(255,255,255,.1);
+  --radius:16px;--radius-sm:10px;--shadow:0 4px 24px rgba(0,0,0,.4);
+  --ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+  --sidebar-w:220px;
+}
+[data-theme="light"]{
+  --bg:#f5f6f8;--card:#ffffff;--card-hover:#fafbfc;
+  --text:#1a1d24;--text-2:#5b6270;--text-3:#8a90a0;
+  --border:rgba(0,0,0,.08);--border-strong:rgba(0,0,0,.14);
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;min-height:100dvh;transition:background .3s,color .3s}
+.layout{display:flex;min-height:100vh;min-height:100dvh}
+/* ── 侧边栏 ── */
+.sidebar{width:var(--sidebar-w);position:fixed;left:0;top:0;bottom:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 14px;z-index:10;transition:transform .3s}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 10px 22px;font-weight:700;font-size:16px;letter-spacing:.5px}
+.brand .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--aurora));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.nav-group-title{font-size:11px;color:var(--text-3);padding:14px 10px 6px;text-transform:uppercase;letter-spacing:1px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);color:var(--text-2);cursor:pointer;font-size:14px;text-decoration:none;transition:all .2s;border:1px solid transparent}
+.nav-item:hover{background:var(--card-hover);color:var(--text)}
+.nav-item.active{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.1));color:var(--primary-light);border-color:rgba(59,130,246,.25)}
+.nav-item svg{flex-shrink:0}
+[data-theme="light"] .nav-item.active{color:var(--primary-dark)}
+.sidebar-footer{margin-top:auto;padding:12px 10px;font-size:12px;color:var(--text-3);display:flex;align-items:center;justify-content:space-between}
+.sidebar-footer a{color:var(--text-2);text-decoration:none}
+.sidebar-footer a:hover{color:var(--primary-light)}
+/* ── 主区 ── */
+.main{flex:1;margin-left:var(--sidebar-w);padding:28px 32px 60px;max-width:1080px}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:8px}
+h1.page-title{font-size:24px;font-weight:700;letter-spacing:.3px}
+.page-sub{color:var(--text-2);font-size:13px;margin-bottom:24px}
+.tab-pane{display:none}
+.tab-pane.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ── 卡片与列表 ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:border-color .2s,background .2s}
+.card:hover{border-color:var(--border-strong)}
+.task-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.task-title{font-size:16px;font-weight:600}
+.task-desc{color:var(--text-2);font-size:13px;margin-top:8px;line-height:1.7;white-space:pre-wrap}
+.task-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--text-3);align-items:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border-strong);color:var(--text-2)}
+.badge.cat{background:rgba(59,130,246,.1);color:var(--primary-light);border-color:rgba(59,130,246,.25)}
+[data-theme="light"] .badge.cat{color:var(--primary-dark)}
+.badge.pts{background:rgba(212,175,55,.12);color:var(--gold);border-color:rgba(212,175,55,.35)}
+.badge.ok{color:var(--ok);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
+.badge.warn{color:var(--warn);border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
+.badge.danger{color:var(--danger);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
+.badge.off{color:var(--text-3)}
+.task-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+button.btn{padding:8px 18px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:transparent;color:var(--text);font-size:13px;cursor:pointer;transition:all .2s;font-family:inherit}
+button.btn:hover{border-color:var(--primary);color:var(--primary-light)}
+button.btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-color:transparent;color:#fff;font-weight:600}
+button.btn.primary:hover{box-shadow:0 4px 18px var(--primary-glow);color:#fff}
+button.btn.small{padding:5px 12px;font-size:12px}
+button.btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+button.btn:disabled{opacity:.5;cursor:not-allowed}
+/* ── 表单 ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid .full{grid-column:1/-1}
+label.f-label{display:block;font-size:12px;color:var(--text-2);margin-bottom:6px}
+input.f-input,select.f-input,textarea.f-input{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+input.f-input:focus,select.f-input:focus,textarea.f-input:focus{border-color:var(--primary)}
+textarea.f-input{resize:vertical;min-height:70px}
+/* ── 贡献值 ── */
+.contrib-hero{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.stat-card{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% -20%,rgba(139,92,246,.15),transparent 60%);pointer-events:none}
+.stat-num{font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--primary-light),var(--aurora));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:12px;color:var(--text-2);margin-top:6px}
+.rank-row{display:flex;align-items:center;gap:14px;padding:11px 6px;border-bottom:1px solid var(--border);font-size:14px}
+.rank-row:last-child{border-bottom:none}
+.rank-no{width:30px;height:30px;border-radius:50%;background:var(--card-hover);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-2);flex-shrink:0}
+.rank-no.top1{background:linear-gradient(135deg,#d4af37,#f0d060);color:#3a2f00}
+.rank-no.top2{background:linear-gradient(135deg,#9ca3af,#d1d5db);color:#26282e}
+.rank-no.top3{background:linear-gradient(135deg,#b45309,#f59e0b);color:#3d2000}
+.rank-name{flex:1;font-weight:500}
+.rank-college{font-size:12px;color:var(--text-3)}
+.rank-pts{font-weight:700;color:var(--gold)}
+.log-row{display:flex;justify-content:space-between;gap:12px;padding:11px 6px;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
+.log-row:last-child{border-bottom:none}
+.log-note{color:var(--text-2);flex:1}
+.log-time{color:var(--text-3);font-size:12px;white-space:nowrap}
+.log-pts{font-weight:700;white-space:nowrap}
+.log-pts.plus{color:var(--ok)}
+.log-pts.minus{color:var(--danger)}
+/* ── 弹层 ── */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;backdrop-filter:blur(4px)}
+.modal-mask.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border-strong);border-radius:var(--radius);padding:24px;width:100%;max-width:460px;box-shadow:var(--shadow)}
+.modal h3{font-size:16px;margin-bottom:16px}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.empty{padding:50px 20px;text-align:center;color:var(--text-3);font-size:14px}
+.review-note{margin-top:10px;padding:10px 12px;border-radius:var(--radius-sm);background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);font-size:12px;color:var(--warn)}
+.muted{color:var(--text-3);font-size:12px}
+/* ── 登录遮罩 ── */
+.auth-mask{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200}
+.auth-mask .big{font-size:42px}
+/* ── 移动端 ── */
+.sb-toggle{display:none}
+@media (max-width:760px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .main{margin-left:0;padding:20px 16px 60px}
+  .sb-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer}
+  .form-grid{grid-template-columns:1fr}
+  .page-head{flex-wrap:wrap}
+}
+
+/* ═══ 任务大厅空态引导（2026-10-25）═══ */
+.task-guide{padding:8px 0 4px}
+.tg-hero{text-align:center;padding:32px 20px 26px;background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.tg-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% -40%,rgba(212,175,55,.12),transparent 70%);pointer-events:none}
+.tg-ic{width:54px;height:54px;margin:0 auto 14px;border-radius:15px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(212,175,55,.20),rgba(212,175,55,.06));border:1px solid rgba(212,175,55,.32);color:var(--gold,#D4AF37)}
+.tg-hero h2{font-size:19px;font-weight:800;margin:0 0 8px;letter-spacing:.2px}
+.tg-hero p{font-size:13.5px;color:var(--text-2);margin:0;line-height:1.7;max-width:520px;margin-inline:auto}
+.tg-flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:22px 0 24px}
+.tg-step{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:11px;background:var(--card);
+  border:1px solid var(--border);font-size:12.5px;color:var(--text-2);white-space:nowrap}
+.tg-step b{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;
+  background:rgba(212,175,55,.16);color:var(--gold,#D4AF37);flex-shrink:0}
+.tg-arrow{color:var(--text-3);font-size:13px;opacity:.65}
+.tg-samples{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tg-card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 16px 14px;
+  opacity:.72;transition:all .25s}
+.tg-card:hover{opacity:.9;transform:translateY(-2px)}
+.tg-badge{position:absolute;top:12px;right:12px;font-size:10.5px;font-weight:700;letter-spacing:.5px;
+  padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.07);color:var(--text-3);border:1px solid var(--border)}
+.tg-card h3{font-size:14px;font-weight:700;margin:0 0 7px;padding-right:46px;line-height:1.45}
+.tg-card p{font-size:12.5px;color:var(--text-2);margin:0 0 11px;line-height:1.62;min-height:40px}
+.tg-card footer{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px;
+  padding-top:10px;border-top:1px solid var(--border)}
+.tg-card footer b{color:var(--gold,#D4AF37);font-weight:700}
+.tg-note{margin:18px 0 0;text-align:center;font-size:12.5px;color:var(--text-3)}
+.tg-note a{color:var(--primary-light,#60a5fa);text-decoration:none}
+@media (max-width:640px){
+  .tg-flow{gap:6px}
+  .tg-step{padding:8px 11px;font-size:12px}
+  .tg-arrow{display:none}
+  .tg-samples{grid-template-columns:1fr}
+}
+
+/* 任务性质角标：演示/测试夹具（2026-10-25）*/
+.badge.demo{background:rgba(251,191,36,.14);color:#fbbf24;border:1px solid rgba(251,191,36,.34);
+  font-weight:700;letter-spacing:.3px}
+</style>
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+<div class="auth-mask" id="authMask" style="display:none">
+  <div class="big"><svg width="42" height="42" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+  <div style="font-size:16px;font-weight:600">请先登录</div>
+  <div class="muted">登录后即可查看任务大厅与你的贡献值</div>
+  <a href="/login.html"><button class="btn primary">前往登录</button></a>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="logo" style="display:flex;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><span>任务与贡献</span></div>
+    <a class="nav-item" href="/index.html" title="返回首页"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>返回首页</span></a>
+    <a class="nav-item active" data-tab="hall" onclick="switchTab('hall')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>任务大厅</span></a>
+    <a class="nav-item" data-tab="mine" onclick="switchTab('mine')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>我的任务</span></a>
+    <a class="nav-item" data-tab="contrib" onclick="switchTab('contrib')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg><span>贡献值中心</span></a>
+    <div id="adminNavGroup" style="display:none">
+      <div class="nav-group-title">管理</div>
+      <a class="nav-item" data-tab="manage" onclick="switchTab('manage')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"/></svg><span>任务管理</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <span id="whoami">—</span>
+      <a href="/articles-work.html">文稿工作台 →</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-head">
+      <h1 class="page-title" id="pageTitle">任务大厅</h1>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="quickPublishBtn" class="btn primary small" style="display:none" onclick="quickPublish()">+ 发布任务</button>
+        <button class="sb-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="打开导航"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <button class="btn small" onclick="toggleTheme()" title="切换深浅色"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      </div>
+    </div>
+    <div class="page-sub" id="pageSub">领取创作任务，完成后由管理员审核发放贡献值</div>
+
+    <!-- 任务大厅 -->
+    <div class="tab-pane active" id="tab-hall">
+      <!-- 运营批（2026-09-22）：新手第一单引导卡（onboarding 漏斗） -->
+      <div class="card" id="starterCard" style="border:1px solid rgba(212,175,55,.4);background:linear-gradient(135deg,rgba(212,175,55,.08),transparent)">
+        <div class="task-title" style="margin-bottom:6px"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg> 新手第一单：上传你的第一条素材</div>
+        <div style="font-size:13.5px;color:var(--text-2);margin-bottom:10px">拍下校园里的精彩瞬间（活动、课堂、风景均可），从首页「上传素材」提交，通过审核即得贡献值——图片 +2 / 视频 +5。被管理员精选再 +10，还会在首页置顶展示。</div>
+        <a href="/" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--primary,#3b82f6);color:#fff;font-size:13px;font-weight:600;text-decoration:none;min-height:40px"><svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 去上传素材</a>
+      </div>
+      <div id="taskList"><div class="empty">加载中...</div></div>
+    </div>
+
+    <!-- 我的任务 -->
+    <div class="tab-pane" id="tab-mine">
+      <div id="myTaskList"><div class="empty">加载中...</div></div>
+    </div>
+
+    <!-- 贡献值中心 -->
+    <div class="tab-pane" id="tab-contrib">
+      <div class="contrib-hero">
+        <div class="stat-card"><div class="stat-num" id="myTotal">0</div><div class="stat-label">我的贡献值</div></div>
+        <div class="stat-card"><div class="stat-num" id="myRank">—</div><div class="stat-label">当前排名</div></div>
+      </div>
+      <!-- 运营批（2026-09-22）：贡献值规则公示 -->
+      <div class="card">
+        <div class="task-title" style="margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> 贡献值怎么赚</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px">
+          <tr><td style="padding:6px 4px;border-bottom:1px solid var(--border)"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> 图片素材通过审核</td><td style="padding:6px 4px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:var(--status-ok,#34d399)">+2</td></tr>
+          <tr><td style="padding:6px 4px;border-bottom:1px solid var(--border)"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> 视频素材通过审核</td><td style="padding:6px 4px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:var(--status-ok,#34d399)">+5</td></tr>
+          <tr><td style="padding:6px 4px;border-bottom:1px solid var(--border)"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 文档 / 音频素材通过审核</td><td style="padding:6px 4px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:var(--status-ok,#34d399)">+3</td></tr>
+          <tr><td style="padding:6px 4px;border-bottom:1px solid var(--border)"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> 素材被管理员精选</td><td style="padding:6px 4px;border-bottom:1px solid var(--border);text-align:right;font-weight:700;color:#d4af37">+10</td></tr>
+          <tr><td style="padding:6px 4px"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> 发布博文</td><td style="padding:6px 4px;text-align:right;font-weight:700;color:var(--status-ok,#34d399)">+10</td></tr>
+        </table>
+        <div style="font-size:12px;color:var(--text-3);margin-top:8px"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 被精选的素材会在首页置顶展示；贡献值每月结算排名，学期末参与「金镜头」评选。</div>
+      </div>
+      <div class="card">
+        <div class="task-title" style="margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg> 贡献值排行榜</div>
+        <div id="rankList"><div class="empty">加载中...</div></div>
+      </div>
+      <div class="card">
+        <div class="task-title" style="margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 我的贡献值流水</div>
+        <div id="logList"><div class="empty">加载中...</div></div>
+      </div>
+    </div>
+
+    <!-- 任务管理（管理员） -->
+    <div class="tab-pane" id="tab-manage">
+      <div class="card">
+        <div class="task-title" style="margin-bottom:14px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> 发布新任务</div>
+        <div class="form-grid">
+          <div class="full"><label class="f-label">任务标题 *</label><input class="f-input" id="ntTitle" placeholder="例如：开学季校园风光摄影稿件" maxlength="100"></div>
+          <div class="full"><label class="f-label">任务说明</label><textarea class="f-input" id="ntDesc" placeholder="要求、交稿格式、参考方向等" maxlength="2000"></textarea></div>
+          <div><label class="f-label">分类</label><select class="f-input" id="ntCat"><option value="news">文稿</option><option value="video">视频</option><option value="photo">摄影</option><option value="design">设计</option><option value="other">其他</option></select></div>
+          <div><label class="f-label">奖励贡献值</label><input class="f-input" id="ntPoints" type="number" min="1" max="500" value="10"></div>
+          <div><label class="f-label">名额（0 = 不限）</label><input class="f-input" id="ntSlots" type="number" min="0" max="200" value="0"></div>
+          <div><label class="f-label">截止时间（留空 = 长期）</label><input class="f-input" id="ntDeadline" type="datetime-local"></div>
+          <div class="full" style="text-align:right"><button class="btn primary" onclick="createTask()">发布任务</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="task-title" style="margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> 全部任务</div>
+        <div id="adminTaskList"><div class="empty">加载中...</div></div>
+      </div>
+      <div class="card">
+        <div class="task-title" style="margin-bottom:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 领取记录审核</div>
+        <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn small" data-claim-filter="submitted" onclick="setClaimFilter('submitted')">待审核</button>
+          <button class="btn small" data-claim-filter="" onclick="setClaimFilter('')">全部</button>
+          <button class="btn small" data-claim-filter="approved" onclick="setClaimFilter('approved')">已通过</button>
+          <button class="btn small" data-claim-filter="rejected" onclick="setClaimFilter('rejected')">已打回</button>
+        </div>
+        <div id="claimList"><div class="empty">加载中...</div></div>
+      </div>
+      <div class="card">
+        <div class="task-title" style="margin-bottom:14px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg> 手动调整贡献值</div>
+        <div class="form-grid">
+          <div><label class="f-label">用户学号 *</label><input class="f-input" id="adjUser" placeholder="例如 20230001"></div>
+          <div><label class="f-label">分值（-200 ~ 200）*</label><input class="f-input" id="adjPoints" type="number" min="-200" max="200" placeholder="如 5 或 -3"></div>
+          <div class="full"><label class="f-label">调整原因 *</label><input class="f-input" id="adjNote" placeholder="例如：参与迎新晚会跟拍补助"></div>
+          <div class="full" style="text-align:right"><button class="btn primary" onclick="adjustContribution()">确认调整</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 提交成果弹层 -->
+<div class="modal-mask" id="submitModal">
+  <div class="modal">
+    <h3>提交任务成果</h3>
+    <div class="muted" id="submitTaskTitle" style="margin-bottom:12px"></div>
+    <label class="f-label">成果说明 *</label>
+    <textarea class="f-input" id="submitNote" placeholder="完成情况、稿件链接、素材位置等说明"></textarea>
+    <label class="f-label" style="margin-top:12px">关联文稿 ID（可选，工作台文稿列表中的编号）</label>
+    <input class="f-input" id="submitArticle" type="number" min="1" placeholder="例如 12">
+    <div class="modal-foot">
+      <button class="btn" onclick="closeSubmit()">取消</button>
+      <button class="btn primary" onclick="doSubmit()">提交审核</button>
+    </div>
+  </div>
+</div>
+
+<!-- 打回弹层 -->
+<div class="modal-mask" id="rejectModal">
+  <div class="modal">
+    <h3>打回成果（需填写原因）</h3>
+    <label class="f-label">打回原因 *</label>
+    <textarea class="f-input" id="rejectReason" placeholder="说明需要修改或补充的内容"></textarea>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeReject()">取消</button>
+      <button class="btn primary" onclick="doReject()">确认打回</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="shared.js?v=20"></script>
+<script>
+'use strict'
+var currentUser = null
+var tasksCache = []
+var claimFilter = 'submitted'
+var submittingTaskId = null
+var rejectingClaimId = null
+
+/* ── 主题 ── */
+function toggleTheme(){
+  var cur = document.documentElement.getAttribute('data-theme')
+  var next = cur === 'dark' ? 'light' : 'dark'
+  document.documentElement.setAttribute('data-theme', next)
+  localStorage.setItem('theme', next)
+}
+
+/* ── Tab ── */
+var TAB_TITLES = { hall:'任务大厅', mine:'我的任务', contrib:'贡献值中心', manage:'任务管理' }
+/* 顶部快捷发布：管理员可见，点击跳到任务管理 tab 并聚焦标题输入（2026-10-25） */
+function quickPublish(){
+  switchTab('manage')
+  setTimeout(function(){
+    var t = document.querySelector('#page-manage input, #page-manage textarea, [data-tab="manage"] input')
+    if (t) { t.focus(); t.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
+  }, 120)
+}
+function refreshQuickPublish(){
+  var b = document.getElementById('quickPublishBtn')
+  if (!b) return
+  b.style.display = (typeof ME !== 'undefined' && ME && ME.is_admin) ? '' : 'none'
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.nav-item').forEach(function(el){ el.classList.toggle('active', el.getAttribute('data-tab') === tab) })
+  document.querySelectorAll('.tab-pane').forEach(function(el){ el.classList.toggle('active', el.id === 'tab-' + tab) })
+  document.getElementById('pageTitle').textContent = TAB_TITLES[tab] || tab
+  document.getElementById('sidebar').classList.remove('open')
+  if (tab === 'hall') loadTasks()
+  else if (tab === 'mine') loadMyTasks()
+  else if (tab === 'contrib') loadContribution()
+  else if (tab === 'manage') { loadAdminTasks(); loadClaims() }
+}
+
+/* ── 工具 ── */
+function catLabel(c){ return {news:'文稿',video:'视频',photo:'摄影',design:'设计',other:'其他'}[c] || '其他' }
+function statusBadge(s){
+  if (s === 'claimed') return '<span class="badge warn">进行中</span>'
+  if (s === 'submitted') return '<span class="badge cat">待审核</span>'
+  if (s === 'approved') return '<span class="badge ok">已通过</span>'
+  if (s === 'rejected') return '<span class="badge danger">已打回</span>'
+  return '<span class="badge off">' + esc(s) + '</span>'
+}
+function fmtTime(t){ return esc((t || '').slice(0, 16)) }
+
+/* ── 任务大厅 ── */
+async function loadTasks(){
+  try { refreshQuickPublish() } catch (e) {}
+
+  var d = await api('/api/tasks')
+  if (!d.ok) { document.getElementById('taskList').innerHTML = '<div class="empty">' + esc(d.message || '加载失败') + '</div>'; return }
+  tasksCache = d.data || []
+  if (!tasksCache.length) {
+    // 2026-10-25：空态改为「产品说明 + 引导」（原为仅一行"暂无任务，敬请期待"）
+    var _adminHint = (typeof ME !== 'undefined' && ME && ME.is_admin)
+      ? '<p class="tg-note">你是管理员 · 任务发布功能正在开发中，上线后可直接在此发布拍摄 / 设计任务</p>'
+      : '<p class="tg-note">任务发布后，这里会显示可领取的任务与奖励贡献值</p>'
+    document.getElementById('taskList').innerHTML =
+      '<div class="task-guide">'
+      + '<div class="tg-hero">'
+      +   '<div class="tg-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>'
+      +   '<h2>任务大厅正在筹备</h2>'
+      +   '<p>第一批校园拍摄与设计任务即将开放。届时可在这里领取任务、提交成果、获得贡献值，优秀成果将直接归档进素材库。</p>'
+      + '</div>'
+      + '<div class="tg-flow">'
+      +   '<div class="tg-step"><b>1</b>管理员发布任务</div><span class="tg-arrow">→</span>'
+      +   '<div class="tg-step"><b>2</b>领取任务</div><span class="tg-arrow">→</span>'
+      +   '<div class="tg-step"><b>3</b>提交成果</div><span class="tg-arrow">→</span>'
+      +   '<div class="tg-step"><b>4</b>审核通过得贡献值</div>'
+      + '</div>'
+      + '<div class="tg-samples">'
+      +   '<div class="tg-card"><span class="tg-badge">示例</span>'
+      +     '<h3>迎新晚会现场记录</h3>'
+      +     '<p>拍摄不少于 3 段现场视频，含主舞台全景、节目特写与观众反应镜头</p>'
+      +     '<footer>奖励 <b>50</b> 贡献值 · 视频类</footer></div>'
+      +   '<div class="tg-card"><span class="tg-badge">示例</span>'
+      +     '<h3>校园四季 · 秋日摄影征集</h3>'
+      +     '<p>提交 5 张以上校园秋景照片，需包含建筑、人物与自然三个维度</p>'
+      +     '<footer>奖励 <b>30</b> 贡献值 · 照片类</footer></div>'
+      +   '<div class="tg-card"><span class="tg-badge">示例</span>'
+      +     '<h3>学院宣传片剪辑</h3>'
+      +     '<p>根据提供的素材剪辑 90 秒宣传短片，含字幕与配乐，输出 1080p</p>'
+      +     '<footer>奖励 <b>80</b> 贡献值 · 设计类</footer></div>'
+      + '</div>'
+      + _adminHint
+      + '</div>'
+    return
+  }
+  document.getElementById('taskList').innerHTML = tasksCache.map(function(t){
+    var slotText = t.slots > 0 ? (t.active_claims + '/' + t.slots + ' 已领') : (t.active_claims + ' 人进行中')
+    var full = t.slots > 0 && t.active_claims >= t.slots
+    var actionHtml = ''
+    if (t.status !== 'open') {
+      actionHtml = '<span class="badge off">已关闭</span>'
+    } else if (t.my_claim) {
+      actionHtml = statusBadge(t.my_claim.status) +
+        (t.my_claim.status === 'claimed' ? ' <button class="btn small primary" onclick="openSubmit(' + t.id + ')">提交成果</button>' : '') +
+        (t.my_claim.status === 'rejected' ? ' <button class="btn small primary" onclick="reclaim(' + t.id + ')">重新领取</button>' : '')
+    } else if (full) {
+      actionHtml = '<span class="badge off">名额已满</span>'
+    } else {
+      actionHtml = '<button class="btn small primary" onclick="claim(' + t.id + ')">领取任务</button>'
+    }
+    return '<div class="card">' +
+      '<div class="task-head"><div class="task-title">' + esc(t.title) + '</div>' +
+      '<div class="task-meta">' + (t.is_demo ? '<span class="badge demo" title="演示内容，用于功能体验，非正式发布任务">演示</span>' : '') + '<span class="badge pts">+' + t.points + ' 贡献</span><span class="badge cat">' + catLabel(t.category) + '</span></div></div>' +
+      (t.description ? '<div class="task-desc">' + esc(t.description) + '</div>' : '') +
+      '<div class="task-meta"><span><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ' + esc(slotText) + '</span>' +
+      (t.done_claims > 0 ? '<span><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ' + t.done_claims + ' 人已完成</span>' : '') +
+      (t.deadline ? '<span>⏰ 截止 ' + esc(t.deadline) + '</span>' : '') +
+      '</div>' +
+      '<div class="task-actions">' + actionHtml + '</div>' +
+      (t.my_claim && t.my_claim.status === 'rejected' ? '<div class="review-note">打回原因：' + esc(t.my_claim.review_comment || '（未填写）') + '</div>' : '') +
+      '</div>'
+  }).join('')
+}
+async function claim(id){
+  var d = await api('/api/tasks/' + id + '/claim', { method: 'POST' })
+  toast(d.message || (d.ok ? '领取成功' : '领取失败'))
+  if (d.ok) loadTasks()
+}
+async function reclaim(id){
+  var first = await api('/api/tasks/' + id + '/claim', { method: 'POST' })
+  if (!first.ok) { toast(first.message || '领取失败'); return }
+  toast('已重新领取，请提交成果')
+  openSubmit(id)
+}
+function openSubmit(id){
+  submittingTaskId = id
+  var t = tasksCache.find(function(x){ return x.id === id })
+  document.getElementById('submitTaskTitle').textContent = '任务：' + (t ? t.title : '')
+  document.getElementById('submitNote').value = ''
+  document.getElementById('submitArticle').value = ''
+  document.getElementById('submitModal').classList.add('show')
+}
+function closeSubmit(){ document.getElementById('submitModal').classList.remove('show') }
+async function doSubmit(){
+  if (!submittingTaskId) return
+  var note = document.getElementById('submitNote').value.trim()
+  var articleId = document.getElementById('submitArticle').value
+  if (!note && !articleId) { toast('请填写成果说明或关联文稿'); return }
+  var d = await api('/api/tasks/' + submittingTaskId + '/submit', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ note: note, article_id: articleId ? parseInt(articleId) : null })
+  })
+  toast(d.message || (d.ok ? '已提交' : '提交失败'))
+  if (d.ok) { closeSubmit(); loadTasks() }
+}
+
+/* ── 我的任务 ── */
+async function loadMyTasks(){
+  var d = await api('/api/my/tasks')
+  if (!d.ok) { document.getElementById('myTaskList').innerHTML = '<div class="empty">' + esc(d.message || '加载失败') + '</div>'; return }
+  var rows = d.data || []
+  if (!rows.length) { document.getElementById('myTaskList').innerHTML = '<div class="empty">还没有领取过任务，去任务大厅看看吧 <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>'; return }
+  document.getElementById('myTaskList').innerHTML = rows.map(function(c){
+    var t = tasksCache.find(function(x){ return x.id === c.task_id })
+    return '<div class="card">' +
+      '<div class="task-head"><div class="task-title">' + esc(c.task_title || ('任务 #' + c.task_id)) + '</div>' + statusBadge(c.status) + '</div>' +
+      '<div class="task-meta"><span class="badge pts">+' + (c.task_points != null ? c.task_points : '?') + ' 贡献</span>' +
+      (c.submitted_at ? '<span>提交于 ' + fmtTime(c.submitted_at) + '</span>' : '') +
+      (t && t.category ? '<span class="badge cat">' + catLabel(t.category) + '</span>' : '') +
+      '</div>' +
+      (c.submission_note ? '<div class="task-desc">成果：' + esc(c.submission_note) + '</div>' : '') +
+      (c.status === 'rejected' && c.review_comment ? '<div class="review-note">打回原因：' + esc(c.review_comment) + '</div>' : '') +
+      (c.status === 'claimed' ? '<div class="task-actions"><button class="btn small primary" onclick="openSubmit(' + c.task_id + ')">提交成果</button></div>' : '') +
+      '</div>'
+  }).join('')
+}
+
+/* ── 贡献值中心 ── */
+async function loadContribution(){
+  var me = await api('/api/contribution/me')
+  var rank = await api('/api/contribution/rank')
+  if (me.ok) {
+    var data = me.data || {}
+    document.getElementById('myTotal').textContent = data.total != null ? data.total : 0
+    document.getElementById('myRank').textContent = data.rank ? '#' + data.rank : '—'
+    var logs = data.logs || []
+    document.getElementById('logList').innerHTML = logs.length ? logs.map(function(l){
+      var plus = l.points > 0
+      return '<div class="log-row"><span class="log-pts ' + (plus ? 'plus' : 'minus') + '">' + (plus ? '+' : '') + l.points + '</span>' +
+        '<span class="log-note">' + esc(l.note || l.type) + '</span>' +
+        '<span class="log-time">' + fmtTime(l.created_at) + '</span></div>'
+    }).join('') : '<div class="empty">暂无流水，完成任务或发布文稿即可获得贡献值</div>'
+  }
+  if (rank.ok) {
+    var rows = rank.data || []
+    document.getElementById('rankList').innerHTML = rows.length ? rows.map(function(r){
+      var cls = r.rank === 1 ? ' top1' : r.rank === 2 ? ' top2' : r.rank === 3 ? ' top3' : ''
+      return '<div class="rank-row"><div class="rank-no' + cls + '">' + (r.rank) + '</div>' +
+        '<span class="rank-name">' + esc(r.user_name || r.user_id) + (r.user_id === (currentUser && currentUser.id) ? ' <span class="badge cat">我</span>' : '') + '</span>' +
+        '<span class="rank-college">' + esc(r.college || '') + '</span>' +
+        '<span class="rank-pts">' + r.total + '</span></div>'
+    }).join('') : '<div class="empty">暂无贡献数据</div>'
+  }
+}
+
+/* ── 管理端 ── */
+async function createTask(){
+  var title = document.getElementById('ntTitle').value.trim()
+  if (!title) { toast('请填写任务标题'); return }
+  var d = await api('/api/admin/tasks', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: title,
+      description: document.getElementById('ntDesc').value,
+      category: document.getElementById('ntCat').value,
+      points: parseInt(document.getElementById('ntPoints').value) || 10,
+      slots: parseInt(document.getElementById('ntSlots').value) || 0,
+      deadline: document.getElementById('ntDeadline').value
+    })
+  })
+  toast(d.message || (d.ok ? '已发布' : '发布失败'))
+  if (d.ok) {
+    document.getElementById('ntTitle').value = ''
+    document.getElementById('ntDesc').value = ''
+    loadAdminTasks(); loadTasks()
+  }
+}
+async function loadAdminTasks(){
+  var d = await api('/api/tasks')
+  if (!d.ok) { document.getElementById('adminTaskList').innerHTML = '<div class="empty">加载失败</div>'; return }
+  var rows = d.data || []
+  if (!rows.length) { document.getElementById('adminTaskList').innerHTML = '<div class="empty">还没有任务</div>'; return }
+  document.getElementById('adminTaskList').innerHTML = rows.map(function(t){
+    return '<div class="log-row"><div style="flex:1;min-width:0">' +
+      '<div class="rank-name" style="font-size:14px">' + esc(t.title) + ' <span class="badge pts">+' + t.points + '</span> ' + (t.status === 'open' ? '<span class="badge ok">开放中</span>' : '<span class="badge off">已关闭</span>') + '</div>' +
+      '<div class="muted" style="margin-top:4px"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ' + t.active_claims + (t.slots > 0 ? '/' + t.slots : '') + ' · <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2.5px" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> ' + t.done_claims + ' · 创建于 ' + fmtTime(t.created_at) + '</div></div>' +
+      '<div style="display:flex;gap:8px;flex-shrink:0">' +
+      '<button class="btn small" onclick="toggleTask(' + t.id + ',\'' + (t.status === 'open' ? 'closed' : 'open') + '\')">' + (t.status === 'open' ? '关闭' : '重新开放') + '</button>' +
+      '<button class="btn small danger" onclick="delTask(' + t.id + ')">删除</button></div></div>'
+  }).join('')
+}
+async function toggleTask(id, status){
+  var d = await api('/api/admin/tasks/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: status }) })
+  toast(d.message || (d.ok ? '已更新' : '操作失败'))
+  if (d.ok) { loadAdminTasks(); loadTasks() }
+}
+async function delTask(id){
+  if (!confirm('确定删除该任务？全部领取记录将一并删除，已发放的贡献值流水保留。')) return
+  var d = await api('/api/admin/tasks/' + id, { method: 'DELETE' })
+  toast(d.message || (d.ok ? '已删除' : '删除失败'))
+  if (d.ok) { loadAdminTasks(); loadTasks() }
+}
+function setClaimFilter(f){
+  claimFilter = f
+  document.querySelectorAll('[data-claim-filter]').forEach(function(el){ el.style.borderColor = el.getAttribute('data-claim-filter') === f ? 'var(--primary)' : '' })
+  loadClaims()
+}
+async function loadClaims(){
+  var d = await api('/api/admin/task-claims' + (claimFilter ? '?status=' + claimFilter : ''))
+  if (!d.ok) { document.getElementById('claimList').innerHTML = '<div class="empty">' + esc(d.message || '加载失败') + '</div>'; return }
+  var rows = d.data || []
+  if (!rows.length) { document.getElementById('claimList').innerHTML = '<div class="empty">暂无记录</div>'; return }
+  document.getElementById('claimList').innerHTML = rows.map(function(c){
+    var reviewBtns = ''
+    if (c.status === 'submitted') {
+      reviewBtns = '<button class="btn small primary" onclick="reviewClaim(' + c.id + ',\'approve\')">通过</button>' +
+        '<button class="btn small danger" onclick="openReject(' + c.id + ')">打回</button>'
+    }
+    return '<div class="log-row" style="align-items:flex-start"><div style="flex:1;min-width:0">' +
+      '<div style="font-size:14px"><b>' + esc(c.user_name || c.user_id) + '</b> · ' + esc(c.task_title || ('任务#' + c.task_id)) + ' ' + statusBadge(c.status) + '</div>' +
+      (c.submission_note ? '<div class="muted" style="margin-top:4px;white-space:pre-wrap">成果：' + esc(c.submission_note) + '</div>' : '') +
+      (c.article_id ? '<div class="muted">关联文稿 #' + c.article_id + '</div>' : '') +
+      (c.submitted_at ? '<div class="muted">提交于 ' + fmtTime(c.submitted_at) + '</div>' : '') +
+      '</div><div style="display:flex;gap:8px;flex-shrink:0">' + reviewBtns + '</div></div>'
+  }).join('')
+}
+async function reviewClaim(id, action, comment){
+  var d = await api('/api/admin/task-claims/' + id + '/review', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: action, comment: comment || '' })
+  })
+  toast(d.message || (d.ok ? '已处理' : '操作失败'))
+  if (d.ok) { loadClaims(); loadAdminTasks() }
+}
+function openReject(id){
+  rejectingClaimId = id
+  document.getElementById('rejectReason').value = ''
+  document.getElementById('rejectModal').classList.add('show')
+}
+function closeReject(){ document.getElementById('rejectModal').classList.remove('show') }
+async function doReject(){
+  if (!rejectingClaimId) return
+  var reason = document.getElementById('rejectReason').value.trim()
+  if (!reason) { toast('打回必须填写原因'); return }
+  await reviewClaim(rejectingClaimId, 'reject', reason)
+  closeReject()
+}
+async function adjustContribution(){
+  var uid = document.getElementById('adjUser').value.trim()
+  var pts = parseInt(document.getElementById('adjPoints').value)
+  var note = document.getElementById('adjNote').value.trim()
+  if (!uid || !pts || !note) { toast('学号、分值、原因均必填'); return }
+  var d = await api('/api/admin/contribution/adjust', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id: uid, points: pts, note: note })
+  })
+  toast(d.message || (d.ok ? '已调整' : '操作失败'))
+  if (d.ok) {
+    document.getElementById('adjUser').value = ''
+    document.getElementById('adjPoints').value = ''
+    document.getElementById('adjNote').value = ''
+  }
+}
+
+/* ── 初始化 ── */
+(async function init(){
+  var res = await api('/api/me')
+  if (!res.ok || !res.user) {
+    // 设计审计 A3（2026-09-22）：纯登录墙——骨架在 CSS 遮罩失效场景下也不渲染
+    var layout = document.querySelector('.layout')
+    if (layout) layout.style.display = 'none'
+    document.getElementById('authMask').style.display = 'flex'
+    return
+  }
+  currentUser = res.user
+  document.getElementById('whoami').textContent = currentUser.name || currentUser.id
+  if (currentUser.is_admin) document.getElementById('adminNavGroup').style.display = ''
+  // 仅高亮默认筛选按钮,不触发管理员接口(学生进页面会 403)
+  document.querySelectorAll('[data-claim-filter]').forEach(function(el){ el.style.borderColor = el.getAttribute('data-claim-filter') === 'submitted' ? 'var(--primary)' : '' })
+  loadTasks()
+})()
+</script>
+</body>
+</html>

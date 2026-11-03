@@ -1,0 +1,80 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">CONTENT ADMIN</view>
+      <view class="hdr-title">内容管理</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">仅管理员可用</view>
+      <view class="a-deny-s">精选与下架会直接影响前台展示，只对管理员开放。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">CONTENT ADMIN</view>
+      <view class="hdr-title">内容管理</view>
+      <view class="hdr-sub">共 {{total}} 条 · 已精选 {{featuredCount}} · 已下架 {{offlineCount}}</view>
+    </view>
+
+    <view class="field">
+      <view class="input-wrap">
+        <input
+          class="input"
+          value="{{keyword}}"
+          placeholder="搜索标题、学院或标签"
+          placeholder-class="input-ph"
+          bindinput="onSearch"
+        />
+      </view>
+    </view>
+
+    <view class="chips">
+      <view
+        wx:for="{{filters}}"
+        wx:key="*this"
+        class="chip {{filter === item ? 'on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onFilter"
+      >{{item}}</view>
+    </view>
+
+    <view wx:for="{{list}}" wx:key="id" class="row">
+      <view class="row-thumb {{item.tone}}"></view>
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+
+        <view class="row-meta">
+          <text class="pill {{item.offline ? 'pill-danger' : (item.featured ? 'pill-ok' : 'pill-mute')}}">
+            {{item.offline ? '已下架' : (item.featured ? '已精选' : '已发布')}}
+          </text>
+          <text class="row-sub">{{item.type}} · {{item.size}}</text>
+        </view>
+
+        <view class="row-foot">
+          <text>{{item.college}}</text>
+        </view>
+
+        <view class="a-acts">
+          <view class="a-btn mini {{item.featured ? '' : 'gold'}}" data-id="{{item.id}}" bindtap="onFeature">
+            {{item.featured ? '取消精选' : '设为精选'}}
+          </view>
+          <view class="a-btn mini {{item.offline ? 'ok' : 'no'}}" data-id="{{item.id}}" bindtap="onOffline">
+            {{item.offline ? '恢复上架' : '下架'}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!list.length}}" class="a-deny">
+      <view class="a-deny-t">没有匹配的素材</view>
+      <view class="a-deny-s">换个关键词，或切回「全部」看看。</view>
+    </view>
+
+    <view class="note">
+      下架是不可见的软删除：素材本身与下载记录都保留，可随时恢复。要彻底删除请到 Web 后台操作。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

@@ -1,0 +1,135 @@
+/* 账号设置：只放这一页独有的版式，通用输入框沿用 app.wxss 的 .field / .input-wrap */
+
+.acc {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  padding: 30rpx 28rpx;
+  border-radius: 24rpx;
+  background: var(--bg-2);
+  border: 1rpx solid var(--line);
+  margin-bottom: 34rpx;
+}
+
+.acc-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #0a0c11;
+  background: linear-gradient(135deg, #e5c885, #d8b46a);
+}
+
+.acc-main { flex: 1; min-width: 0; }
+
+.acc-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 8rpx;
+}
+
+.acc-meta {
+  font-size: 24rpx;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.acc-tag {
+  flex: 0 0 auto;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  color: var(--gold);
+  background: rgba(216, 180, 106, 0.12);
+  border: 1rpx solid rgba(216, 180, 106, 0.32);
+}
+
+.sec-h {
+  font-size: 26rpx;
+  color: var(--text-3);
+  letter-spacing: 1rpx;
+  margin: 8rpx 0 18rpx 6rpx;
+}
+
+/* 可点击的整行：标题 + 说明 + 右侧动作 */
+.row-btn {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 112rpx;
+  padding: 22rpx 28rpx;
+  margin-bottom: 18rpx;
+  border-radius: 22rpx;
+  background: var(--bg-2);
+  border: 1rpx solid var(--line);
+}
+
+.row-btn:active { opacity: 0.88; }
+
+.row-btn-main { flex: 1; min-width: 0; }
+
+.row-btn-title {
+  font-size: 30rpx;
+  color: var(--text-1);
+  margin-bottom: 6rpx;
+}
+
+.row-btn-sub {
+  font-size: 23rpx;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+.row-btn-act {
+  flex: 0 0 auto;
+  font-size: 26rpx;
+  color: var(--gold);
+}
+
+.row-btn-act.on { color: var(--ok); }
+
+/* 修改密码展开区 */
+.pwd-box {
+  padding: 26rpx 28rpx 8rpx;
+  margin: -6rpx 0 18rpx;
+  border-radius: 22rpx;
+  background: rgba(18, 21, 29, 0.72);
+  border: 1rpx solid var(--line);
+}
+
+.pwd-err {
+  font-size: 24rpx;
+  color: var(--danger);
+  margin: -6rpx 0 18rpx 4rpx;
+}
+
+.pwd-ok {
+  font-size: 24rpx;
+  color: var(--ok);
+  margin: -6rpx 0 18rpx 4rpx;
+}
+
+.pwd-btn {
+  width: 100%;
+  margin-bottom: 26rpx;
+  font-size: 30rpx;
+}
+
+.logout {
+  width: 100%;
+  margin-top: 30rpx;
+  color: var(--danger);
+  border-color: rgba(226, 110, 110, 0.34);
+}
+
+.login-btn {
+  width: 100%;
+  margin-top: 30rpx;
+}
+
+.note.mock { color: var(--text-3); }

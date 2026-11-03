@@ -1,0 +1,85 @@
+/* 设备自检页专用样式（其余复用 app.wxss 全局类） */
+.dg-kicker {
+  margin-top: 28rpx;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+  color: var(--gold);
+}
+.dg-h1 {
+  margin-top: 10rpx;
+  font-size: 52rpx;
+  font-weight: 700;
+  letter-spacing: -1rpx;
+  color: var(--text-1);
+}
+.dg-sub {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--text-3);
+}
+.dg-build {
+  margin-top: 10rpx;
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  color: var(--gold);
+  background: var(--gold-soft);
+  border: 1rpx solid var(--line-gold);
+}
+.dg-card {
+  margin-top: 18rpx;
+  padding: 6rpx 24rpx;
+}
+.dg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.dg-row:last-child { border-bottom: none; }
+.dg-k {
+  flex: none;
+  width: 190rpx;
+  font-size: 23rpx;
+  color: var(--text-3);
+}
+.dg-v {
+  flex: 1;
+  font-size: 24rpx;
+  line-height: 1.55;
+  text-align: right;
+  color: var(--text-1);
+  word-break: break-all;
+}
+.dg-v.ok { color: #7fd6a2; }
+.dg-v.warn { color: var(--gold); }
+.dg-v.bad { color: #e8837a; }
+.dg-hint {
+  margin-left: auto;
+  font-size: 21rpx;
+  color: var(--text-3);
+}
+.dg-note {
+  padding: 16rpx 0 20rpx;
+  font-size: 21rpx;
+  line-height: 1.6;
+  color: var(--text-3);
+}
+.dg-btn { margin: 8rpx 0 12rpx; }
+.dg-chips { display: flex; gap: 16rpx; padding: 4rpx 0 8rpx; }
+.dg-input-wrap { flex: 1; }
+.dg-copy {
+  flex: none;
+  padding: 0 26rpx;
+  font-size: 26rpx;
+}
+.dg-stress { padding: 10rpx 24rpx; }
+.dg-stress-row {
+  padding: 16rpx 0;
+  font-size: 23rpx;
+  color: var(--text-2);
+  border-bottom: 1rpx solid var(--line);
+}

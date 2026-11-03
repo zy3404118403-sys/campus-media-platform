@@ -1,0 +1,89 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">REVIEW QUEUE</view>
+      <view class="hdr-title">审核队列</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">没有审核权限</view>
+      <view class="a-deny-s">该页面仅对管理员与审核员开放。</view>
+      <view class="btn state-btn" bindtap="onBackAdmin">返回</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">REVIEW QUEUE</view>
+      <view class="hdr-title">审核队列</view>
+      <view class="hdr-sub">待审 {{pending}} 条 · 本次已处理 {{doneToday}} 条</view>
+    </view>
+
+    <!-- 风险筛选提示 -->
+    <view wx:if="{{riskOnly}}" class="a-banner" bindtap="onClearRisk">
+      当前只看含肖像风险的条目 · 点此查看全部
+    </view>
+
+    <view class="chips">
+      <view
+        wx:for="{{filters}}"
+        wx:key="*this"
+        class="chip {{filter === item ? 'on' : ''}}"
+        data-v="{{item}}"
+        bindtap="onFilter"
+      >{{item}}</view>
+    </view>
+
+    <!-- 批量：只放行无风险项 -->
+    <view wx:if="{{safeCount}}" class="a-btn gold" bindtap="onPassSafe">
+      批量通过无风险项（{{safeCount}}）
+    </view>
+    <view style="height: 24rpx"></view>
+
+    <block wx:if="{{state === 'ready'}}">
+      <view wx:for="{{list}}" wx:key="id" class="row">
+        <view class="row-thumb {{item.tone}}"></view>
+        <view class="row-main">
+          <view class="row-title">{{item.title}}</view>
+
+          <view class="row-meta">
+            <text class="pill">{{item.type}}</text>
+            <text class="row-sub">{{item.size}}{{item.duration ? ' · ' + item.duration : ''}}</text>
+          </view>
+
+          <view class="row-foot">
+            <text>{{item.author}} · {{item.sidMask}}</text>
+            <text>{{item.at}}</text>
+          </view>
+
+          <view class="row-foot">
+            <text>{{item.college}}</text>
+          </view>
+
+          <!-- 系统预检：给审核员参考，不代替判断 -->
+          <view wx:if="{{item.hints.length}}" class="a-hints">
+            <text wx:for="{{item.hints}}" wx:for-item="h" wx:key="*this" class="a-hint">{{h}}</text>
+          </view>
+
+          <view class="a-acts">
+            <view class="a-btn ok" data-id="{{item.id}}" bindtap="onPass">通过</view>
+            <view class="a-btn no" data-id="{{item.id}}" bindtap="onReject">退回</view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:elif="{{state === 'empty'}}">
+      <view class="a-deny">
+        <view class="a-deny-t">这一批审完了</view>
+        <view class="a-deny-s">{{riskOnly ? '含肖像风险的条目已处理完。' : '当前筛选条件下没有待审素材。'}}</view>
+        <view wx:if="{{riskOnly}}" class="btn state-btn" bindtap="onClearRisk">查看全部待审</view>
+      </view>
+    </block>
+
+    <view class="note">
+      通过即代表素材对外可见并计入作者贡献值；退回必须选择原因，提交者在「我的投稿」里能看到具体理由。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin.html
+Disallow: /user.html
+Disallow: /articles.html
+
+Sitemap: http://old-server.example/sitemap.xml

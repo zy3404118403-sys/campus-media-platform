@@ -1,0 +1,115 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">BROADCAST</view>
+      <view class="hdr-title">通知发布</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">仅管理员可用</view>
+      <view class="a-deny-s">全员通知无法撤回，只对管理员开放。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">BROADCAST</view>
+      <view class="hdr-title">通知发布</view>
+      <view class="hdr-sub">当前范围 {{scopeName}} · 预计触达 {{reach}} 人</view>
+    </view>
+
+    <view class="field">
+      <view class="field-lbl">标题</view>
+      <view class="input-wrap {{err ? 'err' : ''}}">
+        <input
+          class="input"
+          value="{{title}}"
+          maxlength="{{titleMax}}"
+          placeholder="例：素材上传规范更新（11 月版）"
+          placeholder-class="input-ph"
+          bindinput="onTitle"
+        />
+      </view>
+      <view class="a-count {{title.length > titleMax ? 'over' : ''}}">{{title.length}} / {{titleMax}}</view>
+    </view>
+
+    <view class="field">
+      <view class="field-lbl">正文</view>
+      <view class="input-wrap {{err ? 'err' : ''}}" style="padding: 20rpx 22rpx">
+        <textarea
+          class="a-textarea"
+          value="{{body}}"
+          maxlength="{{bodyMax}}"
+          placeholder="写清楚：改了哪条规范、什么时候生效、有疑问找谁"
+          placeholder-class="input-ph"
+          bindinput="onBody"
+          auto-height
+        ></textarea>
+      </view>
+      <view class="a-count {{body.length > bodyMax ? 'over' : ''}}">{{bodyLen}} / {{bodyMax}}</view>
+    </view>
+
+    <view class="a-sec">发送范围</view>
+
+    <!-- 全体成员是一个独立选项；学院/部门走右边展开栏。
+         原来把 7 个选项平铺成横向胶囊，一屏放不下、右侧被截断。 -->
+    <view class="a-scope">
+      <view id="scopeAllBtn" class="a-scope-all {{scopeMode === 'all' ? 'on' : ''}}" bindtap="onPickAll">
+        <text>全体成员</text>
+        <text class="a-scope-n">{{allCount}}</text>
+      </view>
+
+      <view id="scopePickBtn" class="a-scope-pick {{scopeMode === 'college' ? 'on' : ''}}" bindtap="onTogglePicker">
+        <text class="a-scope-text">{{scopeMode === 'college' ? scopeName : '选择学院 / 部门'}}</text>
+        <view class="a-scope-caret {{pickerOpen ? 'up' : ''}}"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{pickerOpen}}" class="a-picker">
+      <view
+        wx:for="{{colleges}}"
+        wx:key="name"
+        class="a-picker-item {{scopeMode === 'college' && collegeIndex === index ? 'on' : ''}}"
+        data-i="{{index}}"
+        bindtap="onPickCollege"
+      >
+        <text class="a-picker-name">{{item.name}}</text>
+        <text class="a-picker-n">{{item.n}} 人</text>
+        <view class="a-picker-mark"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{err}}" class="a-err">
+      {{err}}
+    </view>
+
+    <view class="btn {{busy ? 'btn-loading' : ''}}" bindtap="onSend">
+      {{busy ? '发送中…' : '发送通知'}}
+    </view>
+
+    <view class="a-sec" style="margin-top: 40rpx">已发送</view>
+    <view wx:for="{{notices}}" wx:key="id" class="row" data-i="{{index}}" bindtap="onNotice">
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+        <view class="row-meta">
+          <text class="pill pill-mute">{{item.scope}}</text>
+          <text class="row-sub">{{item.at}}</text>
+        </view>
+        <view class="row-foot">
+          <text>已读 {{item.read}} / {{item.total}}</text>
+          <text>{{item.pct}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{!notices.length}}" class="a-deny">
+      <view class="a-deny-t">还没有发过通知</view>
+      <view class="a-deny-s">发出去的通知会显示在这里，并带上已读比例。</view>
+    </view>
+
+    <view class="note">
+      通知会出现在成员的「消息 → 通知」里，同时计入未读角标。原型阶段不发真实推送，仅写入本机数据。
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

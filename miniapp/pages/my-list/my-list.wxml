@@ -1,0 +1,97 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">{{kicker}}</view>
+    <view class="hdr-title">{{title}}</view>
+    <view class="hdr-sub">{{subtitle}}</view>
+  </view>
+
+  <!-- 投稿专用：按审核状态筛选 -->
+  <scroll-view wx:if="{{showFilter && state !== 'guest'}}" class="chips" scroll-x enable-flex>
+    <view
+      wx:for="{{filters}}"
+      wx:key="*this"
+      id="chip-{{index}}"
+      class="chip {{filter === item ? 'on' : ''}}"
+      data-v="{{item}}"
+      bindtap="onFilter"
+    >{{item}}</view>
+  </scroll-view>
+
+  <!-- 投稿模式：上传入口 -->
+  <view
+    wx:if="{{mode === 'uploads' && state !== 'guest'}}"
+    id="uploadBtn"
+    class="compose-btn"
+    bindtap="onUpload"
+  >＋ 上传素材</view>
+
+  <!-- 加载态 -->
+  <view wx:if="{{state === 'loading'}}">
+    <view wx:for="{{[1,2,3,4]}}" wx:key="*this" class="sk sk-row-152"></view>
+  </view>
+
+  <!-- 未登录 -->
+  <view wx:elif="{{state === 'guest'}}" class="state">
+    <view class="state-mark">🔒</view>
+    <view class="state-title">登录后查看</view>
+    <view class="state-desc">登录学号账号后，可以查看自己的收藏、下载与投稿记录。</view>
+    <view class="btn state-btn" bindtap="onLogin">立即登录</view>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{state === 'error'}}" class="state">
+    <view class="state-mark">!</view>
+    <view class="state-title">{{errorTitle}}</view>
+    <view class="state-desc">可能是网络波动，点击下方按钮重试。</view>
+    <view class="btn btn-ghost state-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 空态 -->
+  <view wx:elif="{{state === 'empty'}}" class="state">
+    <view class="state-mark ico ico-file"></view>
+    <view class="state-title">{{emptyTitle}}</view>
+    <view class="state-desc">{{emptyDesc}}</view>
+    <view class="btn state-btn" bindtap="onGoEmpty">{{emptyAction}}</view>
+  </view>
+
+  <!-- 列表 -->
+  <block wx:else>
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="row"
+      data-id="{{item.id}}"
+      bindtap="onOpen"
+    >
+      <view class="row-thumb {{item.tone}}"></view>
+      <view class="row-main">
+        <view class="row-title">{{item.title}}</view>
+
+        <view class="row-meta">
+          <text wx:if="{{item.statusText}}" class="pill {{item.statusCls}}">{{item.statusText}}</text>
+          <text class="row-sub">{{item.type}}{{item.size ? ' · ' + item.size : ''}}</text>
+        </view>
+
+        <view wx:if="{{item.status === 'rejected'}}" class="reject">
+          <text class="reject-k">退回原因</text>
+          <text class="reject-v">{{item.reason}}</text>
+        </view>
+
+        <view class="row-foot">
+          <text>{{item.college}}</text>
+          <text>{{atLabel}} {{item.at}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="list-foot">
+      <view wx:if="{{loadingMore}}" class="list-more">加载中…</view>
+      <view wx:elif="{{hasMore}}" class="list-more" bindtap="onLoadMoreTap">点击加载更多</view>
+      <text wx:else>已显示全部 {{total}}{{unit}}</text>
+    </view>
+
+    <view wx:if="{{footNote}}" class="note foot-note">{{footNote}}</view>
+  </block>
+
+  <view class="safe"></view>
+</view>

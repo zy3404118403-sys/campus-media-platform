@@ -1,0 +1,17 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">{{item.date}} · {{item.author}}</view>
+    <view class="hdr-title art-hd">{{item.title}}</view>
+  </view>
+
+  <view class="art-hero {{item.tone}}"></view>
+
+  <view class="art-body">
+    <view wx:for="{{paragraphs}}" wx:key="index" class="art-p">{{item}}</view>
+    <view class="art-quote">{{quote}}</view>
+    <view wx:for="{{tail}}" wx:key="index" class="art-p">{{item}}</view>
+  </view>
+
+  <view class="note">本文为原型示例内容，正式版将读取平台文章数据。</view>
+  <view class="safe"></view>
+</view>

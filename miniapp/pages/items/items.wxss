@@ -1,0 +1,4 @@
+/* 事项页：分段控件复用 app.wxss 的 .seg，此处只做细调 */
+.hdr {
+  padding-bottom: 28rpx;
+}

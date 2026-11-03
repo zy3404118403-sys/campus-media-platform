@@ -1,0 +1,181 @@
+<view class="page">
+  <block wx:if="{{deny}}">
+    <view class="hdr">
+      <view class="hdr-kicker">EDITOR</view>
+      <view class="hdr-title">事项编辑</view>
+    </view>
+    <view class="a-deny">
+      <view class="a-deny-t">仅管理员可用</view>
+      <view class="a-deny-s">发布与编辑会直接影响 C 端，只对管理员开放。</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hdr">
+      <view class="hdr-kicker">{{kind === 'activity' ? 'ACTIVITY' : 'TASK'}}</view>
+      <view class="hdr-title">{{isEdit ? '编辑' : '新建'}}{{kind === 'activity' ? '活动' : '任务'}}</view>
+      <view class="hdr-sub">{{isEdit ? '保存后立即生效' : '先存为草稿，确认后再发布'}}</view>
+    </view>
+
+    <!-- ══════ 活动 ══════ -->
+    <block wx:if="{{kind === 'activity'}}">
+      <view class="field">
+        <view class="field-lbl">活动名称</view>
+        <view class="input-wrap">
+          <input class="input" value="{{title}}" data-k="title" bindinput="onInput"
+            placeholder="例：冬日暖阳 · 寒假返乡影像征集" placeholder-class="input-ph" maxlength="40" />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">地点</view>
+        <view class="input-wrap">
+          <input class="input" value="{{place}}" data-k="place" bindinput="onInput"
+            placeholder="例：线上投稿 / 学术报告厅" placeholder-class="input-ph" maxlength="30" />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">显示时间</view>
+        <view class="input-wrap">
+          <input class="input" value="{{time}}" data-k="time" bindinput="onInput"
+            placeholder="留空则按截止时间自动生成，如「11-30 截止」" placeholder-class="input-ph" maxlength="24" />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">截止时间</view>
+        <view class="input-wrap">
+          <input class="input" value="{{deadline}}" data-k="deadline" bindinput="onInput"
+            placeholder="2026-11-30 23:59" placeholder-class="input-ph" maxlength="24" />
+        </view>
+      </view>
+
+      <view class="a-two">
+        <view class="field a-two-cell">
+          <view class="field-lbl">名额</view>
+          <view class="input-wrap">
+            <input class="input" type="number" value="{{capacity}}" data-k="capacity" bindinput="onInput"
+              placeholder="150" placeholder-class="input-ph" maxlength="6" />
+          </view>
+        </view>
+        <view class="field a-two-cell">
+          <view class="field-lbl">贡献值</view>
+          <view class="input-wrap">
+            <input class="input" type="number" value="{{points}}" data-k="points" bindinput="onInput"
+              placeholder="40" placeholder-class="input-ph" maxlength="6" />
+          </view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">活动简介</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{intro}}" data-k="intro" bindinput="onInput"
+            placeholder="说明做什么、面向谁、有什么要求（至少 10 个字）" placeholder-class="input-ph" auto-height maxlength="300"></textarea>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">活动流程（一行一条，可写「时间｜内容」）</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{agendaText}}" data-k="agendaText" bindinput="onInput"
+            placeholder="例：11-22 08:00｜开幕式领取任务卡；11-23 08:00｜拍摄窗口关闭" placeholder-class="input-ph" auto-height maxlength="600"></textarea>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">参与须知（一行一条）</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{notesText}}" data-k="notesText" bindinput="onInput"
+            placeholder="例：组图须为本人拍摄；涉及他人正面须取得同意" placeholder-class="input-ph" auto-height maxlength="600"></textarea>
+        </view>
+      </view>
+    </block>
+
+    <!-- ══════ 任务 ══════ -->
+    <block wx:else>
+      <view class="field">
+        <view class="field-lbl">任务名称</view>
+        <view class="input-wrap">
+          <input class="input" value="{{title}}" data-k="title" bindinput="onInput"
+            placeholder="例：校庆宣传片 · 空镜补拍" placeholder-class="input-ph" maxlength="40" />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">成果类型</view>
+        <view class="chips" style="margin-top: 8rpx">
+          <view
+            wx:for="{{types}}"
+            wx:key="*this"
+            class="chip {{type === item ? 'on' : ''}}"
+            data-v="{{item}}"
+            bindtap="onType"
+          >{{item}}</view>
+        </view>
+      </view>
+
+      <view class="a-two">
+        <view class="field a-two-cell">
+          <view class="field-lbl">贡献值</view>
+          <view class="input-wrap">
+            <input class="input" type="number" value="{{points}}" data-k="points" bindinput="onInput"
+              placeholder="40" placeholder-class="input-ph" maxlength="6" />
+          </view>
+        </view>
+        <view class="field a-two-cell">
+          <view class="field-lbl">名额</view>
+          <view class="input-wrap">
+            <input class="input" value="{{slots}}" data-k="slots" bindinput="onInput"
+              placeholder="3 人 / 不限" placeholder-class="input-ph" maxlength="12" />
+          </view>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">截止时间</view>
+        <view class="input-wrap">
+          <input class="input" value="{{deadline}}" data-k="deadline" bindinput="onInput"
+            placeholder="2026-11-30 23:59" placeholder-class="input-ph" maxlength="24" />
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">任务描述</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{desc}}" data-k="desc" bindinput="onInput"
+            placeholder="要拍什么、多少条、什么规格（至少 10 个字）" placeholder-class="input-ph" auto-height maxlength="300"></textarea>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">交付物</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{deliver}}" data-k="deliver" bindinput="onInput"
+            placeholder="例：6 组空镜原始素材（4K 25p）" placeholder-class="input-ph" auto-height maxlength="200"></textarea>
+        </view>
+      </view>
+
+      <view class="field">
+        <view class="field-lbl">拍摄要求（一行一条）</view>
+        <view class="input-wrap" style="padding: 20rpx 22rpx">
+          <textarea class="a-textarea" value="{{reqText}}" data-k="reqText" bindinput="onInput"
+            placeholder="例：严格按分镜表构图；素材不做剪辑，保留原始片段" placeholder-class="input-ph" auto-height maxlength="600"></textarea>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{err}}" class="a-err">{{err}}</view>
+
+    <view class="btn {{busy ? 'btn-loading' : ''}}" bindtap="onSave">
+      {{busy ? '保存中…' : (isEdit ? '保存修改' : '存为草稿')}}
+    </view>
+
+    <view class="note">
+      {{isEdit ? '编辑不会改变活动/任务状态；发布与结束请在列表页操作。' : '新建的条目先是草稿，只出现在管理后台，点「发布」后才对 C 端可见。'}}
+    </view>
+  </block>
+
+  <view class="safe"></view>
+</view>

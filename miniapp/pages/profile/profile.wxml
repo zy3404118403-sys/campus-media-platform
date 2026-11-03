@@ -1,0 +1,68 @@
+<view class="page">
+  <view class="hdr">
+    <view class="hdr-kicker">MY ACCOUNT</view>
+    <view class="hdr-title">我的</view>
+    <view class="hdr-sub">{{subText}}</view>
+  </view>
+
+  <view class="prof-card">
+    <view class="avatar">{{initial}}</view>
+    <view class="prof-main">
+      <view class="prof-name">{{nameText}}</view>
+      <view class="prof-meta">{{metaText}}</view>
+    </view>
+    <view wx:if="{{!loggedIn}}" class="btn row-btn" catchtap="onLogin">登录</view>
+  </view>
+
+  <view class="stat-row">
+    <view class="stat-item" data-key="fav" bindtap="onStat">
+      <view class="stat-num">{{stats.favorites}}</view>
+      <view class="stat-lbl">收藏</view>
+    </view>
+    <view class="stat-item" data-key="download" bindtap="onStat">
+      <view class="stat-num">{{stats.downloads}}</view>
+      <view class="stat-lbl">下载</view>
+    </view>
+    <view class="stat-item" data-key="upload" bindtap="onStat">
+      <view class="stat-num">{{stats.uploads}}</view>
+      <view class="stat-lbl">投稿</view>
+    </view>
+    <view class="stat-item">
+      <view class="stat-num">{{stats.points}}</view>
+      <view class="stat-lbl">贡献值</view>
+    </view>
+  </view>
+
+  <view wx:if="{{showAdmin}}" class="adm-card" data-key="admin" bindtap="onMenu">
+    <view class="adm-main">
+      <view class="adm-t">管理后台</view>
+      <view class="adm-s">待审 {{pendingCount}} 条 · 审核 · 内容 · 事项 · 成员 · 通知</view>
+    </view>
+    <view class="adm-act">{{pendingCount ? '去处理' : '进入'}}</view>
+  </view>
+
+  <view wx:for="{{groups}}" wx:key="key" class="menu">
+    <view
+      wx:for="{{item.items}}"
+      wx:for-item="row"
+      wx:key="key"
+      id="menu-{{row.key}}"
+      class="menu-item"
+      data-key="{{row.key}}"
+      bindtap="onMenu"
+    >
+      <text>{{row.text}}</text>
+      <text class="menu-arrow">{{row.hint}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loggedIn}}" class="menu">
+    <view class="menu-item" bindtap="onLogout">
+      <text class="danger-text">退出登录</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view wx:if="{{mockNote}}" class="form-note">{{mockNote}}</view>
+  <view class="safe"></view>
+</view>

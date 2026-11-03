@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "素材库",
+  "usingComponents": {},
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "light",
+  "onReachBottomDistance": 120
+}

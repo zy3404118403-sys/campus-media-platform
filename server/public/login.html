@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" href="shared.js?v=20" as="script">
+<meta name="description" content="校园素材共建平台登录——芜宇乐的融媒体中心">
+<meta name="theme-color" content="#0a0a0f">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="/icons/icon-180.png">
+<script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<meta name="color-scheme" content="dark light">
+<title>登录 · 融媒体素材共建平台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"Inter","SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+body{display:flex;background:#05070B}
+
+/* ── 左侧棱镜区 ── */
+.prism-panel{flex:1;position:relative;overflow:hidden;min-width:0}
+#prismCanvas{position:absolute;inset:0;width:100%;height:100%}
+.prism-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:1}
+.prism-overlay .brand{text-align:center}
+.prism-overlay .brand h2{font-family:"Noto Serif SC","Songti SC","SimSun",serif;font-size:clamp(24px,3.5vw,38px);font-weight:700;background:linear-gradient(135deg,#d4af37,#f0d060,#d4af37);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3;margin-bottom:8px}
+.prism-overlay .brand .sub{font-size:13px;color:rgba(255,255,255,.45);letter-spacing:2px}
+.prism-overlay .brand .tag{display:inline-block;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.25);color:rgba(240,208,96,.8);padding:4px 16px;border-radius:20px;font-size:11px;letter-spacing:1px;margin-top:16px}
+
+/* ── 右侧登录面板 ── */
+.login-panel{width:440px;min-width:440px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(12,12,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-left:1px solid rgba(255,255,255,.07);padding:50px 48px;position:relative;z-index:2;box-shadow:-8px 0 40px rgba(0,0,0,.4)}
+.login-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(212,175,55,.04) 0%,transparent 60%);pointer-events:none}
+.specular-button.close-btn{position:fixed;top:16px;right:16px;width:40px;height:40px;padding:0;font-size:16px;z-index:100;display:inline-flex;align-items:center;justify-content:center}
+.close-btn .specular-button__label{font-size:16px;line-height:1}
+.login-inner{width:100%;position:relative;z-index:1}
+.login-inner .welcome{text-align:center;margin-bottom:36px}
+.login-inner .welcome .icon{font-size:36px;margin-bottom:10px}
+.login-inner .welcome h2{font-size:22px;font-weight:700;background:linear-gradient(135deg,#d4af37,#f0d060);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.login-inner .welcome p{font-size:13px;color:#5c6170}
+
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#9aa0b0;margin-bottom:6px;letter-spacing:.5px}
+.form-group .input-wrap{position:relative}
+.form-group .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:#5c6170;pointer-events:none}
+.form-group input{width:100%;padding:12px 14px 12px 42px;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;font-size:14px;background:rgba(255,255,255,.04);color:#e8eaed;transition:all .25s;outline:none}
+.form-group input::placeholder{color:#5c6170}
+.form-group input:focus{border-color:#d4af37;background:rgba(212,175,55,.06);box-shadow:0 0 0 3px rgba(212,175,55,.08)}
+
+.login-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;letter-spacing:1px;color:#fff;background:linear-gradient(135deg,#d4af37,#b8945a);cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(212,175,55,.25);margin-top:6px}
+.login-btn:hover{box-shadow:0 6px 30px rgba(212,175,55,.4);transform:translateY(-1px)}
+.login-btn:active{transform:scale(.97)}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.login-error{font-size:12px;color:#f87171;text-align:center;margin-top:12px;min-height:18px}
+
+.login-footer{text-align:center;margin-top:24px;font-size:12px;color:#5c6170}
+.login-footer a{color:#9aa0b0;text-decoration:none;transition:color .2s}
+.login-footer a:hover{color:#e8eaed}
+
+/* ── 响应式 ── */
+@media(max-width:768px){
+  body{flex-direction:column}
+  .prism-panel{height:40vh;min-height:200px;flex:none}
+  .prism-overlay .brand h2{font-size:22px}
+  .prism-overlay .brand .tag{font-size:11px}
+  .login-panel{width:100%;min-width:unset;height:auto;flex:1;border-left:none;border-top:1px solid rgba(255,255,255,.07);padding:32px 28px;justify-content:flex-start}
+  .login-inner .welcome{margin-bottom:24px}
+}
+
+/* ── Specular Button (WebGL 高光按钮) ── */
+.specular-button{
+  --sb-radius:18px;--sb-tint:#ffffff;--sb-tint-opacity:0;--sb-blur:0px;
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  border:none;margin:0;font-family:inherit;font-weight:500;letter-spacing:.01em;line-height:1;
+  color:var(--sb-text-color);
+  background:color-mix(in srgb,var(--sb-tint) calc(var(--sb-tint-opacity) * 100%),rgba(82,82,82,.45));
+  border-radius:var(--sb-radius);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.25);
+  cursor:pointer;outline:none;transition:transform .15s ease;
+  -webkit-appearance:none;appearance:none
+}
+.specular-button:active{transform:scale(.97)}
+.specular-button:focus-visible{outline:2px solid color-mix(in srgb,var(--sb-text-color) 60%,transparent);outline-offset:3px}
+.specular-button:disabled{opacity:.55;cursor:default}
+.specular-button:disabled:active{transform:none}
+.specular-button--sm{font-size:.85rem;padding:10px 22px}
+.specular-button--md{font-size:1rem;padding:14px 30px}
+.specular-button--lg{font-size:1.15rem;padding:18px 40px}
+.specular-button__fx{position:absolute;inset:-20px;pointer-events:none;z-index:1}
+.specular-button__fx canvas{display:block;width:100%;height:100%}
+.specular-button__label{position:relative;z-index:2}
+
+/* ── Language Toggle ── */
+.lang-toggle{display:inline-flex;align-items:center;gap:2px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:9999px;padding:4px;cursor:pointer;font-size:13px;font-weight:700;line-height:1;user-select:none;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.lang-toggle:hover{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.18)}
+.lang-toggle span{padding:5px 12px;border-radius:9999px;color:rgba(255,255,255,.8);transition:all .2s}
+.lang-toggle span.active{background:#fff;color:#000;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+#themeToggle:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5);transform:scale(1.08)}
+
+[data-theme="light"] body{background:#f4f5f8;color:#1a1a2e}
+[data-theme="light"] .login-panel{background:rgba(255,255,255,.85);border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .login-panel h2{color:#1a1a2e}
+[data-theme="light"] .login-panel .sub{color:#4a5060}
+[data-theme="light"] .login-panel input{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.12);color:#1a1a2e}
+[data-theme="light"] .login-panel input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+[data-theme="light"] .login-panel .input-wrap label{color:#4a5060}
+[data-theme="light"] .login-panel .switch{color:#4a5060}
+[data-theme="light"] .prism-bg{opacity:.3}
+[data-theme="light"] .login-msg{color:#4a5060}
+[data-theme="light"] .lang-toggle{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.2);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+[data-theme="light"] .lang-toggle:hover{border-color:rgba(0,0,0,.35);background:rgba(0,0,0,.08)}
+[data-theme="light"] .lang-toggle span{color:rgba(0,0,0,.65)}
+[data-theme="light"] .lang-toggle span.active{background:#1a1a2e;color:#fff}
+[data-theme="light"] #themeToggle{background:rgba(0,0,0,.08)!important;border:2px solid rgba(0,0,0,.45)!important;color:#1a1a2e!important;box-shadow:0 2px 12px rgba(0,0,0,.15)!important}
+[data-theme="light"] #themeToggle:hover{background:rgba(0,0,0,.14)!important;border-color:rgba(0,0,0,.65)!important}
+</style>
+<link rel="stylesheet" href="shared.css?v=14">
+<script defer src="/ogl-bundle.js?v=iife"></script>
+<link rel="stylesheet" href="/assets/glass-solid.css?v=4">
+</head>
+<body>
+<button class="specular-button close-btn" onclick="location.href='/'" aria-label="返回首页" style="--sb-radius:50%;--sb-tint:#ffffff;--sb-tint-opacity:0">
+  <span class="specular-button__fx"></span>
+  <span class="specular-button__label">✕</span>
+</button>
+<div class="prism-panel">
+  <canvas id="prismCanvas"></canvas>
+  <div class="prism-overlay">
+    <div class="brand">
+      <h2>校融媒体素材<br>共建平台</h2>
+      <div class="sub">CREATIVE COMMONS · CAMPUS ARCHIVE</div>
+      <div class="tag">校园素材资源库</div>
+    </div>
+  </div>
+</div>
+<div class="login-panel">
+  <div class="login-inner">
+    <div class="welcome">
+      <div class="icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h2>欢迎回来</h2>
+      <p>使用校园统一认证账号登录</p>
+    </div>
+    <div id="loginStep1">
+    <div class="form-group">
+      <label for="loginId">学号 / 工号</label>
+      <div class="input-wrap">
+        <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+        <input type="text" id="loginId" placeholder="请输入学号或工号" autocomplete="username" autofocus onkeydown="if(event.key==='Enter')$('loginPwd').focus()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="loginPwd">密码</label>
+      <div class="input-wrap">
+        <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <input type="password" id="loginPwd" placeholder="请输入密码" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+    </div>
+    <div style="text-align:right;margin:-6px 0 4px">
+      <a href="javascript:void(0)" id="forgotLink" onclick="toggleForgot()" style="font-size:12.5px;color:inherit;opacity:.62;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.62">忘记密码？</a>
+    </div>
+    <div id="forgotBox" style="display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;line-height:1.7;opacity:.8">
+      <span id="forgotTip"></span>
+    </div>
+    <button class="specular-button specular-button--lg" id="loginBtn" onclick="doLogin()" style="width:100%;--sb-radius:18px;--sb-tint:#ffffff;--sb-tint-opacity:0;--sb-blur:0px">
+      <span class="specular-button__fx"></span>
+      <span class="specular-button__label">登 录</span>
+    </button>
+    <div class="login-error" id="loginError"></div>
+    </div>
+    <div id="loginStep2" style="display:none">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;line-height:1.7;opacity:.85" id="tfaTip">两步验证已开启：请输入验证器 App 中的 6 位动态码。</div>
+      <div class="form-group">
+        <label for="tfaCode">动态验证码</label>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <input type="text" id="tfaCode" placeholder="6 位动态码或备用恢复码" autocomplete="one-time-code" maxlength="16" onkeydown="if(event.key==='Enter')do2fa()">
+        </div>
+      </div>
+      <div style="text-align:right;margin:-6px 0 4px">
+        <a href="javascript:void(0)" onclick="toggleTfaMode()" style="font-size:12.5px;color:inherit;opacity:.62;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.62" id="tfaModeLink">验证器不可用？使用备用恢复码</a>
+      </div>
+      <button class="specular-button specular-button--lg" id="tfaBtn" onclick="do2fa()" style="width:100%;--sb-radius:18px;--sb-tint:#ffffff;--sb-tint-opacity:0;--sb-blur:0px">
+        <span class="specular-button__fx"></span>
+        <span class="specular-button__label" id="tfaBtnLabel">验 证</span>
+      </button>
+      <div class="login-error" id="tfaError"></div>
+      <div style="text-align:center;margin-top:10px">
+        <a href="javascript:void(0)" onclick="backToStep1()" style="font-size:12.5px;color:inherit;opacity:.62;text-decoration:none" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.62">← 返回重新登录</a>
+      </div>
+    </div>
+    <div class="login-footer" style="display:flex;justify-content:center;align-items:center">
+      <div class="lang-toggle" id="langToggle" onclick="toggleLang()"><span data-lang="zh" class="active">中</span><span data-lang="en">EN</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id)
+const redirect=new URLSearchParams(location.search).get('redirect')||''
+let curLang = localStorage.getItem('lang') || 'zh'
+const LI = {
+  'brand.h2':{zh:'校融媒体素材<br>共建平台',en:'Campus Media<br>Material Platform'},
+  'brand.tag':{zh:'校园素材资源库',en:'Campus Material Library'},
+  'welcome.h2':{zh:'欢迎回来',en:'Welcome Back'},
+  'welcome.p':{zh:'使用校园统一认证账号登录',en:'Sign in with your campus account'},
+  'label.id':{zh:'学号 / 工号',en:'Student / Staff ID'},
+  'label.pwd':{zh:'密码',en:'Password'},
+  'ph.id':{zh:'请输入学号或工号',en:'Enter your ID'},
+  'ph.pwd':{zh:'请输入密码',en:'Enter password'},
+  'btn.login':{zh:'登 录',en:'Login'},
+  'btn.logging':{zh:'登录中...',en:'Logging in...'},
+  'err.id':{zh:'请输入学号或工号',en:'Please enter your ID'},
+  'err.pwd':{zh:'请输入密码',en:'Please enter password'},
+  'err.fail':{zh:'登录失败',en:'Login failed'},
+  'err.net':{zh:'网络连接失败，请检查网络',en:'Network error. Check connection.'},
+  'back':{zh:'← 返回首页',en:'← Back to Home'},
+  'forgot.link':{zh:'忘记密码？',en:'Forgot password?'},
+  'forgot.tip':{zh:'忘记密码请携带学号/工号联系学校信息中心或平台管理员重置，重置后即可使用新密码登录。',en:'Forgot your password? Contact the campus Information Center or a platform admin with your Student/Staff ID to reset it, then log in with the new password.'},
+}
+function lt(k){const e=LI[k];return e?(e[curLang]||e.zh):k}
+function setLoginLang(lang){
+  curLang=lang; localStorage.setItem('lang',lang)
+  document.querySelectorAll('#langToggle span').forEach(s=>s.classList.toggle('active',s.dataset.lang===lang))
+  document.querySelector('.prism-overlay .brand h2').innerHTML=lt('brand.h2')
+  document.querySelector('.prism-overlay .brand .tag').textContent=lt('brand.tag')
+  document.querySelector('.welcome h2').textContent=lt('welcome.h2')
+  document.querySelector('.welcome p').textContent=lt('welcome.p')
+  document.querySelectorAll('.form-group label')[0].textContent=lt('label.id')
+  document.querySelectorAll('.form-group label')[1].textContent=lt('label.pwd')
+  $('loginId').placeholder=lt('ph.id')
+  $('loginPwd').placeholder=lt('ph.pwd')
+  const lbl=document.querySelector('#loginBtn .specular-button__label')
+  if(lbl && !document.querySelector('#loginBtn').disabled) lbl.textContent=lt('btn.login')
+  $('forgotLink').textContent=lt('forgot.link')
+  $('forgotTip').textContent=lt('forgot.tip')
+  document.title=lang==='en'?'Login · CCIBE Media Platform':'登录 · 融媒体素材共建平台'
+}
+function toggleForgot(){
+  const box=$('forgotBox')
+  box.style.display = box.style.display==='none' ? 'block' : 'none'
+}
+function toggleLang(){setLoginLang(curLang==='zh'?'en':'zh')}
+setLoginLang(curLang)
+
+async function doLogin(){
+  const id=$('loginId').value.trim()
+  const pwd=$('loginPwd').value.trim()
+  const btn=$('loginBtn'), err=$('loginError')
+  const lbl=btn.querySelector('.specular-button__label')
+  if(!id){err.textContent=lt('err.id');$('loginId').focus();return}
+  if(!pwd){err.textContent=lt('err.pwd');$('loginPwd').focus();return}
+  err.textContent=''
+  btn.disabled=true;lbl.textContent=lt('btn.logging')
+
+  try{
+    const res=await fetch('/api/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({id,pwd,password:pwd})
+    })
+    const d=await res.json()
+    if(d.ok && d.need2fa){ show2faStep(d.challenge); return }
+    if(!d.ok){err.textContent=d.message||lt('err.fail');btn.disabled=false;lbl.textContent=lt('btn.login');return}
+    // 登录后统一返回首页，用户通过右上角按钮进入个人/管理页面
+    window.location.href=redirect||'/'
+  }catch(e){
+    err.textContent=lt('err.net')
+    btn.disabled=false;lbl.textContent=lt('btn.login')
+  }
+}
+
+/* ═══ 两步验证（第二步）═══ */
+let tfaChallenge=''
+let tfaBackupMode=false
+function show2faStep(challenge){
+  tfaChallenge=challenge
+  $('loginStep1').style.display='none'
+  $('loginStep2').style.display=''
+  $('tfaCode').focus()
+}
+function backToStep1(){
+  tfaChallenge='';tfaBackupMode=false
+  $('tfaError').textContent=''
+  $('tfaCode').value=''
+  $('loginStep2').style.display='none'
+  $('loginStep1').style.display=''
+  $('loginPwd').focus()
+}
+function toggleTfaMode(){
+  tfaBackupMode=!tfaBackupMode
+  $('tfaCode').placeholder=tfaBackupMode?'XXXXX-XXXXX':'6 位动态码或备用恢复码'
+  $('tfaModeLink').textContent=tfaBackupMode?'使用验证器动态码':'验证器不可用？使用备用恢复码'
+  $('tfaCode').focus()
+}
+async function do2fa(){
+  const code=$('tfaCode').value.trim()
+  const btn=$('tfaBtn'), err=$('tfaError'), lbl=$('tfaBtnLabel')
+  if(!tfaChallenge){backToStep1();return}
+  if(!code){err.textContent='请输入动态验证码';$('tfaCode').focus();return}
+  err.textContent=''
+  btn.disabled=true;lbl.textContent='验证中...'
+  try{
+    const res=await fetch('/api/login/2fa',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({challenge:tfaChallenge,code})
+    })
+    const d=await res.json()
+    if(!d.ok){
+      err.textContent=d.message||'验证失败'
+      $('tfaCode').value='';$('tfaCode').focus()
+      btn.disabled=false;lbl.textContent='验 证'
+      // 挑战过期/作废 → 回第一步重新登录
+      if(res.status===401 && /过期|重新登录|异常/.test(d.message||'')) backToStep1()
+      return
+    }
+    window.location.href=redirect||'/'
+  }catch(e){
+    err.textContent='网络连接失败，请检查网络'
+    btn.disabled=false;lbl.textContent='验 证'
+  }
+}
+
+/* ═══ Prism WebGL ═══ */
+(function(){
+  var c=document.getElementById("prismCanvas");if(!c)return;
+  var gl;
+  try{gl=c.getContext("webgl",{alpha:true,antialias:false,premultipliedAlpha:false})||c.getContext("experimental-webgl",{alpha:true,antialias:false,premultipliedAlpha:false})}catch(e){}
+  if(!gl){c.style.display='none';return}
+  gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);
+
+  var isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||window.innerWidth<768;
+  var STEPS=isMobile?48:100,DPR_CAP=isMobile?1:2;
+
+  var vs="attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}";
+  var fs=`precision highp float;
+uniform vec2  iResolution;
+uniform float iTime;
+uniform float uHeight;
+uniform float uBaseHalf;
+uniform mat3  uRot;
+uniform int   uUseBaseWobble;
+uniform float uGlow;
+uniform vec2  uOffsetPx;
+uniform float uNoise;
+uniform float uSaturation;
+uniform float uScale;
+uniform float uHueShift;
+uniform float uColorFreq;
+uniform float uBloom;
+uniform float uCenterShift;
+uniform float uInvBaseHalf;
+uniform float uInvHeight;
+uniform float uMinAxis;
+uniform float uPxScale;
+uniform float uTimeScale;
+uniform float uGold;
+vec4 tanh4(vec4 x){vec4 e2x=exp(2.0*x);return(e2x-1.0)/(e2x+1.0);}
+float rand(vec2 co){return fract(sin(dot(co,vec2(12.9898,78.233)))*43758.5453123);}
+float sdOctaAnisoInv(vec3 p){vec3 q=vec3(abs(p.x)*uInvBaseHalf,abs(p.y)*uInvHeight,abs(p.z)*uInvBaseHalf);float m=q.x+q.y+q.z-1.0;return m*uMinAxis*0.5773502691896258;}
+float sdPyramidUpInv(vec3 p){float oct=sdOctaAnisoInv(p);float halfSpace=-p.y;return max(oct,halfSpace);}
+mat3 hueRotation(float a){float cc=cos(a),s=sin(a);mat3 W=mat3(0.299,0.587,0.114,0.299,0.587,0.114,0.299,0.587,0.114);mat3 U=mat3(0.701,-0.587,-0.114,-0.299,0.413,-0.114,-0.300,-0.588,0.886);mat3 V=mat3(0.168,-0.331,0.500,0.328,0.035,-0.500,-0.497,0.296,0.201);return W+U*cc+V*s;}
+void main(){
+  vec2 f=(gl_FragCoord.xy-0.5*iResolution.xy-uOffsetPx)*uPxScale;
+  float z=5.0,d=0.0;vec3 p;vec4 o=vec4(0.0);
+  float centerShift=uCenterShift,cf=uColorFreq;
+  mat2 wob=mat2(1.0);
+  if(uUseBaseWobble==1){float t=iTime*uTimeScale;float c0=cos(t+0.0);float c1=cos(t+33.0);float c2=cos(t+11.0);wob=mat2(c0,c1,c2,c0);}
+  const int STEPS=${STEPS};
+  for(int i=0;i<STEPS;i++){
+    p=vec3(f,z);p.xz=p.xz*wob;p=uRot*p;vec3 q=p;q.y+=centerShift;
+    d=0.1+0.2*abs(sdPyramidUpInv(q));z-=d;
+    o+=(sin((p.y+z)*cf+vec4(0.0,1.0,2.0,3.0))+1.0)/d;
+  }
+  o=tanh4(o*o*(uGlow*uBloom)/1e5);
+  vec3 col=o.rgb;
+  float n=rand(gl_FragCoord.xy+vec2(iTime));col+=(n-0.5)*uNoise;col=clamp(col,0.0,1.0);
+  float L=dot(col,vec3(0.2126,0.7152,0.0722));col=clamp(mix(vec3(L),col,uSaturation),0.0,1.0);
+  if(abs(uHueShift)>0.0001){col=clamp(hueRotation(uHueShift)*col,0.0,1.0);}
+  // 亮色主题黑金配色：亮度映射 深蓝黑底为主→暗金→亮金（仅变颜色，dark 时不生效）
+  if(uGold>0.001){
+    float Lg=dot(clamp(col,0.0,1.0),vec3(0.2126,0.7152,0.0722));
+    Lg=pow(Lg,2.2);
+    vec3 gDeep=vec3(0.043,0.043,0.078),gMid=vec3(0.45,0.30,0.06),gHi=vec3(0.98,0.80,0.28),gPeak=vec3(1.0,0.86,0.38);
+    vec3 gcol=mix(gDeep,gMid,smoothstep(0.12,0.60,Lg));
+    gcol=mix(gcol,gHi,smoothstep(0.62,0.95,Lg));
+    gcol=mix(gcol,gPeak,smoothstep(0.97,1.0,Lg));
+    col=gcol;
+    o.a=max(o.a,0.95);
+  }
+  gl_FragColor=vec4(col,o.a);
+}`;
+
+  function compile(s,t){var sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))return null;return sh;}
+  var vsh=compile(vs,gl.VERTEX_SHADER),fsh=compile(fs,gl.FRAGMENT_SHADER);if(!vsh||!fsh)return;
+  var prog=gl.createProgram();gl.attachShader(prog,vsh);gl.attachShader(prog,fsh);gl.linkProgram(prog);gl.useProgram(prog);
+  var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  var pl=gl.getAttribLocation(prog,"position");gl.enableVertexAttribArray(pl);gl.vertexAttribPointer(pl,2,gl.FLOAT,false,0,0);
+  function uni(n){return gl.getUniformLocation(prog,n);}
+  var u={};
+  ["iResolution","iTime","uHeight","uBaseHalf","uRot","uUseBaseWobble","uGlow","uOffsetPx","uNoise","uSaturation","uScale","uHueShift","uColorFreq","uBloom","uCenterShift","uInvBaseHalf","uInvHeight","uMinAxis","uPxScale","uTimeScale","uGold"].forEach(function(n){u[n]=uni(n);});
+  var H=2.5,BH=1.6;
+  gl.uniform1f(u.uHeight,H);gl.uniform1f(u.uBaseHalf,BH);
+  gl.uniform1f(u.uGlow,1.7);gl.uniform1f(u.uNoise,0.3);
+  gl.uniform1f(u.uSaturation,1.5);gl.uniform1f(u.uScale,3.4);
+  gl.uniform1f(u.uHueShift,0);gl.uniform1f(u.uColorFreq,1.2);
+  gl.uniform1f(u.uBloom,1);gl.uniform1f(u.uTimeScale,0.6);
+  gl.uniform1i(u.uUseBaseWobble,1);
+  gl.uniform1f(u.uCenterShift,H*0.25);gl.uniform1f(u.uInvBaseHalf,1.0/BH);
+  gl.uniform1f(u.uInvHeight,1.0/H);gl.uniform1f(u.uMinAxis,Math.min(BH,H));
+  // 亮色主题启用黑金配色，暗色保持原样（只切颜色开关）
+  function applyGoldTone(){gl.uniform1f(u.uGold,document.documentElement.getAttribute('data-theme')==='light'?1.0:0.0)}
+  applyGoldTone();
+  new MutationObserver(applyGoldTone).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  var rot=new Float32Array([1,0,0,0,1,0,0,0,1]);
+  gl.uniformMatrix3fv(u.uRot,false,rot);gl.uniform2f(u.uOffsetPx,0,0);
+  var dpr=Math.min(DPR_CAP,window.devicePixelRatio||1);
+  function resize(){var w=c.clientWidth||1,h=c.clientHeight||1;c.width=w*dpr;c.height=h*dpr;gl.viewport(0,0,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.uniform2f(u.iResolution,gl.drawingBufferWidth,gl.drawingBufferHeight);gl.uniform1f(u.uPxScale,1.0/((gl.drawingBufferHeight||1)*0.1*3.4));}
+  window.addEventListener("resize",resize);resize();
+  var t0=performance.now(),_paused=false;
+  window._prismPause=function(){_paused=true};window._prismResume=function(){_paused=false};
+  var wX=0.3+Math.random()*0.6,wY=0.2+Math.random()*0.7,wZ=0.1+Math.random()*0.5;
+  var phX=Math.random()*Math.PI*2,phZ=Math.random()*Math.PI*2;
+  function setR(y,p,r,o){var cy=Math.cos(y),sy=Math.sin(y);var cx=Math.cos(p),sx=Math.sin(p);var cz=Math.cos(r),sz=Math.sin(r);o[0]=cy*cz+sy*sx*sz;o[1]=cx*sz;o[2]=-sy*cz+cy*sx*sz;o[3]=-cy*sz+sy*sx*cz;o[4]=cx*cz;o[5]=sy*sz+cy*sx*cz;o[6]=sy*cx;o[7]=-sx;o[8]=cy*cx;}
+  function _prismLoop(time){
+    if(_paused){requestAnimationFrame(_prismLoop);return}
+    var t=(time-t0)*0.001;gl.uniform1f(u.iTime,t);var tS=t*0.6;setR(tS*wY,Math.sin(tS*wX+phX)*0.6,Math.sin(tS*wZ+phZ)*0.5,rot);gl.uniformMatrix3fv(u.uRot,false,rot);gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(_prismLoop);
+  }
+  _prismLoop(t0);
+  window.addEventListener('orientationchange',function(){setTimeout(resize,300)});
+  document.addEventListener('visibilitychange',function(){if(document.hidden){window._prismPause()}else{window._prismResume()}});
+})();
+
+/* ═══ Specular Button (WebGL 高光按钮) ═══ */
+function initSpecularButton(btn, fx){
+  if(!window.OGL) return
+  const { Renderer, Triangle, Program, Mesh } = window.OGL
+  const PAD = 20, dpr = window.devicePixelRatio || 1
+
+  const VERT = `#version 300 es
+in vec2 position;
+void main(){ gl_Position=vec4(position,0.0,1.0); }`
+
+  const FRAG = `#version 300 es
+precision highp float;
+uniform vec2 uCenter; uniform vec2 uHalfSize; uniform float uRadius;
+uniform float uAngle; uniform float uPx; uniform vec3 uLineColor;
+uniform vec3 uBaseColor; uniform float uIntensity; uniform float uShineSize;
+uniform float uShineFade; uniform float uThickness; uniform float uBaseWidth;
+out vec4 fragColor;
+float sdRoundedRect(vec2 p, vec2 b, float r){
+  vec2 q=abs(p)-b+r;
+  return length(max(q,0.0))+min(max(q.x,q.y),0.0)-r;
+}
+float gaussianLine(float d, float sigma){
+  float x=d/(sigma+1e-6);
+  float k=mix(1.0,1.6,smoothstep(0.0,1.5,x));
+  return exp(-k*x*x);
+}
+void main(){
+  vec2 p=gl_FragCoord.xy-uCenter;
+  float d=sdRoundedRect(p,uHalfSize,uRadius);
+  vec2 L=vec2(cos(uAngle),sin(uAngle));
+  float base=(1.0-smoothstep(0.0,uBaseWidth,abs(d)))*0.45;
+  vec2 nEll=normalize(p/(uHalfSize*uHalfSize)+1e-6);
+  float phi=acos(clamp(abs(dot(nEll,L)),0.0,1.0));
+  float rim=1.0-smoothstep(uShineSize-uShineFade,uShineSize+uShineFade+1e-4,phi);
+  float line=gaussianLine(d,uThickness);
+  float edgeClamp=1.0-smoothstep(0.5*uPx,3.0*uPx,abs(d));
+  float hi=line*rim*edgeClamp*uIntensity;
+  vec3 col=uBaseColor*base+uLineColor*hi;
+  float a=clamp(base+hi,0.0,1.0);
+  fragColor=vec4(col,a);
+}`
+
+  function hexToRgb(hex){
+    let h=(hex||'#000000').replace('#','')
+    if(h.length===3) h=h.split('').map(c=>c+c).join('')
+    const n=parseInt(h,16)
+    return [((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255]
+  }
+
+  const opts = {
+    radius:18, lineColor:'#ffffff', baseColor:'#525252',
+    intensity:1, shineSize:10, shineFade:40, thickness:1,
+    speed:0.35, followMouse:true, proximity:250, autoAnimate:false
+  }
+  const r = btn.style.getPropertyValue('--sb-radius')
+  if(r) opts.radius = parseFloat(r)
+
+  const renderer = new Renderer({ alpha:true, premultipliedAlpha:true, antialias:true, dpr })
+  const gl = renderer.gl
+  gl.clearColor(0,0,0,0)
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
+
+  const geometry = new Triangle(gl)
+  if(geometry.attributes.uv) delete geometry.attributes.uv
+
+  const program = new Program(gl, {
+    vertex:VERT, fragment:FRAG,
+    uniforms:{
+      uCenter:{value:[0,0]}, uHalfSize:{value:[1,1]}, uRadius:{value:0},
+      uAngle:{value:2.4}, uPx:{value:dpr},
+      uLineColor:{value:[1,1,1]}, uBaseColor:{value:[0.32,0.32,0.32]},
+      uIntensity:{value:1}, uShineSize:{value:0.17},
+      uShineFade:{value:0.7}, uThickness:{value:1}, uBaseWidth:{value:dpr}
+    }
+  })
+
+  const mesh = new Mesh(gl, { geometry, program })
+  fx.appendChild(gl.canvas)
+  fx.dataset.init = '1'
+
+  const sizeRef = { w:1, h:1 }
+  function resize(){
+    const rect = btn.getBoundingClientRect()
+    sizeRef.w = rect.width; sizeRef.h = rect.height
+    renderer.setSize(rect.width + PAD*2, rect.height + PAD*2)
+    program.uniforms.uCenter.value = [(PAD + rect.width/2)*dpr, (PAD + rect.height/2)*dpr]
+    program.uniforms.uHalfSize.value = [(rect.width/2)*dpr, (rect.height/2)*dpr]
+  }
+  const ro = new ResizeObserver(resize)
+  ro.observe(btn)
+  resize()
+
+  let pointerAngle = null, proximityT = 0
+  function onPointerMove(e){
+    const rect = btn.getBoundingClientRect()
+    const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2
+    const dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right)
+    const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom)
+    const dist = Math.hypot(dx, dy)
+    if(dist === 0){
+      const nx = (e.clientX - cx) / (rect.width/2)
+      const ny = (cy - e.clientY) / (rect.height/2)
+      pointerAngle = Math.atan2(2/rect.height, -2/rect.width) + nx*0.3 + ny*0.15
+    } else {
+      pointerAngle = Math.atan2(cy - e.clientY, e.clientX - cx)
+    }
+    const t = Math.max(0, 1 - dist / Math.max(opts.proximity, 1))
+    proximityT = t * t * (3 - 2*t)
+  }
+  window.addEventListener('pointermove', onPointerMove)
+
+  let angle = 2.4, idleAngle = 2.4, bright = 0, last = performance.now(), raf = 0
+  function update(now){
+    raf = requestAnimationFrame(update)
+    const dt = Math.min((now - last) / 1000, 0.05)
+    last = now
+    idleAngle += opts.speed * dt
+    const steer = opts.followMouse && pointerAngle != null && (!opts.autoAnimate || proximityT > 0)
+    const target = steer ? pointerAngle : idleAngle
+    const diff = ((target - angle + Math.PI * 3) % (Math.PI * 2)) - Math.PI
+    angle += diff * (1 - Math.exp(-dt * 7))
+    const brightTarget = opts.autoAnimate ? 1 : proximityT
+    bright += (brightTarget - bright) * (1 - Math.exp(-dt * 8))
+    program.uniforms.uAngle.value = angle
+    program.uniforms.uRadius.value = Math.min(opts.radius, Math.min(sizeRef.w, sizeRef.h) / 2) * dpr
+    program.uniforms.uLineColor.value = hexToRgb(opts.lineColor)
+    program.uniforms.uBaseColor.value = hexToRgb(opts.baseColor)
+    program.uniforms.uIntensity.value = opts.intensity * bright
+    program.uniforms.uShineSize.value = (opts.shineSize * Math.PI) / 180
+    program.uniforms.uShineFade.value = (opts.shineFade * Math.PI) / 180
+    program.uniforms.uThickness.value = opts.thickness * dpr
+    renderer.render({ scene: mesh })
+  }
+  raf = requestAnimationFrame(update)
+}
+
+function startSpecularButtons(){
+  document.querySelectorAll('.specular-button').forEach(btn=>{
+    const fx=btn.querySelector('.specular-button__fx')
+    if(fx && !fx.dataset.init) initSpecularButton(btn,fx)
+  })
+}
+window.addEventListener('ogl-ready', startSpecularButtons)
+if(window.OGL) startSpecularButtons()
+</script>
+
+<!-- ═══════ ClickSpark 点击火花效果 ═══════ -->
+<script>
+(function(){
+  var sparkColor='#fff', sparkSize=10, sparkRadius=15, sparkCount=8, duration=400, easing='ease-out', extraScale=1.0;
+  var canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;top:0;left:0;pointer-events:none;z-index:99999;display:block';
+  document.body.appendChild(canvas);
+  var ctx=canvas.getContext('2d'), sparks=[], rafId=null, dpr=window.devicePixelRatio||1;
+  function resize(){var w=window.innerWidth,h=window.innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+  resize();window.addEventListener('resize',resize);
+  function easeFunc(t){switch(easing){case 'linear':return t;case 'ease-in':return t*t;case 'ease-in-out':return t<0.5?2*t*t:-1+(4-2*t)*t;default:return t*(2-t)}}
+  function draw(ts){
+    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+    sparks=sparks.filter(function(sp){
+      var el=ts-sp.startTime; if(el>=duration) return false;
+      var p=el/duration, e=easeFunc(p), dist=e*sparkRadius*extraScale, len=sparkSize*(1-e);
+      var x1=sp.x+dist*Math.cos(sp.angle), y1=sp.y+dist*Math.sin(sp.angle);
+      var x2=sp.x+(dist+len)*Math.cos(sp.angle), y2=sp.y+(dist+len)*Math.sin(sp.angle);
+      ctx.strokeStyle=sparkColor; ctx.lineWidth=2; ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      return true;
+    });
+    if(sparks.length) rafId=requestAnimationFrame(draw); else {rafId=null; ctx.clearRect(0,0,window.innerWidth,window.innerHeight)}
+  }
+  document.addEventListener('click',function(e){
+    var x=e.clientX, y=e.clientY, now=performance.now();
+    for(var i=0;i<sparkCount;i++) sparks.push({x:x,y:y,angle:(2*Math.PI*i)/sparkCount,startTime:now});
+    if(!rafId) rafId=requestAnimationFrame(draw);
+  });
+})();
+</script>
+<button id="themeToggle" onclick="toggleTheme()" aria-label="切换主题" aria-pressed="false" style="position:fixed;bottom:24px;right:24px;z-index:9998;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);backdrop-filter:blur(12px);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#e8eaed;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:all .2s"><span id="themeToggleIcon"></span></button>
+<script>function toggleTheme(){var h=document.documentElement;var cur=h.getAttribute('data-theme')||'dark';var next=cur==='dark'?'light':'dark';h.setAttribute('data-theme',next);localStorage.setItem('theme',next);var el=document.getElementById('themeToggleIcon');if(next==='light'){el.innerHTML='<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"5\"/><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"3\"/><line x1=\"12\" y1=\"21\" x2=\"12\" y2=\"23\"/><line x1=\"4.22\" y1=\"4.22\" x2=\"5.64\" y2=\"5.64\"/><line x1=\"18.36\" y1=\"18.36\" x2=\"19.78\" y2=\"19.78\"/><line x1=\"1\" y1=\"12\" x2=\"3\" y2=\"12\"/><line x1=\"21\" y1=\"12\" x2=\"23\" y2=\"12\"/><line x1=\"4.22\" y1=\"19.78\" x2=\"5.64\" y2=\"18.36\"/><line x1=\"18.36\" y1=\"5.64\" x2=\"19.78\" y2=\"4.22\"/></svg>';document.getElementById('themeToggle').setAttribute('aria-pressed','true')}else{el.innerHTML='<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/></svg>';document.getElementById('themeToggle').setAttribute('aria-pressed','false')}}
+(function(){var theme=document.documentElement.getAttribute('data-theme')||'dark';var el=document.getElementById('themeToggleIcon');if(el){if(theme==='light'){el.innerHTML='<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"5\"/><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"3\"/><line x1=\"12\" y1=\"21\" x2=\"12\" y2=\"23\"/><line x1=\"4.22\" y1=\"4.22\" x2=\"5.64\" y2=\"5.64\"/><line x1=\"18.36\" y1=\"18.36\" x2=\"19.78\" y2=\"19.78\"/><line x1=\"1\" y1=\"12\" x2=\"3\" y2=\"12\"/><line x1=\"21\" y1=\"12\" x2=\"23\" y2=\"12\"/><line x1=\"4.22\" y1=\"19.78\" x2=\"5.64\" y2=\"18.36\"/><line x1=\"18.36\" y1=\"5.64\" x2=\"19.78\" y2=\"4.22\"/></svg>';document.getElementById('themeToggle').setAttribute('aria-pressed','true')}else{el.innerHTML='<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/></svg>';document.getElementById('themeToggle').setAttribute('aria-pressed','false')}}})();</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw').catch(function (e) { console.warn('SW registration failed:', e) })
+    })
+  }
+</script>
+</body>
+</html>
