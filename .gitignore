@@ -8,3 +8,4 @@ uploads/
 __pycache__/
 .DS_Store
 Thumbs.db
+miniapp/.workbuddy/
