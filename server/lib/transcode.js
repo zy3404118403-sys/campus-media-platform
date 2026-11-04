@@ -10,8 +10,8 @@ const fs = require('fs')
 const path = require('path')
 const { spawn } = require('child_process')
 
-const FFMPEG = process.env.FFMPEG_BIN || 'C:/backend/bin/ffmpeg.exe'
-const FFPROBE = process.env.FFPROBE_BIN || 'C:/backend/bin/ffprobe.exe'
+const FFMPEG = process.env.FFMPEG_BIN || 'C:/app/bin/ffmpeg.exe'
+const FFPROBE = process.env.FFPROBE_BIN || 'C:/app/bin/ffprobe.exe'
 const POLL_MS = 12 * 1000
 
 // 档位定义（scale=-2:高，宽度自动偶数）

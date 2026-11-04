@@ -553,7 +553,7 @@ L3  --{组件}-{属性}-{变体}         例：--button-height-md / --card-radiu
 | **为什么仍需保留 `'unsafe-inline'`** | 30 个内联脚本块（178.5 KB）+ **496 处行内 `onclick`** + 12 个内联 `<style>`（88.7 KB）。移除需先完成 onclick 改造 → 属 Phase 3 之后的工作 |
 | **当前安全状态定性（按 Luna 建议）** | `CSP Report-Only`：**可用于观测**<br>`CSP 强制模式`：**暂不具备上线条件**（`unsafe-inline` 未清零 + 浏览器回归未完成）<br>`unsafe-inline`：**技术债，需后续清理**<br>`unsafe-eval`：**已移除，应保持移除状态** |
 | **Report-Only 的意义** | 浏览器**只上报不拦截** → 零功能风险；同时开始积累违规数据，为重写策略提供依据 |
-| **验收方法** | ① `curl -I http://your-domain.example/` → 应看到 `Content-Security-Policy-Report-Only` 头 ② 打开页面 → Console 可能出现 `[Report Only] Refused to…` 警告（**这是预期行为**）③ 服务器端 `type C:\backend\csp-reports.log` → 应看到 violation 记录 |
+| **验收方法** | ① `curl -I http://your-domain.example/` → 应看到 `Content-Security-Policy-Report-Only` 头 ② 打开页面 → Console 可能出现 `[Report Only] Refused to…` 警告（**这是预期行为**）③ 服务器端 `type C:\app\csp-reports.log` → 应看到 violation 记录 |
 | **实测结果（我方）** | 头存在 ✓；`POST /api/csp-report` → **204** ✓；`csp-reports.log` 已生成（含测试记录）✓ |
 | **CSP 下发范围的完整实测（2026-10-25 21:10 采集，回应 Luna「未见 CSP」的判断）** | 见下方证据表。**关键发现：CSP 存在，但不同类型资源的响应头不同** —— 这解释了为什么评审方"没看到" |
 | **证据表** | 见 §11.11.1 完整证据 |

@@ -517,7 +517,7 @@ const routes = [
         const src = path.join(UPLOAD_DIR, m.filename)
         if (!fs.existsSync(pvFile) && fs.existsSync(src)) {
           try {
-            const ffmpeg = process.env.FFMPEG_BIN || 'C:/backend/bin/ffmpeg.exe'
+            const ffmpeg = process.env.FFMPEG_BIN || 'C:/app/bin/ffmpeg.exe'
             const tmp = pvFile + '.tmp.jpg'
             await new Promise((done) => {
               const child = require('child_process').spawn(ffmpeg, [

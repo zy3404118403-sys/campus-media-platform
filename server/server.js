@@ -964,7 +964,7 @@ const server = http.createServer(async (req, res) => {
   if (p === '/api/csp-report' && method === 'POST') {
     const body = await readBody(req, 32 * 1024).catch(() => Buffer.alloc(0))
     try {
-      require('fs').appendFileSync('C:/backend/csp-reports.log',
+      require('fs').appendFileSync('C:/app/csp-reports.log',
         new Date().toISOString() + ' ' + body.toString('utf8').replace(/\s+/g, ' ').slice(0, 2000) + '\n')
     } catch (e) { /* 落盘失败不影响响应 */ }
     res.writeHead(204); res.end()

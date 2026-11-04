@@ -189,7 +189,7 @@ function validateCSRF(req) {
         ua: String(req.headers['user-agent'] || '').slice(0, 60),
         referer: String(req.headers.referer || '').slice(0, 60),
       }) + '\n'
-      require('fs').appendFileSync('C:/backend/csrf-fail.log', rec)
+      require('fs').appendFileSync('C:/app/csrf-fail.log', rec)
     } catch (e) {}
   }
   return matched
