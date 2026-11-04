@@ -34,7 +34,7 @@ const I18N = {
   // Hero
   'hero.badge':{zh:'校园素材共建共享平台',en:'Campus Material Sharing Platform'},
   'hero.title1':{zh:'汇聚学院精彩',en:'Gathering Brilliance'}, 'hero.title2':{zh:'共享光影校园',en:'Sharing Campus Light'},
-  'hero.desc':{zh:'面向全校 <b>12 个二级学院</b>的素材资源库——上传你的作品，发现他人的精彩，共建属于我们的校园记忆。图片 · 视频 · 文档 · 音频，<b>每一份创意都被看见</b>。',en:'The material library serving all <b>12 colleges</b> \u2014 upload your work, discover others\u2019 highlights, and build our shared campus memory. Photos \u00b7 Video \u00b7 Documents \u00b7 Audio \u2014 <b>every creative work deserves to be seen</b>.'},
+  'hero.desc':{zh:'面向全校 <b>14 个二级学院</b>的素材资源库——上传你的作品，发现他人的精彩，共建属于我们的校园记忆。图片 · 视频 · 文档 · 音频，<b>每一份创意都被看见</b>。',en:'The material library serving all <b>12 colleges</b> \u2014 upload your work, discover others\u2019 highlights, and build our shared campus memory. Photos \u00b7 Video \u00b7 Documents \u00b7 Audio \u2014 <b>every creative work deserves to be seen</b>.'},
   'hero.upload':{zh:'上传素材',en:'Upload'}, 'hero.browse':{zh:'浏览素材',en:'Browse'},
   'hero.stat1':{zh:'素材总数',en:'Materials'}, 'hero.stat2':{zh:'学院专栏',en:'Colleges'}, 'hero.stat3':{zh:'累计下载',en:'Downloads'},
   'lb.title':{zh:'本周贡献 TOP',en:'Weekly Top Contributors'}, 'lb.all':{zh:'总榜',en:'All Time'},
