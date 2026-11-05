@@ -143,7 +143,7 @@ nav.header{
 }
 
 /* RemixIcon 分类图标字号（2026-10-23）*/
-.cat-ic i{font-size:26px;line-height:1}
+.cat-ic i{font-size:var(--fs-28);line-height:1}
 
 /* ═══════════════════════════════════════════════════════════════
    触控目标可达性（2026-10-25）
@@ -235,7 +235,7 @@ nav.header{
   /* 语义状态色（统一前台/后台/社区） */
   --state-success: #34d399;
   --state-warn: #fbbf24;
-  --state-danger: #f87171;
+  --state-danger: var(--danger, #F87171);
   --state-info: #60a5fa;
 
   /* 动效时长与曲线 */
@@ -263,7 +263,7 @@ nav.header{
 :focus-visible {
   outline: 2px solid var(--gold, #D4AF37);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs,6px);
 }
 /* 元素自身的 outline:none 不得覆盖键盘焦点环 */
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
@@ -312,8 +312,8 @@ textarea:focus-visible, summary:focus-visible, [tabindex]:focus-visible,
   color: var(--state-success, #34d399) !important;
 }
 .is-error {
-  border-color: var(--state-danger, #f87171) !important;
-  color: var(--state-danger, #f87171) !important;
+  border-color: var(--state-danger, #F87171) !important;
+  color: var(--state-danger, #F87171) !important;
   animation: sgShake .32s cubic-bezier(.36,.07,.19,.97);
 }
 @keyframes sgShake {
@@ -327,3 +327,61 @@ textarea:focus-visible, summary:focus-visible, [tabindex]:focus-visible,
   .is-error { animation: none; }
   .is-loading::after { animation-duration: 1.6s; }
 }
+
+/* ══════ 线B 收尾补丁 · 2026-11-04 · visual-review ══════
+   本文件在每个页面都最后加载，因此这里做「加载顺序安全」的最终覆盖：
+   不改各页 inline <style>、不改 html 结构，也能把仍在漏蓝的页面拉回「金主蓝辅」。
+   详见 .oil-ui/参赛评审/评审记录.md §5 */
+
+/* 1) 主色归一：tasks/articles/articles-work 三页自带 :root{--primary:#3b82f6}（inline style 晚于 shared.css），
+   导致这几页导航/按钮/角标仍是蓝色。这里用同权重、但更晚加载的 :root 复位为金。 */
+:root{
+  --primary:var(--gold,#D4AF37);
+  --primary-light:var(--gold-light,#F0D060);
+  --primary-dark:#8A6D2B;
+  --primary-glow:rgba(212,175,55,.35);
+}
+/* 2) 这些页里 button.btn.primary 自带 color:#fff（金底白字只有 2.1:1），改为金墨深字（最深端仍 6.48:1） */
+button.btn.primary{background:linear-gradient(135deg,var(--gold,#D4AF37),var(--gold-deep,#B8945A));color:var(--gold-ink,#1A1405)}
+button.btn.primary:hover{color:var(--gold-ink,#1A1405)}
+
+/* 3) material.html 内联的 .topbar .brand .logo 是靛紫渐变(#2563eb→#8b5cf6)，与金体系冲突 → 金 */
+.topbar .brand .logo{background:linear-gradient(135deg,var(--gold,#D4AF37),var(--gold-deep,#B8945A));color:var(--gold-ink,#1A1405)}
+.preview .file-holder .ficon{background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(184,148,90,.12))}
+
+/* 4) 未登录拦截页（tasks.html #authMask）：原本纯黑 + 锁 + 亮蓝按钮，无品牌、无层次。
+   纯 CSS 重建：品牌名(::before) + 金环锁 + 一句说明 + 金色主按钮 + 品牌光晕。 */
+.auth-mask{
+  background:
+    radial-gradient(60% 46% at 50% 30%,rgba(212,175,55,.12),transparent 70%),
+    radial-gradient(80% 60% at 50% 110%,rgba(212,175,55,.05),transparent 70%),
+    var(--bg,#05070B);
+  gap:12px;
+}
+.auth-mask::before{
+  content:"校园融媒工坊 · CAMPUS MEDIA WORKSHOP";
+  font-size:var(--fs-12,12px);font-weight:700;letter-spacing:.2em;
+  color:var(--gold,#D4AF37);margin-bottom:6px;text-align:center;
+}
+.auth-mask .big{
+  width:68px;height:68px;border-radius:var(--radius-pill,999px);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.28);
+  color:var(--gold,#D4AF37);margin-bottom:4px;box-shadow:0 0 0 6px rgba(212,175,55,.04);
+}
+.auth-mask .big svg{width:26px;height:26px}
+.auth-mask>.muted{max-width:40ch;text-align:center;color:var(--text-2,#9aa0b0);font-size:var(--fs-13,13px);line-height:1.7}
+.auth-mask>a{display:inline-flex;margin-top:14px}
+.auth-mask .btn.primary{
+  padding:12px 40px;min-height:44px;border-radius:var(--radius-pill,999px);
+  background:linear-gradient(135deg,var(--gold,#D4AF37),var(--gold-deep,#B8945A));
+  color:var(--gold-ink,#1A1405);font-weight:700;font-size:var(--fs-14,14px);
+  box-shadow:0 10px 30px rgba(212,175,55,.26);
+}
+/* 钩子：拦截页的「返回首页」文字入口需要 1 行 html（<a class="gate-back" href="/index.html">），
+   属 html 作用域，本轮不动 html 结构；样式已备好，加上类名即可生效。 */
+.auth-mask .gate-back{
+  margin-top:10px;font-size:var(--fs-12,12px);color:var(--text-2,#9aa0b0);
+  text-decoration:none;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:2px;
+}
+.auth-mask .gate-back:hover{color:var(--gold,#D4AF37);border-bottom-color:rgba(212,175,55,.5)}

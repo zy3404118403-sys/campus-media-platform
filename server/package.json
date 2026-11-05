@@ -1,7 +1,7 @@
 {
   "name": "campus-materials-backend",
   "version": "1.0.0",
-  "description": "芜宇乐的融媒体中心 · 素材共建平台后端(零 npm 依赖,Node 22+)",
+  "description": "校园融媒工坊 Campus Media Workshop · 素材共建平台后端(零 npm 依赖,Node 22+)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

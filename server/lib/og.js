@@ -43,14 +43,14 @@ function injectOGTags(html, p, req) {
     }
     if (!title) {
       const m = html.match(/<title>([^<]*)<\/title>/i)
-      title = m ? m[1].trim() : '校融媒体素材共建平台'
+      title = m ? m[1].trim() : '校园融媒工坊'
     }
     if (!desc) {
       const m = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i)
       desc = m ? m[1] : '校园素材资源库 · 博客 / 论坛 / 校园墙 · 社区共建'
     }
     const tags = [
-      '<meta property="og:site_name" content="校融媒体素材共建平台">',
+      '<meta property="og:site_name" content="校园融媒工坊">',
       '<meta property="og:type" content="website">',
       `<meta property="og:title" content="${_ogEsc(title)}">`,
       `<meta property="og:description" content="${_ogEsc(desc)}">`,

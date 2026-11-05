@@ -858,7 +858,11 @@ $('detailFooter').addEventListener('click',function(e){
 
 async function init(){
   const me=await api('/api/me')
-  if(me.user&&me.user.is_admin){window.location.href='/admin.html'}
+  // 职员（管理员/学院编辑/审核员）进后台控制台；原判据只有 is_admin，
+  // 导致 editor/reviewer 被挡在个人中心（P0 权限线：与后台 init 判据对齐）
+  const _u=me&&me.user
+  const _isStaff=_u&&(_u.is_admin||_u.role==='admin'||['editor','reviewer'].includes(_u.role))
+  if(_isStaff){window.location.href='/admin.html'}
   else if(me.user){currentUser=me.user;showMain()}
   else showLogin()
 }

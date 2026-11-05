@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -6,13 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preload" href="shared.js?v=20" as="script">
 <link rel="preload" href="/chart.umd.min.js" as="script">
-<meta name="description" content="Creative Studio——融媒体素材管理后台，审核队列、素材库画廊视图、批量操作、数据概览。">
+<meta name="description" content="校园融媒工坊 · 管理后台——审核队列、素材库画廊视图、批量操作、数据概览。">
 <meta name="theme-color" content="#0a0a0f">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
     <link rel="apple-touch-icon" href="/icons/icon-180.png">
 <meta name="color-scheme" content="dark light">
-<title>Creative Studio · 融媒体中心素材管理平台</title>
+<title>管理后台 · 校园融媒工坊</title>
 <link rel="stylesheet" href="/assets/admin.css?v=p2v5">
 <script defer src="./gsap.min.js"></script>
 <link rel="stylesheet" href="shared.css?v=14">
@@ -28,7 +28,7 @@
   <aside class="sidebar" id="adminSidebar">
     <div class="sidebar-brand">
       <span class="logo">融</span>
-      <div><div class="name" data-i18n="brand.name">Creative Studio</div><div class="sub" data-i18n="brand.sub">ADMIN CONSOLE</div></div>
+      <div><div class="name" data-i18n="brand.name">校园融媒工坊</div><div class="sub" data-i18n="brand.sub">ADMIN CONSOLE</div></div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-group">
@@ -50,7 +50,7 @@
         <a class="nav-item" data-tab="access" onclick="switchTab('access')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/></svg><span class="txt" data-i18n="nav.access">访问日志</span></a>
       </div>
       <div class="nav-group">
-        <div class="nav-group-title">融媒体中心</div>
+        <div class="nav-group-title">校园融媒工坊</div>
         <a class="nav-item" data-tab="articleReview" onclick="switchTab('articleReview')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg><span class="txt">文稿审核</span><span class="badge" id="articlePendingBadge" style="display:none">0</span></a>
         <a class="nav-item" data-tab="mediaMatrix" onclick="switchTab('mediaMatrix')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span class="txt">新媒体矩阵</span></a>
         <a class="nav-item" data-tab="sensitiveWords" onclick="switchTab('sensitiveWords')"><svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="txt">敏感词库</span></a>
@@ -758,10 +758,10 @@
           <option value="xhs">小红书</option>
         </select>
       </div>
-      <div class="form-group"><label for="maAccountName">账号名称</label><input type="text" id="maAccountName" class="modal-input" placeholder="如：CCIBE官方号"></div>
+      <div class="form-group"><label for="maAccountName">账号名称</label><input type="text" id="maAccountName" class="modal-input" placeholder="如：校园融媒工坊官方号"></div>
       <div class="form-group"><label for="maAccountId">账号ID</label><input type="text" id="maAccountId" class="modal-input" placeholder="平台账号ID（选填）"></div>
       <div class="form-group"><label for="maOwnerName">负责人</label><input type="text" id="maOwnerName" class="modal-input" placeholder="运营负责人姓名"></div>
-      <div class="form-group"><label for="maDepartment">所属部门</label><input type="text" id="maDepartment" class="modal-input" placeholder="如：融媒体中心"></div>
+      <div class="form-group"><label for="maDepartment">所属部门</label><input type="text" id="maDepartment" class="modal-input" placeholder="如：内容生产组"></div>
       <div class="form-group"><label for="maQrCode">二维码/链接</label><input type="text" id="maQrCode" class="modal-input" placeholder="二维码图片URL或主页链接（选填）"></div>
     </div>
     <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">

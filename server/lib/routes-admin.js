@@ -12,6 +12,20 @@ const crypto = require('crypto')
 // 本模块位于 lib/ 下，须回退一级到服务根目录
 const ROOT = path.join(__dirname, '..')
 
+// 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）
+function staffRoleOf(user) {
+  if (!user) return 'student'
+  if (user.is_admin || user.role === 'admin') return 'admin'
+  if (['editor', 'reviewer', 'reporter'].includes(user.role)) return user.role
+  return 'student'
+}
+function isStaffRole(role) { return role === 'admin' || role === 'editor' || role === 'reviewer' }
+// 可赋角色矩阵（P0 提权保护：按调用者级别收窄；未列出者 = 不可授予任何角色）
+const ASSIGNABLE_ROLES = {
+  admin: ['admin', 'editor', 'reviewer', 'reporter', 'student'],
+  editor: ['reporter', 'student'],
+}
+
 const routes = [
   // ═══ 首页画廊 CMS ═══
 
@@ -170,7 +184,17 @@ const routes = [
     if (uid === String(user.id)) { sendJSON(res, 400, { ok: false, message: '不能修改自己的角色或状态' }); return }
     // 更新字段
     if ('is_admin' in parsed) {
-      db.prepare('UPDATE users SET is_admin = ? WHERE id = ?').run(Number(parsed.is_admin) ? 1 : 0, uid)
+      const next = Number(parsed.is_admin) ? 1 : 0
+      const wasAdmin = staffRoleOf(u) === 'admin'
+      // 提权保护：与角色端点同口径——最后一名超管不能被动降级，否则后台永久失去入口
+      if (wasAdmin && !next) {
+        const admins = db.prepare("SELECT COUNT(*) c FROM users WHERE is_admin = 1 OR role = 'admin'").get().c
+        if (admins <= 1) { sendJSON(res, 400, { ok: false, message: '系统至少需保留一名超级管理员，不能降级最后一名超管' }); return }
+      }
+      // 双轨同步：置 1 → role=admin；置 0 且原 role=admin → 回落 student（其余角色保持不动）
+      if (next) db.prepare("UPDATE users SET is_admin = 1, role = 'admin' WHERE id = ?").run(uid)
+      else db.prepare("UPDATE users SET is_admin = 0, role = CASE WHEN role = 'admin' THEN 'student' ELSE role END WHERE id = ?").run(uid)
+      console.log('[AUDIT] ADMIN-FLAG caller=' + user.id + ' target=' + u.id + ' ' + (Number(u.is_admin) ? 1 : 0) + '->' + next + ' at=' + new Date().toISOString())
     }
     if ('is_locked' in parsed) {
       db.prepare('UPDATE users SET is_locked = ? WHERE id = ?').run(Number(parsed.is_locked) ? 1 : 0, uid)
@@ -178,20 +202,58 @@ const routes = [
       if (parsed.is_locked) {
         db.prepare('DELETE FROM sessions WHERE user_id = ?').run(u.id)
       }
+      console.log('[AUDIT] LOCK-SET caller=' + user.id + ' target=' + u.id + ' locked=' + (Number(parsed.is_locked) ? 1 : 0) + ' at=' + new Date().toISOString())
     }
     sendJSON(res, 200, { ok: true, message: '已更新' })
   } },
 
-  // ───── 用户角色设置(admin) ─────
-  { method: 'POST', pattern: '/api/admin/users/:uid([^/]+)/role', auth: 'admin', handler: async (ctx, { req, res, params }) => {
+  // ───── 用户角色设置(admin/editor；行权收窄见 handler) ─────
+  // 提权保护（P0）：
+  //   1) 禁改自己（防自提权，也防止把自己降级导致失联）
+  //   2) 禁把最后一名超管降级（防后台失去唯一管理员入口）
+  //   3) 按调用者级别收窄可赋角色：admin → 五档全开；editor → 仅 reporter/student 且限本学院成员
+  //   4) 一律写 [AUDIT] 审计日志（对齐 2FA 重置 :211 / 密码重置 :235 的写法）
+  { method: 'POST', pattern: '/api/admin/users/:uid([^/]+)/role', auth: 'staff:editor', handler: async (ctx, { req, res, params, user }) => {
     const { db, sendJSON, readBody } = ctx
-    const uid = decodeURIComponent(params.uid)
+    const callerRole = staffRoleOf(user)
+    if (!isStaffRole(callerRole)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return }
+    let uid = ''
+    try { uid = decodeURIComponent(String(params.uid || '')) } catch (e) { uid = String(params.uid || '') }
     const body = await readBody(req, 4 * 1024).catch(() => Buffer.alloc(0))
-    const { role } = JSON.parse(body.toString() || '{}')
+    let parsed = {}
+    try { parsed = JSON.parse(body.toString() || '{}') } catch { parsed = {} }
+    const role = parsed.role
     if (!['student', 'reporter', 'reviewer', 'editor', 'admin'].includes(role)) { sendJSON(res, 400, { ok: false, message: '无效角色' }); return }
     const target = db.prepare('SELECT * FROM users WHERE id = ?').get(uid)
     if (!target) { sendJSON(res, 404, { ok: false, message: '用户不存在' }); return }
-    db.prepare('UPDATE users SET role = ?, is_admin = ? WHERE id = ?').run(role, role === 'admin' ? 1 : 0, uid)
+    // 1) 禁改自己
+    if (target.id === user.id) { sendJSON(res, 400, { ok: false, message: '不能修改自己的角色' }); return }
+    // 3) 可赋角色矩阵（editor 拿不到 admin/editor/reviewer 三档，从根上堵住横向/纵向提权）
+    const assignable = ASSIGNABLE_ROLES[callerRole] || []
+    if (!assignable.includes(role)) {
+      sendJSON(res, 403, { ok: false, message: '当前账号无权授予该角色（' + callerRole + ' 可授予：' + assignable.join('/') + '）' }); return
+    }
+    const targetRole = staffRoleOf(target)
+    // 学院边界：editor 只能管本学院成员；任一学院为空即拒绝（显式处理，不静默放行）
+    if (callerRole === 'editor') {
+      const callerCollege = String(user.college || '').trim()
+      const targetCollege = String(target.college || '').trim()
+      if (!callerCollege || !targetCollege || callerCollege !== targetCollege) {
+        sendJSON(res, 403, { ok: false, message: '学院编辑只能调整本学院成员的角色' }); return
+      }
+      // 层级保护：editor 只能调整级别低于自己的账号，不得动 admin/editor/reviewer
+      //（否则「editor 把本学院超管降成 student」＝越级处置上级，属提权面）
+      if (!['student', 'reporter'].includes(targetRole)) {
+        sendJSON(res, 403, { ok: false, message: '学院编辑只能调整学生/学生记者账号' }); return
+      }
+    }
+    // 2) 超管数量守卫
+    if (targetRole === 'admin' && role !== 'admin') {
+      const admins = db.prepare("SELECT COUNT(*) c FROM users WHERE is_admin = 1 OR role = 'admin'").get().c
+      if (admins <= 1) { sendJSON(res, 400, { ok: false, message: '系统至少需保留一名超级管理员，不能降级最后一名超管' }); return }
+    }
+    db.prepare('UPDATE users SET role = ?, is_admin = ? WHERE id = ?').run(role, role === 'admin' ? 1 : 0, target.id)
+    console.log('[AUDIT] ROLE-SET caller=' + user.id + '(' + callerRole + ') target=' + target.id + ' ' + targetRole + '->' + role + ' at=' + new Date().toISOString())
     sendJSON(res, 200, { ok: true, message: '已将 ' + (target.name || uid) + ' 的角色设为 ' + role })
   } },
 
@@ -493,7 +555,7 @@ const routes = [
         SELECT COALESCE(u.name, j.user_id) AS user_name, j.user_id, j.status, j.registered_at AS created_at
         FROM activity_joins j LEFT JOIN users u ON u.id = j.user_id
         WHERE j.activity_id = ? ORDER BY j.registered_at DESC`).all(id)
-      let actInfo = '活动名称：' + title + '\n时间：' + (act.date || '待定') + '\n地点：' + (act.location || '待定') + '\n状态：' + act.status + '\n报名人数：' + joins.length + '\n\n介绍：\n' + (act.description || '') + '\n\n—— 云洲大学 · 校园融媒体中心'
+      let actInfo = '活动名称：' + title + '\n时间：' + (act.date || '待定') + '\n地点：' + (act.location || '待定') + '\n状态：' + act.status + '\n报名人数：' + joins.length + '\n\n介绍：\n' + (act.description || '') + '\n\n—— 校园融媒工坊 · Campus Media Workshop'
       entries.push({ name: '活动信息.txt', data: Buffer.from(actInfo, 'utf8') })
       if (joins.length) {
         let csv = '\uFEFF姓名,学号,状态,报名时间\n'
@@ -531,7 +593,7 @@ const routes = [
       if (m.description) line += '\n   简介：' + String(m.description).slice(0, 80)
       manifest += line + '\n'
     }
-    manifest += '\n—— 云洲大学 · 校园融媒体中心'
+    manifest += '\n—— 校园融媒工坊 · Campus Media Workshop'
     entries.push({ name: '素材清单.txt', data: Buffer.from(manifest, 'utf8') })
     const zip = buildZip(entries)
     const fname = encodeURIComponent((type === 'collection' ? '专题传播包-' : '活动传播包-') + title + '.zip')

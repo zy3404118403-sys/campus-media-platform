@@ -12,7 +12,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
 <link rel="apple-touch-icon" href="/icons/icon-180.png">
-<title>素材详情 · 校融媒体素材共建平台</title>
+<title>素材详情 · 校园融媒工坊</title>
 <style>
 :root{
   --gold:#d4af37;--gold-light:#f0d060;--gold-deep:#b8860b;
@@ -205,7 +205,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="/index.html"><span class="logo">校</span><span>校融媒体素材共建平台</span></a>
+  <a class="brand" href="/index.html"><span class="logo">校</span><span>校园融媒工坊</span></a>
   <span class="spacer"></span>
   <a class="icon-btn" href="/index.html#library" id="backSquare">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -217,10 +217,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </header>
 
 <main class="wrap">
-  <a class="back-link" href="javascript:history.length>1?history.back():location.href='/index.html'">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    <span data-i18n="back">返回</span>
-  </a>
 
   <div class="detail-grid" id="detailGrid">
     <div class="preview" id="previewBox">
@@ -548,7 +544,7 @@ function renderQualityMenu(hls){
 
 function renderDetail(){
   var m=MAT
-  document.title=esc(m.title||'素材详情')+' · 校融媒体素材共建平台'
+  document.title=esc(m.title||'素材详情')+' · 校园融媒工坊'
   var prevUrl='/api/materials/'+m.id+'/preview'
   var isImg=/^image\//.test(m.mime||'')||['photo'].indexOf(m.type)>-1
   var isVid=/^video\//.test(m.mime||'')
@@ -712,7 +708,7 @@ function showDownloadConfirm(){
     +     '<li>仅限<strong>校园宣传、教学与经授权</strong>的用途使用</li>'
     +     '<li>涉及<strong>人物肖像、校徽、活动版权</strong>时，须另行取得相关许可</li>'
     +     '<li>不得用于商业冒用、违法用途或损害学校形象的内容</li>'
-    +     '<li>对外发布时请注明素材来源：<strong>融媒体中心</strong></li>'
+    +     '<li>对外发布时请注明素材来源：<strong>校园融媒工坊</strong></li>'
     +   '</ul>'
     +   '<label class="dl-agree"><input type="checkbox" id="dlAgreeBox"><span>我已阅读并同意上述使用规范</span></label>'
     +   '<div class="dl-actions">'

@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preload" href="shared.js?v=20" as="script">
-<meta name="description" content="校园素材共建平台登录——芜宇乐的融媒体中心">
+<meta name="description" content="校园影像资产与内容协作平台 · 登录——校园融媒工坊">
 <meta name="theme-color" content="#0a0a0f">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
     <link rel="apple-touch-icon" href="/icons/icon-180.png">
 <script>(function(){var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
 <meta name="color-scheme" content="dark light">
-<title>登录 · 融媒体素材共建平台</title>
+<title>登录 · 校园融媒工坊</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;font-family:"Inter","SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
@@ -126,9 +126,9 @@ body{display:flex;background:#05070B}
   <canvas id="prismCanvas"></canvas>
   <div class="prism-overlay">
     <div class="brand">
-      <h2>校融媒体素材<br>共建平台</h2>
-      <div class="sub">CREATIVE COMMONS · CAMPUS ARCHIVE</div>
-      <div class="tag">校园素材资源库</div>
+      <h2>校园融媒工坊</h2>
+      <div class="sub">Campus Media Workshop</div>
+      <div class="tag">校园影像资产与内容协作平台</div>
     </div>
   </div>
 </div>
@@ -198,8 +198,8 @@ const $=id=>document.getElementById(id)
 const redirect=new URLSearchParams(location.search).get('redirect')||''
 let curLang = localStorage.getItem('lang') || 'zh'
 const LI = {
-  'brand.h2':{zh:'校融媒体素材<br>共建平台',en:'Campus Media<br>Material Platform'},
-  'brand.tag':{zh:'校园素材资源库',en:'Campus Material Library'},
+  'brand.h2':{zh:'校园融媒工坊',en:'Campus Media Workshop'},
+  'brand.tag':{zh:'校园影像资产与内容协作平台',en:'Campus Visual Asset & Content Collaboration Platform'},
   'welcome.h2':{zh:'欢迎回来',en:'Welcome Back'},
   'welcome.p':{zh:'使用校园统一认证账号登录',en:'Sign in with your campus account'},
   'label.id':{zh:'学号 / 工号',en:'Student / Staff ID'},
@@ -232,7 +232,7 @@ function setLoginLang(lang){
   if(lbl && !document.querySelector('#loginBtn').disabled) lbl.textContent=lt('btn.login')
   $('forgotLink').textContent=lt('forgot.link')
   $('forgotTip').textContent=lt('forgot.tip')
-  document.title=lang==='en'?'Login · CCIBE Media Platform':'登录 · 融媒体素材共建平台'
+  document.title=lang==='en'?'Login · Campus Media Workshop':'登录 · 校园融媒工坊'
 }
 function toggleForgot(){
   const box=$('forgotBox')

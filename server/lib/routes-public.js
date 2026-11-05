@@ -4,6 +4,14 @@
 // 语义说明：原 health 分支不限请求方法（任意方法均 200）；本表收窄为 GET
 //（nginx 探活/监控/前端全部使用 GET，无其他方法调用方）。
 
+// 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）
+function staffRoleOf(user) {
+  if (!user) return 'student'
+  if (user.is_admin || user.role === 'admin') return 'admin'
+  if (['editor', 'reviewer', 'reporter'].includes(user.role)) return user.role
+  return 'student'
+}
+
 const routes = [
   // ───── 健康检查 ─────
   { method: 'GET', pattern: '/api/health', handler: async (ctx, { res }) => {
@@ -68,7 +76,7 @@ const routes = [
   { method: 'GET', pattern: '/api/home-bundle', handler: async (ctx, { req, res }) => {
     const { db, sendJSON, authUser } = ctx
     const user = authUser(req)
-    const visSql = user && user.is_admin ? "status IN ('approved','published')" : "status = 'published'"
+    const visSql = staffRoleOf(user) === 'admin' ? "status IN ('approved','published')" : "status = 'published'"
     const matCount = db.prepare(`SELECT COUNT(*) c FROM materials WHERE ${visSql}`).get().c
     const dlRow = db.prepare(`SELECT COALESCE(SUM(downloads),0) s FROM materials WHERE ${visSql}`).get()
     const collegeCount = db.prepare('SELECT COUNT(*) c FROM colleges').get().c

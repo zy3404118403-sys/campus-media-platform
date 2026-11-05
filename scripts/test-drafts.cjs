@@ -39,7 +39,7 @@ const a = drafts.save({
     title: '  校运会开幕式混剪  ',
     desc: '田径场开幕式，含舞龙与方阵进场，可剪 60 秒短视频',
     type: '视频',
-    college: '融媒体中心',
+    college: '融媒中心',
     collegeIndex: 0,
     tags: ['校运会', '混剪'],
     fileName: 'sports.mp4',
@@ -55,7 +55,7 @@ check('list 长度 1', l.length, 1);
 check('status = draft', l[0].status, 'draft');
 check('tone 有值', l[0].tone, 'ph-2');
 check('size 提示重选文件', l[0].size, '需重新选择文件');
-check('college 透传', l[0].college, '融媒体中心');
+check('college 透传', l[0].college, '融媒中心');
 check('原始表单可回填', l[0].draft.tags, ['校运会', '混剪']);
 
 console.log('\n=== 4. 带 id 保存 = 覆盖而不是新增 ===');
@@ -64,7 +64,7 @@ const b = drafts.save({
     title: '校运会开幕式混剪（改）',
     desc: '改了描述内容',
     type: '视频',
-    college: '融媒体中心',
+    college: '融媒中心',
     collegeIndex: 0,
     tags: ['校运会'],
 });

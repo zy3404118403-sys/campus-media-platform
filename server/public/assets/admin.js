@@ -1556,13 +1556,39 @@ async function loadAccessLogs(){
 })()
 
 var _myRole='admin'
+/* ═══ 菜单单一源（P0）═══
+   ROLE_NAV = 唯一「角色 → 可见 tab」账本（侧栏显隐 applyRoleNav 与浮层菜单 getItems 共用）；
+   NAV_ITEMS = 仅描述菜单项展示属性（i18n key / 徽标 / 跨页 href），**不含任何角色信息**，
+               禁止再新增第二份「角色 → 菜单」清单。
+   跨页入口 articlesWorkbench（文稿工作台）不是侧栏 tab，故显式写进 editor/reviewer 的
+   ROLE_NAV —— 原浮层菜单对所有角色都显示它，单一源改造后需显式保留，避免编辑/审核员丢入口。 */
 var ROLE_NAV={
   admin:null,
-  editor:['dashboard','review','materials','collections','activities','profile'],
-  reviewer:['dashboard','review','articleReview','wallManage','ugcReview','reports','notifManage','profile'],
+  editor:['dashboard','review','materials','collections','activities','articlesWorkbench','profile'],
+  reviewer:['dashboard','review','articleReview','wallManage','ugcReview','reports','notifManage','articlesWorkbench','profile'],
   reporter:[], student:[]
 }
 var ROLE_ZH={admin:'管理员',editor:'学院编辑',reviewer:'审核员',reporter:'学生记者',student:'普通用户'}
+var NAV_ITEMS=[
+  {tab:'dashboard',i18n:'nav.dashboard'},
+  {tab:'review',i18n:'nav.review',badge:'pendingBadge'},
+  {tab:'materials',i18n:'nav.materials'},
+  {tab:'activities',i18n:'nav.activities'},
+  {tab:'recruits',i18n:'nav.recruits'},
+  {tab:'users',i18n:'nav.users'},
+  {tab:'audit',i18n:'nav.audit'},
+  {tab:'access',i18n:'nav.access'},
+  {tab:'mediaMatrix',i18n:'nav.mediaMatrix'},
+  {tab:'articlesWorkbench',i18n:'nav.articlesWorkbench',href:'/articles.html'},
+  {tab:'profile',i18n:'nav.profile'}
+]
+/* 唯一菜单生成入口：role → 菜单项。
+   admin:null 表示「全部」；未知角色 fail-closed 返回空数组（不给默认全量）。 */
+function navItemsFor(role){
+  var allow=ROLE_NAV[role]
+  if(allow===undefined) return []
+  return NAV_ITEMS.filter(function(it){ return allow===null||allow.indexOf(it.tab)>-1 })
+}
 function applyRoleNav(role){
   var allow=ROLE_NAV[role]
   if(!allow) return
@@ -2340,20 +2366,9 @@ var SM_ADMIN=(function(){
   var isOpen=false,isAnimating=false,openTl=null,closeTl=null;
   var badgeObserver=null;
 
-  function getItems(){
-    return [
-      {tab:'dashboard',i18n:'nav.dashboard'},
-      {tab:'review',i18n:'nav.review',badge:'pendingBadge'},
-      {tab:'materials',i18n:'nav.materials'},
-      {tab:'activities',i18n:'nav.activities'},
-      {tab:'recruits',i18n:'nav.recruits'},
-      {tab:'users',i18n:'nav.users'},
-      {tab:'audit',i18n:'nav.audit'},
-      {tab:'access',i18n:'nav.access'},
-      {tab:'mediaMatrix',i18n:'nav.mediaMatrix'},
-      {tab:'articlesWorkbench',i18n:'nav.articlesWorkbench',href:'/articles.html'},
-      {tab:'profile',i18n:'nav.profile'}
-    ];
+  // 菜单项一律由 navItemsFor(_myRole) 生成（读 ROLE_NAV，禁止在本函数内再写死清单）
+  function getItems(role){
+    return navItemsFor(role===undefined||role===null?_myRole:role)
   }
 
   function create(){
@@ -2451,7 +2466,7 @@ var SM_ADMIN=(function(){
     h+='</div>';
 
     h+='<ul class="sm-panel-list">';
-    getItems().forEach(function(item,i){
+    getItems(_myRole).forEach(function(item,i){
       h+='<li class="sm-panel-itemWrap">';
       h+='<a class="sm-panel-item" data-tab="'+item.tab+'"'+(item.href?' data-href="'+item.href+'"':'')+'>';
       h+='<span class="sm-panel-itemLabel">'+esc(at(item.i18n))+'</span>';

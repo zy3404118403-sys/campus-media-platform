@@ -8,6 +8,19 @@
 //   属宽容匹配怪癖，本表不再保留——此类路径回落全局 404「接口不存在」（更严格更安全）。
 //   非数字单段 id 保留原语义：宽条目命中后 parseInt NaN → 404「文稿不存在」。
 
+// 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）
+function staffRoleOf(user) {
+  if (!user) return 'student'
+  if (user.is_admin || user.role === 'admin') return 'admin'
+  if (['editor', 'reviewer', 'reporter'].includes(user.role)) return user.role
+  return 'student'
+}
+// 越权读收口用：稿件域「职员」= 审核/编辑/管理员，均属行权需要的读权限
+function articleStaffRole(user) {
+  const r = staffRoleOf(user)
+  return r === 'admin' || r === 'editor' || r === 'reviewer'
+}
+
 // ───── 富文本净化：白名单标签 + 剥离事件属性与危险协议（防存储型 XSS） ─────
 function sanitizeRichText(html) {
   let s = String(html || '')
@@ -139,9 +152,13 @@ const routes = [
   } },
 
   // ───── 文稿版本列表 ─────
-  { method: 'GET', pattern: '/api/articles/:id(\\d+)/versions', ...USER, handler: async (ctx, { res, params }) => {
+  // P0 越权读收口：版本快照含未发布正文，仅本人 or 职员（admin/editor/reviewer）可读
+  { method: 'GET', pattern: '/api/articles/:id(\\d+)/versions', ...USER, handler: async (ctx, { res, params, user }) => {
     const { db, sendJSON } = ctx
     const id = parseInt(params.id)
+    const article = db.prepare('SELECT id, author_id FROM articles WHERE id = ?').get(id)
+    if (!article) { sendJSON(res, 404, { ok: false, message: '文稿不存在' }); return }
+    if (article.author_id !== user.id && !articleStaffRole(user)) { sendJSON(res, 403, { ok: false, message: '无权查看' }); return }
     const rows = db.prepare('SELECT id, title, summary, saved_by, created_at, LENGTH(content) AS chars FROM article_versions WHERE article_id = ? ORDER BY id DESC LIMIT 30').all(id)
     sendJSON(res, 200, { ok: true, data: rows })
   } },
@@ -158,9 +175,13 @@ const routes = [
   } },
 
   // ───── 发布日志 ─────
-  { method: 'GET', pattern: '/api/articles/:id(\\d+)/publish-logs', ...USER, handler: async (ctx, { res, params }) => {
+  // P0 越权读收口：发布日志含发布人/渠道等运营信息，仅本人 or 职员可读
+  { method: 'GET', pattern: '/api/articles/:id(\\d+)/publish-logs', ...USER, handler: async (ctx, { res, params, user }) => {
     const { db, sendJSON } = ctx
     const id = parseInt(params.id)
+    const article = db.prepare('SELECT id, author_id FROM articles WHERE id = ?').get(id)
+    if (!article) { sendJSON(res, 404, { ok: false, message: '文稿不存在' }); return }
+    if (article.author_id !== user.id && !articleStaffRole(user)) { sendJSON(res, 403, { ok: false, message: '无权查看' }); return }
     const logs = db.prepare('SELECT * FROM publish_logs WHERE article_id = ? ORDER BY published_at DESC').all(id)
     sendJSON(res, 200, { ok: true, data: logs })
   } },
@@ -449,8 +470,14 @@ const routes = [
   } },
 
   // ───── 新媒体矩阵：账号列表 ─────
-  { method: 'GET', pattern: '/api/media-accounts', ...USER, handler: async (ctx, { res }) => {
+  // P0 越权读收口：矩阵账号含各平台账号 ID/负责人/二维码，仅职员 or 本人名下账号可读
+  { method: 'GET', pattern: '/api/media-accounts', ...USER, handler: async (ctx, { res, user }) => {
     const { db, sendJSON } = ctx
+    if (!articleStaffRole(user)) {
+      const own = db.prepare('SELECT * FROM media_accounts WHERE owner_id = ? ORDER BY platform, registered_at DESC').all(user.id)
+      sendJSON(res, 200, { ok: true, data: own, scoped: 'owner' })
+      return
+    }
     const rows = db.prepare('SELECT * FROM media_accounts ORDER BY platform, registered_at DESC').all()
     sendJSON(res, 200, { ok: true, data: rows })
   } },

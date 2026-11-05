@@ -29,12 +29,12 @@ const I18N = {
   'nav.profile':{zh:'个人主页',en:'Profile'}, 'nav.messages':{zh:'消息',en:'Messages'}, 'nav.admin':{zh:'后台管理',en:'Admin'},
   'nav.login':{zh:'登录',en:'Login'},
   // Top bar
-  'top.welcome':{zh:'欢迎访问芜宇乐的融媒体中心 · 素材共建平台',en:'Welcome to CCIBE Media Center · Material Platform'},
+  'top.welcome':{zh:'欢迎访问校园融媒工坊 · 校园影像资产与内容协作平台',en:'Welcome to Campus Media Workshop · Campus Visual Asset & Content Collaboration Platform'},
   'top.join':{zh:'加入我们',en:'Join Us'}, 'top.about':{zh:'关于我们',en:'About'}, 'top.admin':{zh:'后台管理',en:'Admin Panel'},
   // Hero
-  'hero.badge':{zh:'校园素材共建共享平台',en:'Campus Material Sharing Platform'},
+  'hero.badge':{zh:'校园影像资产与内容协作平台',en:'Campus Visual Asset & Content Collaboration Platform'},
   'hero.title1':{zh:'汇聚学院精彩',en:'Gathering Brilliance'}, 'hero.title2':{zh:'共享光影校园',en:'Sharing Campus Light'},
-  'hero.desc':{zh:'面向全校 <b>14 个二级学院</b>的素材资源库——上传你的作品，发现他人的精彩，共建属于我们的校园记忆。图片 · 视频 · 文档 · 音频，<b>每一份创意都被看见</b>。',en:'The material library serving all <b>12 colleges</b> \u2014 upload your work, discover others\u2019 highlights, and build our shared campus memory. Photos \u00b7 Video \u00b7 Documents \u00b7 Audio \u2014 <b>every creative work deserves to be seen</b>.'},
+  'hero.desc':{zh:'面向全校 <b>14 个二级学院</b>的素材资源库——上传你的作品，发现他人的精彩，共建属于我们的校园记忆。图片 · 视频 · 文档 · 音频，<b>每一份创意都被看见</b>。',en:'The material library serving all <b>14 colleges</b> \u2014 upload your work, discover others\u2019 highlights, and build our shared campus memory. Photos \u00b7 Video \u00b7 Documents \u00b7 Audio \u2014 <b>every creative work deserves to be seen</b>.'},
   'hero.upload':{zh:'上传素材',en:'Upload'}, 'hero.browse':{zh:'浏览素材',en:'Browse'},
   'hero.stat1':{zh:'素材总数',en:'Materials'}, 'hero.stat2':{zh:'学院专栏',en:'Colleges'}, 'hero.stat3':{zh:'累计下载',en:'Downloads'},
   'lb.title':{zh:'本周贡献 TOP',en:'Weekly Top Contributors'}, 'lb.all':{zh:'总榜',en:'All Time'},
@@ -46,7 +46,7 @@ const I18N = {
   'sec.library.pageSub':{zh:'搜索 · 筛选 · 标签 · 下载',en:'Search · Filter · Tags · Download'},
   'sec.library.upload':{zh:'上传素材',en:'Upload'},
   'sec.gallery':{zh:'校园风光',en:'Scenery'}, 'sec.gallery.sub':{zh:'航拍视角 · 记录校园之美',en:'Aerial · Campus Beauty'},
-  'sec.activities':{zh:'部门活动',en:'Activities'}, 'sec.activities.sub':{zh:'融媒体中心主办',en:'Hosted by Media Center'},
+  'sec.activities':{zh:'部门活动',en:'Activities'}, 'sec.activities.sub':{zh:'校园融媒工坊主办',en:'Hosted by Campus Media Workshop'},
   'sec.highlights':{zh:'活动风采',en:'Highlights'}, 'sec.highlights.sub':{zh:'精彩瞬间 · 悬停浏览',en:'Moments · Hover to Browse'},
   'sec.viewAll':{zh:'查看全部',en:'View All'}, 'sec.viewAllAct':{zh:'查看全部活动',en:'All Activities'},
   'sec.mediaAct':{zh:'部门活动',en:'Department Activities'},
@@ -99,8 +99,8 @@ const I18N = {
   'edit.name':{zh:'姓名',en:'Name'}, 'edit.college':{zh:'学院',en:'College'}, 'edit.grade':{zh:'年级',en:'Grade'},
   'edit.bio':{zh:'个人简介',en:'Bio'}, 'edit.bioPh':{zh:'介绍一下自己（200字以内）',en:'Introduce yourself (max 200 chars)'},
   // Join modal
-  'join.title':{zh:'加入融媒体中心',en:'Join Media Center'},
-  'join.desc':{zh:'欢迎加入芜宇乐的融媒体中心！请填写以下信息，我们会尽快与你联系。',en:'Welcome to CCIBE Media Center! Fill in the info below and we will contact you.'},
+  'join.title':{zh:'加入校园融媒工坊',en:'Join Campus Media Workshop'},
+  'join.desc':{zh:'欢迎加入校园融媒工坊！请填写以下信息，我们会尽快与你联系。',en:'Welcome to Campus Media Workshop! Fill in the info below and we will contact you.'},
   'join.name':{zh:'姓名',en:'Name'}, 'join.namePh':{zh:'请输入你的姓名',en:'Enter your name'},
   'join.sid':{zh:'学号',en:'Student ID'}, 'join.sidPh':{zh:'请输入学号',en:'Enter your student ID'},
   'join.grade':{zh:'年级',en:'Grade'}, 'join.email':{zh:'邮箱',en:'Email'}, 'join.emailPh':{zh:'请输入邮箱',en:'Enter your email'},
@@ -120,7 +120,7 @@ const I18N = {
   'dl.r2':{zh:'2. 下载使用素材时，请保留原作者的署名信息，尊重知识产权。',en:'2. Retain original author attribution. Respect intellectual property.'},
   'dl.r3':{zh:'3. 不得对素材进行恶意篡改、歪曲原意，或用于不当用途。',en:'3. Do not maliciously alter or misuse materials.'},
   'dl.r4':{zh:'4. 若因违规使用素材产生的版权纠纷、法律责任，由使用者自行承担。',en:'4. Users bear all liability for misuse.'},
-  'dl.r5':{zh:'5. 芜宇乐的融媒体中心保留对素材使用的最终解释权。',en:'5. CCIBE Media Center reserves right of final interpretation.'},
+  'dl.r5':{zh:'5. 校园融媒工坊保留对素材使用的最终解释权。',en:'5. Campus Media Workshop reserves right of final interpretation.'},
   'dl.agree':{zh:'我已仔细阅读并同意以上《素材使用责任声明》，承诺遵守相关规定。',en:'I have read and agree to the above terms.'},
   'dl.confirm':{zh:'确认下载',en:'Confirm Download'},
   /* ── 全站 i18n 补全（2026-09-08 hero/footer/区块/弹窗/排版） ── */
@@ -142,7 +142,7 @@ const I18N = {
   'cat.title':{zh:'按类型直达<span class="sec-sub"> · 六大入口覆盖全部素材形态</span>',en:'Browse by Type<span class="sec-sub"> · Six gateways to every material type</span>'},
   'cat.go':{zh:'进入 →',en:'Enter →'}, 'cat.communityCnt':{zh:'博文 · 论坛 · 墙贴',en:'Posts · Forum · Wall'},
   'more.enterLib':{zh:'进入素材库',en:'Open Library'}, 'more.browseLib':{zh:'浏览素材库',en:'Browse Library'}, 'more.fullBoard':{zh:'完整榜单',en:'Full Board'},
-  'col.secTitle':{zh:'策展式内容组织<span class="sec-sub"> · 后台 CMS 可配置</span>',en:'Curated Content Organization<span class="sec-sub"> · Configurable via CMS</span>'},
+  'col.secTitle':{zh:'策展式内容组织<span class="sec-sub"> · 编辑精选 · 按主题成组阅读</span>',en:'Curated Collections<span class="sec-sub"> · Editor\'s picks · Read by theme</span>'},
   'col.badge':{zh:'专题',en:'Collection'},
   'hot.title':{zh:'大家都在下载<span class="sec-sub"> · 按下载量排序 · 类型即时筛选</span>',en:'Most Downloaded<span class="sec-sub"> · Sorted by downloads · Instant type filter</span>'},
   'filter.current':{zh:'当前筛选：',en:'Filter: '}, 'filter.all':{zh:'全部',en:'All'},
@@ -157,10 +157,10 @@ const I18N = {
   'feat.title':{zh:'深度策划<span class="sec-sub"> · 大画幅运营位 · 校园风光与部门活动精选</span>',en:'Editorial Picks<span class="sec-sub"> · Large-format features · Campus highlights</span>'},
   'feat.f1k':{zh:'航拍视角 · Campus From Above',en:'Aerial · Campus From Above'},
   'feat.f1t':{zh:'俯瞰 · 校园航拍集',en:'Above · Campus Aerial Collection'},
-  'feat.f1d':{zh:'融媒体中心无人机小组历时一学年的航拍档案：从清晨的教学楼群到夜幕下的操场灯光，换个高度重新认识校园。',en:'A full school year of drone archives by the Media Center aerial team: from morning academic buildings to floodlit night fields — see the campus from a new height.'},
+  'feat.f1d':{zh:'校园融媒工坊无人机小组历时一学年的航拍档案：从清晨的教学楼群到夜幕下的操场灯光，换个高度重新认识校园。',en:'A full school year of drone archives by the Campus Media Workshop aerial team: from morning academic buildings to floodlit night fields — see the campus from a new height.'},
   'feat.f2k':{zh:'盛夏机位 · Summer Pond',en:'Seasonal Spot · Summer Pond'},
   'feat.f2t':{zh:'荷塘 · 一年一度的固定机位',en:'The Lotus Pond · A Returning Vantage'},
-  'feat.f2d':{zh:'六月，荷塘是融媒体中心的公共机位：清晨的侧光、午后的风、傍晚的天际线。同一片水，被拍成了四季。',en:'Every June the lotus pond becomes our shared vantage: morning side-light, afternoon breeze, dusk skyline — the same water, filmed through the seasons.'},
+  'feat.f2d':{zh:'六月，荷塘是校园融媒工坊的公共机位：清晨的侧光、午后的风、傍晚的天际线。同一片水，被拍成了四季。',en:'Every June the lotus pond becomes our shared vantage: morning side-light, afternoon breeze, dusk skyline — the same water, filmed through the seasons.'},
   'mini.drill':{zh:'场馆 · 体育馆',en:'Gymnasium'}, 'mini.grad':{zh:'地标 · 校门',en:'The Main Gate'},
   'mini.sports':{zh:'学院楼 · 数计学院',en:'School of Math & Computing'}, 'mini.lecture':{zh:'学院楼 · 文创学院',en:'School of Literature & Creative Communication'},
   'why.title':{zh:'为什么选择这里<span class="sec-sub"> · 内容质量与使用体验的五重保障</span>',en:'Why Choose Us<span class="sec-sub"> · Five guarantees of quality and experience</span>'},
@@ -172,7 +172,7 @@ const I18N = {
   'misc.pleaseSelect':{zh:'--请选择--',en:'-- Select --'},
   'nav.bottom.colleges':{zh:'学院',en:'Colleges'},
   'nav.bottom.tasks':{zh:'任务',en:'Tasks'},
-  'sec.mediaAct.sub':{zh:'融媒体中心主办',en:'Hosted by Media Center'},
+  'sec.mediaAct.sub':{zh:'校园融媒工坊主办',en:'Hosted by Campus Media Workshop'},
   'up.name':{zh:'素材标题',en:'Title'}, 'up.namePh':{zh:'给你的素材起个名字',en:'Name your material'},
   'up.college':{zh:'所属学院',en:'College'}, 'up.type':{zh:'素材类型',en:'Type'},
   'up.desc':{zh:'素材描述',en:'Description'}, 'up.descPh':{zh:'简单描述素材内容、拍摄时间、场景等',en:'Describe content, time, scene…'},
@@ -182,12 +182,12 @@ const I18N = {
   'up.tags':{zh:'标签（逗号分隔，最多6个）',en:'Tags (comma-separated, max 6)'}, 'up.tagsPh':{zh:'如：校园,风景,活动',en:'e.g. campus,scenery,event'},
   'up.file':{zh:'上传文件',en:'Upload File'},
   // Footer
-  'footer.name':{zh:'芜宇乐的融媒体中心',en:'CCIBE Media Center'},
+  'footer.name':{zh:'校园融媒工坊',en:'Campus Media Workshop'},
   'footer.desc':{zh:'致力于打造校园优质素材资源共享平台',en:'Dedicated to a premium campus material platform'},
   'footer.links':{zh:'快速链接',en:'Quick Links'}, 'footer.upload':{zh:'上传素材',en:'Upload'}, 'footer.join':{zh:'加入我们',en:'Join Us'},
   'footer.community':{zh:'校园社区',en:'Community'}, 'footer.tasks':{zh:'任务中心',en:'Task Center'}, 'footer.studio':{zh:'创作中心',en:'Creative Studio'}, 'footer.graph':{zh:'记忆图谱',en:'Memory Graph'},
-  'footer.contact':{zh:'联系我们',en:'Contact'}, 'footer.addr':{zh:'芜宇乐的融媒体中心办公室',en:'CCIBE · Media Center Office'},
-  'footer.bottom':{zh:'芜宇乐的融媒体中心 · 素材共建平台 · 仅供校内使用',en:'CCIBE · Media Center · Material Platform · Internal Use Only'},
+  'footer.contact':{zh:'联系我们',en:'Contact'}, 'footer.addr':{zh:'校园融媒工坊办公室',en:'Campus Media Workshop Office'},
+  'footer.bottom':{zh:'校园融媒工坊 Campus Media Workshop · 校园影像资产与内容协作平台 · 仅供校内使用',en:'Campus Media Workshop · Campus Visual Asset & Content Collaboration Platform'},
   // Status labels
   'st.draft':{zh:'草稿',en:'Draft'}, 'st.review':{zh:'审核中',en:'Reviewing'}, 'st.approved':{zh:'已通过',en:'Approved'},
   'st.published':{zh:'已发布',en:'Published'}, 'st.archived':{zh:'已归档',en:'Archived'}, 'st.rejected':{zh:'已拒绝',en:'Rejected'},
@@ -241,7 +241,7 @@ const I18N = {
   'aria.gallery':{zh:'活动风采图片画廊',en:'Highlights Gallery'}, 'aria.slider':{zh:'校园风光形变轮播',en:'Campus Slider'},
   'aria.prev':{zh:'上一张',en:'Previous'}, 'aria.next':{zh:'下一张',en:'Next'}, 'aria.menu':{zh:'打开菜单',en:'Open Menu'},
   // Nav brand
-  'nav.brandCn':{zh:'芜宇乐的融媒体中心',en:'CCIBE Media Center'}, 'nav.brandEn':{zh:'CCIBE Media Center',en:'CCIBE Media Center'},
+  'nav.brandCn':{zh:'校园融媒工坊',en:'Campus Media Workshop'}, 'nav.brandEn':{zh:'Campus Media Workshop',en:'Campus Media Workshop'},
   // Additional toast keys
   't.needCollege':{zh:'请选择所属学院',en:'Please select college'}, 't.needType':{zh:'请选择素材类型',en:'Please select type'},
   // Library tag suggestions
@@ -424,7 +424,7 @@ function setLang(lang){
     })
   }catch(e){ console.warn('i18n custom select refresh error:',e) }
   // update document title
-  document.title = lang==='en' ? 'CCIBE Media Center · Material Platform' : '芜宇乐的融媒体中心 · 素材共建平台'
+  document.title = lang==='en' ? 'Campus Media Workshop · Campus Visual Asset & Content Collaboration Platform' : '校园融媒工坊 Campus Media Workshop · 校园影像资产与内容协作平台'
   // 移动端底部快捷导航（polish.js 渲染，语言切换后同步）
   try{
     const bn = document.getElementById('polishBottomNav')
@@ -562,7 +562,7 @@ function applyFormI18N(){
   const modalTitles = {
     '上传素材':t('upload.title'), 'Upload Material':t('upload.title'),
     '编辑个人资料':t('edit.title'), 'Edit Profile':t('edit.title'),
-    '加入融媒体中心':t('join.title'), 'Join Media Center':t('join.title'),
+    '加入校园融媒工坊':t('join.title'), 'Join Campus Media Workshop':t('join.title'),
     '素材详情':t('detail.title'), 'Details':t('detail.title'),
     '素材使用责任声明':t('dl.title'), 'Usage Agreement':t('dl.title'),
   }
@@ -666,7 +666,7 @@ function applyFooterI18N(){
     else if(txt==='任务中心' || txt==='Task Center') a.textContent = t('footer.tasks')
     else if(txt==='创作中心' || txt==='Creative Studio') a.textContent = t('footer.studio')
     else if(txt==='记忆图谱' || txt==='Memory Graph') a.textContent = t('footer.graph')
-    else if(txt.includes('融媒体中心办公室') || txt.includes('Media Center Office')) a.textContent = t('footer.addr')
+    else if(txt.includes('校园融媒工坊办公室') || txt.includes('Campus Media Workshop Office')) a.textContent = t('footer.addr')
   })
   const fb = document.querySelector('.footer-bottom')
   if(fb){
@@ -870,7 +870,7 @@ function requireLogin(fn){ ensureLogin().then(function(u){ if(!u){ goLogin('请�
 /* ═════════════════ 登录 ═════════════ */
 function handleLoginBtn(){
   if(currentUser){
-    if(currentUser.is_admin) window.location.href='/admin.html'
+    if(currentUser.is_admin || ['editor','reviewer'].includes(currentUser.role)) window.location.href='/admin.html'
     else window.location.href='/user.html'
   } else location.href='/login.html'
 }
@@ -2279,6 +2279,11 @@ function renderHomeCollections() {
       <div class="topic-info"><div class="t">${esc(c.title)}</div><span class="c">${t('col.enter')} · ${esc((c.description || '').slice(0, 18)) || t('col.curated')}</span></div>
     </div>`
   }).join('')
+  // 动态插入的卡片不在 home-v3.js 的观察器列表里（它只在初始化时扫一遍），
+  // 缺 .on 会让 opacity 恒为 0 —— 数据和 DOM 都在，但肉眼看不见。此处补挂并保留淡入。
+  el.querySelectorAll('.reveal:not(.on)').forEach(function (n) {
+    requestAnimationFrame(function () { n.classList.add('on') })
+  })
 }
 function loadCollectionsPage() {
   var el = document.getElementById('collectionsGrid'); if (!el) return
@@ -2293,6 +2298,9 @@ function loadCollectionsPage() {
         <div class="topic-info"><div class="t">${esc(c.title)}</div><span class="c">${esc((c.description || '').slice(0, 24)) || t('col.curated')}</span></div>
       </div>`
     }).join('')
+    el.querySelectorAll('.reveal:not(.on)').forEach(function (n) {
+      requestAnimationFrame(function () { n.classList.add('on') })
+    })
   })
 }
 function openCollectionDetail(id, skipHash) {

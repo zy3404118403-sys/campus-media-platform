@@ -11,6 +11,32 @@ const crypto = require('crypto')
 const { Transform, pipeline } = require('stream')
 const oss = require('./oss')
 
+// 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）。
+// 本批（P0 权限线）收编范围＝可见性/读权限判定；删除/编辑等「行权」判定仍是 owner 语义，
+// 刻意未改（改它属扩大写权限，需单独立项）。
+function staffRoleOf(user) {
+  if (!user) return 'student'
+  if (user.is_admin || user.role === 'admin') return 'admin'
+  if (['editor', 'reviewer', 'reporter'].includes(user.role)) return user.role
+  return 'student'
+}
+// 可后台读全量数据的职员角色（admin 全校；editor/reviewer 本学院）
+function isStaffRole(role) { return role === 'admin' || role === 'editor' || role === 'reviewer' }
+// 非公开素材（非 published/approved）的读权限：本人 or 职员
+//   admin → 不限学院；editor/reviewer → 限 user.college 本学院（college 为空则不限，显式退化，
+//   与列表端点 :36 的 _collegeScope 同口径，保证「列表能看见」与「详情能打开」一致）
+function canReadNonPublic(user, m) {
+  if (!user) return false
+  const role = staffRoleOf(user)
+  if (role === 'admin') return true
+  if (m && m.author_id && m.author_id === user.id) return true
+  if (role === 'editor' || role === 'reviewer') {
+    const c = String(user.college || '').trim()
+    return !c || c === String((m && m.college) || '').trim()
+  }
+  return false
+}
+
 // HLS 活跃播放会话（60 秒滑窗，用于按并发数限档）
 const HLS_ACTIVE = new Map()
 const PUBLIC_DIR = path.join(__dirname, '..', 'public')
@@ -32,21 +58,33 @@ const routes = [
     let sql = 'SELECT * FROM materials WHERE 1=1'
     const args = []
 
+    // ── 可见性（P0 权限收口；唯一口径 = staffRoleOf）──
+    //   admin            → 全部状态，不按学院过滤
+    //   editor / reviewer→ 全部状态，但限定 user.college 本学院；user.college 为空时
+    //                      不做学院过滤（显式退化＝全校视图，属已知边界，非静默放行：
+    //                      无学院归属的职员仍只能读，不能写他人素材）
+    //   reporter/student → 仅公开态；本人（author_id 命中）可看自己的任意状态
+    const _role = staffRoleOf(user)
+    const _isStaff = isStaffRole(_role)
+    const _collegeScope = (_role === 'editor' || _role === 'reviewer') ? String(user.college || '').trim() : ''
+
     if (statusFilter && statusFilter !== 'all') {
-      const allowAll = user && (user.is_admin || (user.id && user.id === authorId))
+      const allowAll = _isStaff || (user && user.id && user.id === authorId)
       if (allowAll) {
         sql += ' AND status = ?'; args.push(statusFilter)
       } else {
         if (statusFilter === 'published' || statusFilter === 'approved') { sql += ' AND status = ?'; args.push(statusFilter) }
         else { sql += " AND status = 'published'" }
       }
-    } else if (statusFilter === 'all' && user && user.is_admin) {
-      // 管理员查看全部，不加状态过滤
-    } else if (user && user.is_admin) {
+    } else if (statusFilter === 'all' && _isStaff) {
+      // 职员查看全部状态，不加状态过滤（学院范围在下方统一追加）
+    } else if (_isStaff) {
       sql += " AND status IN ('approved','published')"
     } else {
       sql += " AND status = 'published'"
     }
+    // editor/reviewer 的行权边界：只见本学院素材（admin 不受影响）
+    if (_collegeScope) { sql += ' AND college = ?'; args.push(_collegeScope) }
 
     if (type) { sql += ' AND type = ?'; args.push(type) }
     if (college) { sql += ' AND college = ?'; args.push(college) }
@@ -168,8 +206,8 @@ const routes = [
     if (!m) { sendJSON(res, 404, { ok: false, message: '素材不存在' }); return }
     const user = authUser(req)
     const isOwner = user && (user.is_admin || (user.id && user.id === m.author_id))
-    // published 对所有人可见；其他状态仅本人/管理员可见
-    if (m.status !== 'published' && !isOwner) {
+    // published 对所有人可见；其他状态仅本人/管理员/行权职员（审核队列点开详情、预览需要）可见
+    if (m.status !== 'published' && !isOwner && !canReadNonPublic(user, m)) {
       sendJSON(res, 404, { ok: false, message: '素材不存在或未通过审核' })
       return
     }
@@ -190,7 +228,7 @@ const routes = [
     if (!m || !m.hls_dir) { sendJSON(res, 404, { ok: false, message: '该素材暂无高清播放版' }); return }
     const user = authUser(req)
     const isOwner = user && (user.is_admin || user.id === m.author_id)
-    if (m.status !== 'published' && m.status !== 'approved' && !isOwner) { sendJSON(res, 404, { ok: false, message: '素材未公开' }); return }
+    if (m.status !== 'published' && m.status !== 'approved' && !isOwner && !canReadNonPublic(user, m)) { sendJSON(res, 404, { ok: false, message: '素材未公开' }); return }
 
     const rel = String(m.hls_dir).replace(/^\/+/, '')
     const mp = path.join(PUBLIC_DIR, rel, 'master.m3u8')
@@ -450,7 +488,7 @@ const routes = [
     if (!m) { sendJSON(res, 404, { ok: false, message: '素材不存在' }); return }
     const user = authUser(req)
     const isOwner = user && (user.is_admin || (user.id && user.id === m.author_id))
-    if (m.status !== 'published' && m.status !== 'approved' && !isOwner) {
+    if (m.status !== 'published' && m.status !== 'approved' && !isOwner && !canReadNonPublic(user, m)) {
       sendJSON(res, 404, { ok: false, message: '素材不存在或未通过审核' })
       return
     }
@@ -485,7 +523,7 @@ const routes = [
     if (!m) { sendJSON(res, 404, { ok: false, message: '素材不存在' }); return }
     const user = authUser(req)
     const isOwner = user && (user.is_admin || (user.id && user.id === m.author_id))
-    if (m.status !== 'published' && m.status !== 'approved' && !isOwner) {
+    if (m.status !== 'published' && m.status !== 'approved' && !isOwner && !canReadNonPublic(user, m)) {
       sendJSON(res, 404, { ok: false, message: '素材不存在或未通过审核' })
       return
     }
@@ -692,6 +730,19 @@ const routes = [
     const m = db.prepare('SELECT * FROM materials WHERE id = ?').get(mid)
     if (!m) { sendJSON(res, 404, { ok: false, message: '素材不存在' }); return }
 
+    // ── 学院作用域（P0 权限收口 2026-11-04）：院长/审核员只能操作本院素材 ──
+    // 与列表端点 :69 的 _collegeScope、详情端点 :34 的 isAllowed 同口径；
+    // college 为空视为"未限定"（显式退化），但有学院者一律只能动本院数据。
+    {
+      const _role = staffRoleOf(user)
+      if (_role === 'editor' || _role === 'reviewer') {
+        const _c = String(user.college || '').trim()
+        if (_c && _c !== String(m.college || '').trim()) {
+          sendJSON(res, 403, { ok: false, message: '无权操作其他学院的素材' }); return
+        }
+      }
+    }
+
     // ── 精选标记（不改状态机，独立开关；首页/搜索置顶 + 发放精选贡献值）──
     if (action === 'feature' || action === 'unfeature') {
       if (m.status !== 'published' && m.status !== 'approved') { sendJSON(res, 400, { ok: false, message: '仅已通过/已发布素材可设精选' }); return }
@@ -831,10 +882,16 @@ const routes = [
   } },
 
   // ───── 素材状态日志 ─────
-  { method: 'GET', pattern: '/api/materials/:id(\\d+)/status', auth: 'user', handler: async (ctx, { res, params }) => {
+  { method: 'GET', pattern: '/api/materials/:id(\\d+)/status', auth: 'user', handler: async (ctx, { res, params, user }) => {
     const { db, sendJSON } = ctx
     const mid = Number(params.id)
     if (!mid) { sendJSON(res, 400, { ok: false, message: '缺少素材ID' }); return }
+    // 越权读收口（P0）：日志含审核人/退回原因，仅本人 or 职员（admin/editor/reviewer）可读
+    const m = db.prepare('SELECT id, author_id FROM materials WHERE id = ?').get(mid)
+    if (!m) { sendJSON(res, 404, { ok: false, message: '素材不存在' }); return }
+    if (m.author_id !== user.id && !isStaffRole(staffRoleOf(user))) {
+      sendJSON(res, 403, { ok: false, message: '无权查看该素材的状态记录' }); return
+    }
     const logs = db.prepare('SELECT * FROM material_status_logs WHERE material_id = ? ORDER BY id DESC').all(mid)
     sendJSON(res, 200, { ok: true, data: logs })
   } },

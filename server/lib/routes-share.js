@@ -49,11 +49,11 @@ function shareHtml(sh, opts) {
   const t = TYPE_LABELS[sh.type] || sh.type || '素材'
   const previewUrl = `/api/share/${sh.token}/preview`
   const fileUrl = `/api/share/${sh.token}/file`
-  const ogDesc = (sh.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) || `${t}分享 · 校融媒体素材共建平台`
+  const ogDesc = (sh.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120) || `${t}分享 · 校园融媒工坊`
   const isImg = /^image\//.test(sh.mime || '') || sh.type === 'photo'
   const head =
     '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<meta property="og:site_name" content="校融媒体素材共建平台">'
+    + '<meta property="og:site_name" content="校园融媒工坊">'
     + '<meta property="og:type" content="article">'
     + `<meta property="og:title" content="${esc(sh.title)}">`
     + `<meta property="og:description" content="${esc(ogDesc)}">`
@@ -62,9 +62,9 @@ function shareHtml(sh, opts) {
     + '<meta name="twitter:card" content="summary_large_image">'
 
   if (err) {
-    return '<!DOCTYPE html><html lang="zh"><head>' + head + `<title>链接已失效 · 校融媒体素材共建平台</title></head>`
+    return '<!DOCTYPE html><html lang="zh"><head>' + head + `<title>链接已失效 · 校园融媒工坊</title></head>`
       + '<body><div class="card err"><div class="big">🔗</div><h1>链接已失效</h1>'
-      + `<p>${esc(err)}</p><p class="foot">校融媒体素材共建平台</p></div></body></html>`
+      + `<p>${esc(err)}</p><p class="foot">校园融媒工坊</p></div></body></html>`
   }
 
   let mediaHtml
@@ -74,7 +74,7 @@ function shareHtml(sh, opts) {
     mediaHtml = `<div class="media file-ph"><div class="ficon">📁</div><div class="fname">${esc(sh.original_name || sh.title)}</div></div>`
   }
 
-  return '<!DOCTYPE html><html lang="zh"><head>' + head + `<title>${esc(sh.title)} · 校融媒体素材共建平台</title><style>`
+  return '<!DOCTYPE html><html lang="zh"><head>' + head + `<title>${esc(sh.title)} · 校园融媒工坊</title><style>`
     + '*{margin:0;padding:0;box-sizing:border-box}'
     + 'body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#eef2ff 0%,#f8fafc 55%,#ecfdf5 100%)}'
     + '@media (prefers-color-scheme:dark){body{background:linear-gradient(160deg,#0f172a 0%,#111827 55%,#052e1f 100%)}}'
@@ -105,7 +105,7 @@ function shareHtml(sh, opts) {
     + (sh.filename
       ? `<a class="dl" href="${esc(fileUrl)}" download>⬇ 下载素材</a>`
       : '<span class="dl no">该素材暂无文件</span>')
-    + '<div class="foot">校融媒体素材共建平台 · 免登录分享</div>'
+    + '<div class="foot">校园融媒工坊 · 免登录分享</div>'
     + '</div></div></body></html>'
 }
 

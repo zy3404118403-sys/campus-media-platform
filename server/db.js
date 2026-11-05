@@ -303,6 +303,18 @@ if (count === 0) {
   insU.run('demo', '演示学生', hashPassword(_demoPw), '设计学院', '2024级', 0)
   console.log('  ✓ 初始账号 demo 密码: ' + _demoPw + '（仅本次打印）')
 
+  // 演示用职员账号（P0 权限线）：部门管理员(editor) + 审核员(reviewer)，同属一个学院，
+  // 便于本地演示「学院编辑只看本学院 / 审核员只审本学院」的边界。仅在全新建库（演示库）写入。
+  // 口令一律强随机、只在此处打印一次，源码/注释中不出现任何可用初始口令。
+  const _staffCollege = '设计学院'
+  const _editorPw = process.env.DEMO_EDITOR_PASSWORD || _randomPassword()
+  const _reviewerPw = process.env.DEMO_REVIEWER_PASSWORD || _randomPassword()
+  const insStaff = db.prepare('INSERT INTO users (id,name,password,college,grade,is_admin,role) VALUES (?,?,?,?,?,0,?)')
+  insStaff.run('demo_editor', '演示·学院编辑', hashPassword(_editorPw), _staffCollege, '2023级', 'editor')
+  insStaff.run('demo_reviewer', '演示·审核员', hashPassword(_reviewerPw), _staffCollege, '2023级', 'reviewer')
+  console.log('  ✓ 演示职员 demo_editor（editor/' + _staffCollege + '）密码: ' + _editorPw + '（仅本次打印）')
+  console.log('  ✓ 演示职员 demo_reviewer（reviewer/' + _staffCollege + '）密码: ' + _reviewerPw + '（仅本次打印）')
+
   // 样例素材(与前端原数据对应)
   const seedMaterials = [
     ['校园春日樱花摄影集', '图片', '设计学院', '李明', '20230001', 86],
@@ -332,6 +344,31 @@ if (count === 0) {
     ['「映像校园」微电影展映周', '征集校园微电影作品，评审后在学术报告厅进行为期一周的展映。', '2026年9月10日 - 10月20日', 'upcoming', '🎞️', 'linear-gradient(135deg, #fa709a, #fee140)'],
   ]
   acts.forEach(a => insA.run(...a))
+}
+
+// ── 演示库职员账号补齐（P0 权限线，幂等）──
+// 默认不执行；仅 DEMO_SEED_STAFF=1 且当前库确有 demo 演示账号（判定为演示库）时补齐
+// demo_editor(editor) / demo_reviewer(reviewer)。线上库默认不会被写入任何新职员账号。
+// 口令强随机、只打印一次；源码中不出现任何可用初始口令。
+if (String(process.env.DEMO_SEED_STAFF || '') === '1') {
+  try {
+    const isDemoDb = !!db.prepare("SELECT 1 FROM users WHERE id='demo'").get()
+    if (!isDemoDb) {
+      console.log('  ⚠ DEMO_SEED_STAFF=1 但当前库无 demo 演示账号（判定为非演示库），已跳过职员账号补齐')
+    } else {
+      const staffCollege = '设计学院'
+      const insStaff = db.prepare('INSERT INTO users (id,name,password,college,grade,is_admin,role) VALUES (?,?,?,?,?,0,?)')
+      const staffSeeds = [
+        ['demo_editor', '演示·学院编辑', 'editor', process.env.DEMO_EDITOR_PASSWORD || _randomPassword()],
+        ['demo_reviewer', '演示·审核员', 'reviewer', process.env.DEMO_REVIEWER_PASSWORD || _randomPassword()],
+      ]
+      for (const s of staffSeeds) {
+        if (db.prepare('SELECT 1 FROM users WHERE id = ?').get(s[0])) { console.log('  · 演示职员已存在，跳过: ' + s[0]); continue }
+        insStaff.run(s[0], s[1], hashPassword(s[3]), staffCollege, '2023级', s[2])
+        console.log('  ✓ 演示职员 ' + s[0] + '（' + s[2] + '/' + staffCollege + '）密码: ' + s[3] + '（仅本次打印）')
+      }
+    }
+  } catch (e) { console.log('  ⚠ 演示职员账号补齐失败:', e.message) }
 }
 
 // ── 迁移:补充缺失的学院(存量数据库) ──

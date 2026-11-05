@@ -3,12 +3,20 @@
 // 迁移原则：handler 体业务逻辑零改动；旧守卫收口到路由表闸门（默认文案逐字一致）。
 // ctx 复用 MATERIALS_CTX（含 materialPublic——专题详情素材脱敏/字段白名单沿用）。
 
+// 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）
+function staffRoleOf(user) {
+  if (!user) return 'student'
+  if (user.is_admin || user.role === 'admin') return 'admin'
+  if (['editor', 'reviewer', 'reporter'].includes(user.role)) return user.role
+  return 'student'
+}
+
 const routes = [
   // ───── 专题列表(公开；管理员可 all=1 查全部) ─────
   { method: 'GET', pattern: '/api/collections', handler: async (ctx, { req, res, url }) => {
     const { db, sendJSON, authUser } = ctx
     const viewer = authUser(req)
-    const showAll = url.searchParams.get('all') === '1' && viewer && viewer.is_admin
+    const showAll = url.searchParams.get('all') === '1' && staffRoleOf(viewer) === 'admin'
     const rows = db.prepare(`
       SELECT c.*, COUNT(ci.material_id) AS item_count
       FROM collections c LEFT JOIN collection_items ci ON ci.collection_id = c.id

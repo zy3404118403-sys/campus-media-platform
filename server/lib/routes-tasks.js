@@ -22,6 +22,16 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
 
   const TASK_CATEGORIES = ['news', 'video', 'photo', 'design', 'other']
 
+  // 权限唯一口径：与 lib/router.js 的 staffRoleOf 逐字一致（is_admin 与 role 双轨在此统一）
+  function staffRoleOf(u) {
+    if (!u) return 'student'
+    if (u.is_admin || u.role === 'admin') return 'admin'
+    if (['editor', 'reviewer', 'reporter'].includes(u.role)) return u.role
+    return 'student'
+  }
+  // 任务管理端闸门（原 `!user.is_admin`；等价语义：唯 admin 可管理任务/贡献值）
+  function isTaskAdmin(u) { return !!u && staffRoleOf(u) === 'admin' }
+
   // ═══ 学生端 ═══
 
   // ───── 任务列表 ─────
@@ -150,7 +160,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 创建任务 ─────
   if (p === '/api/admin/tasks' && method === 'POST') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const body = await readBody(req, 64 * 1024).catch(() => Buffer.alloc(0))
     let parsed = {}
     try { parsed = JSON.parse(body.toString('utf8')) } catch {}
@@ -170,7 +180,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 编辑任务 ─────
   if (p.match(/^\/api\/admin\/tasks\/\d+$/) && method === 'PUT') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const id = parseInt(p.split('/').pop())
     const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(id)
     if (!task) { sendJSON(res, 404, { ok: false, message: '任务不存在' }); return true }
@@ -196,7 +206,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 删除任务 ─────
   if (p.match(/^\/api\/admin\/tasks\/\d+$/) && method === 'DELETE') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const id = parseInt(p.split('/').pop())
     // 删除任务及其全部领取记录(已入账的贡献值流水无外键引用,自动保留)
     db.prepare('DELETE FROM task_claims WHERE task_id = ?').run(id)
@@ -208,7 +218,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 领取记录列表（审核视图） ─────
   if (p === '/api/admin/task-claims' && method === 'GET') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const sp = url.searchParams
     const status = sp.get('status') || ''
     const taskId = parseInt(sp.get('task_id')) || 0
@@ -230,7 +240,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 审核任务成果 ─────
   if (p.match(/^\/api\/admin\/task-claims\/\d+\/review$/) && method === 'POST') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const id = parseInt(p.split('/')[4])
     const claim = db.prepare('SELECT * FROM task_claims WHERE id = ?').get(id)
     if (!claim) { sendJSON(res, 404, { ok: false, message: '领取记录不存在' }); return true }
@@ -262,7 +272,7 @@ module.exports = async function routesTasks(ctx, req, res, p, method, url) {
   // ───── 手动调整贡献值 ─────
   if (p === '/api/admin/contribution/adjust' && method === 'POST') {
     const user = authUser(req)
-    if (!user || !user.is_admin) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
+    if (!isTaskAdmin(user)) { sendJSON(res, 403, { ok: false, message: '无权限' }); return true }
     const body = await readBody(req, 64 * 1024).catch(() => Buffer.alloc(0))
     let parsed = {}
     try { parsed = JSON.parse(body.toString('utf8')) } catch {}
