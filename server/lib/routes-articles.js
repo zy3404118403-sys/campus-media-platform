@@ -77,12 +77,20 @@ function applyArticleReview(db, admin, id, action, comment, annotations) {
       else newStatus = 'published_ready'
     }
   }
-  db.prepare("UPDATE articles SET status = ?, updated_at = datetime('now','localtime') WHERE id = ?").run(newStatus, id)
-  db.prepare(`INSERT INTO article_reviews (article_id, reviewer_id, reviewer_name, review_stage, action, comment, annotations)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`).run(id, admin.id, admin.name, stage, action, comment || '', JSON.stringify(annotations || []))
-  // 通知作者
-  db.prepare(`INSERT INTO notifications (owner, material_id, material_title, actor, action) VALUES (?, ?, ?, ?, 'review')`)
-    .run(article.author_id, id, article.title, admin.name)
+  // 状态推进 / 审核记录 / 通知 三写同事务，防中途异常留脏数据
+  db.exec('BEGIN')
+  try {
+    db.prepare("UPDATE articles SET status = ?, updated_at = datetime('now','localtime') WHERE id = ?").run(newStatus, id)
+    db.prepare(`INSERT INTO article_reviews (article_id, reviewer_id, reviewer_name, review_stage, action, comment, annotations)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`).run(id, admin.id, admin.name, stage, action, comment || '', JSON.stringify(annotations || []))
+    // 通知作者
+    db.prepare(`INSERT INTO notifications (owner, material_id, material_title, actor, action) VALUES (?, ?, ?, ?, 'review')`)
+      .run(article.author_id, id, article.title, admin.name)
+    db.exec('COMMIT')
+  } catch (e) {
+    try { db.exec('ROLLBACK') } catch (_) {}
+    throw e
+  }
   return { ok: true, message: action === 'approve' ? '审核通过' : action === 'reject' ? '已拒绝' : '已退回', newStatus: newStatus }
 }
 

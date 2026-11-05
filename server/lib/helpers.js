@@ -205,6 +205,28 @@ function escapeLike(s) {
   return String(s || '').replace(/%/g, '\\%').replace(/_/g, '\\_')
 }
 
+// ── 中和 HTML 中的危险协议链接（javascript:/vbscript:）──
+// 服务端二次防线：前端 shared.js 已做一次净化；此处防「绕过前端直接调 API」的提交
+function neutralizeJsLinks(html) {
+  // 解码常见实体（数字/十六进制/冒号），用于识别实体混淆的协议前缀
+  function decodeEntities(v) {
+    return String(v)
+      .replace(/&#x([0-9a-f]+);/gi, function (m, h) { return String.fromCharCode(parseInt(h, 16)) })
+      .replace(/&#(\d+);/g, function (m, d) { return String.fromCharCode(parseInt(d, 10)) })
+      .replace(/&colon;/gi, ':').replace(/&tab;/gi, '\t').replace(/&newline;/gi, '\n')
+  }
+  var s = String(html || '')
+  // ① 带引号属性值：解码实体 + 去空白/控制字符后判断协议前缀
+  s = s.replace(/(href|src)\s*=\s*(["'])([\s\S]*?)\2/gi, function (m, attr, q, val) {
+    var v = decodeEntities(val).replace(/[\s\x00-\x1f]+/g, '').toLowerCase()
+    if (/^(javascript|vbscript|data:text\/html)/.test(v)) return attr + '=' + q + '#' + q
+    return m
+  })
+  // ② 无引号写法兜底
+  s = s.replace(/\b(href|src)\s*=\s*(?:javascript|vbscript)\s*:/gi, '$1=#')
+  return s
+}
+
 // ── 密码强度校验 ──
 function validatePasswordStrength(pwd) {
   if (!pwd || pwd.length < 8) return { ok: false, message: '密码至少8位' }
@@ -214,4 +236,4 @@ function validatePasswordStrength(pwd) {
   return { ok: true }
 }
 
-module.exports = { sendJSON, readBody, parseCookies, detectFileType, UPLOAD_ALLOWED, TYPE_TO_CATEGORY, validateUploadedFile, getOrCreateCSRFToken, validateCSRF, CSRF_EXEMPT, sanitizeOriginalName, escapeLike, validatePasswordStrength }
+module.exports = { sendJSON, readBody, parseCookies, detectFileType, UPLOAD_ALLOWED, TYPE_TO_CATEGORY, validateUploadedFile, getOrCreateCSRFToken, validateCSRF, CSRF_EXEMPT, sanitizeOriginalName, escapeLike, validatePasswordStrength, neutralizeJsLinks }

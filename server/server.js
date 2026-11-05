@@ -317,7 +317,7 @@ const PORT = process.env.PORT || 3000
 const PUBLIC_DIR = path.join(__dirname, 'public')
 
 // P2 拆分：lib 模块（工具/会话/OG/路由域）
-const { sendJSON, readBody, parseCookies, detectFileType, UPLOAD_ALLOWED, TYPE_TO_CATEGORY, validateUploadedFile, getOrCreateCSRFToken, validateCSRF, CSRF_EXEMPT, sanitizeOriginalName, escapeLike, validatePasswordStrength } = require('./lib/helpers')
+const { sendJSON, readBody, parseCookies, detectFileType, UPLOAD_ALLOWED, TYPE_TO_CATEGORY, validateUploadedFile, getOrCreateCSRFToken, validateCSRF, CSRF_EXEMPT, sanitizeOriginalName, escapeLike, validatePasswordStrength, neutralizeJsLinks } = require('./lib/helpers')
 const { SESSIONS, createSession, SESSION_TTL, SESSION_MAX_AGE } = require('./lib/sessions')(db)
 const { injectOGTags } = require('./lib/og')(db)
 const routesArticles = require('./lib/routes-articles')
@@ -330,7 +330,7 @@ const totp2fa = require('./lib/totp')
 const { buildZip } = require('./lib/zip.js')
 const ROUTE_CTX_BASE = { db, sendJSON, readBody, authUser, escapeLike }
 const ARTICLES_CTX = { ...ROUTE_CTX_BASE, sensitiveFilter, reloadFilter, publishArticle, unpublishArticle }
-const COMMUNITY_CTX = { ...ROUTE_CTX_BASE, sensitiveFilter, buildPollData, requireAuth }
+const COMMUNITY_CTX = { ...ROUTE_CTX_BASE, sensitiveFilter, buildPollData, requireAuth, neutralizeJsLinks }
 // P2 阶段二：声明式路由表上下文（函数声明提升，此处引用安全）+ 分享域模块
 const P2_CTX = { ...ROUTE_CTX_BASE, requireAuth, requireAdmin, requireStaff, UPLOAD_DIR, THUMB_DIR, getClientIP }
 const routesShare = require('./lib/routes-share')

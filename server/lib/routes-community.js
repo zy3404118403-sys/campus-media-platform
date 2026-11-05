@@ -43,18 +43,20 @@ const routes = [
 
   // ───── 博客：发布博文 ─────
   { method: 'POST', pattern: '/api/blog/posts', ...USER, handler: async (ctx, { req, res, user }) => {
-    const { db, sendJSON, readBody, sensitiveFilter } = ctx
+    const { db, sendJSON, readBody, sensitiveFilter, neutralizeJsLinks } = ctx
     const body = await readBody(req).catch(() => Buffer.alloc(0))
     const { title, content, summary, category, tags, cover_image } = JSON.parse(body.toString() || '{}')
     if (!title || !content) { sendJSON(res, 400, { ok: false, message: '标题和内容不能为空' }); return }
     if (sensitiveFilter.hasAny(title + content)) { sendJSON(res, 400, { ok: false, message: '内容包含敏感词，请修改后重试' }); return }
+    // 服务端二次防线：中和 javascript:/vbscript: 链接，防绕过前端净化器
+    const safeContent = neutralizeJsLinks(String(content))
     // 封面自动提取：未显式指定封面时，取正文首个 <img> 作为封面
     let cover = cover_image || ''
     if (!cover) {
       const m = String(content).match(/<img[^>]*src=["']([^"']+)["']/i)
       if (m) cover = m[1]
     }
-    const result = db.prepare('INSERT INTO blog_posts (author_id,author_name,title,content,summary,category,tags,cover_image,status) VALUES (?,?,?,?,?,?,?,?,?)').run(user.id, user.name, title, content, summary || content.slice(0, 200), category || 'campus', JSON.stringify(tags || []), cover, 'pending')
+    const result = db.prepare('INSERT INTO blog_posts (author_id,author_name,title,content,summary,category,tags,cover_image,status) VALUES (?,?,?,?,?,?,?,?,?)').run(user.id, user.name, title, safeContent, summary || safeContent.slice(0, 200), category || 'campus', JSON.stringify(tags || []), cover, 'pending')
     sendJSON(res, 200, { ok: true, id: result.lastInsertRowid, message: '博文已提交，等待审核' })
   } },
 
@@ -175,13 +177,15 @@ const routes = [
 
   // ───── 论坛：发帖 ─────
   { method: 'POST', pattern: '/api/forum/threads', ...USER, handler: async (ctx, { req, res, user }) => {
-    const { db, sendJSON, readBody, sensitiveFilter } = ctx
+    const { db, sendJSON, readBody, sensitiveFilter, neutralizeJsLinks } = ctx
     const body = await readBody(req).catch(() => Buffer.alloc(0))
     const { boardId, title, content, isAnonymous, poll } = JSON.parse(body.toString() || '{}')
     if (!boardId || !title || !content) { sendJSON(res, 400, { ok: false, message: '版块、标题和内容不能为空' }); return }
     const board = db.prepare('SELECT * FROM forum_boards WHERE id = ?').get(boardId)
     if (!board) { sendJSON(res, 404, { ok: false, message: '版块不存在' }); return }
     if (sensitiveFilter.hasAny(content)) { sendJSON(res, 400, { ok: false, message: '内容包含敏感词，请修改后重试' }); return }
+    // 服务端二次防线：帖子正文按 HTML 渲染，入库前中和危险协议链接
+    const safeContent = neutralizeJsLinks(String(content))
     let pollData = null
     if (poll && typeof poll === 'object') {
       const q = (poll.question || '').toString().trim()
@@ -195,7 +199,7 @@ const routes = [
       pollData = { question: q, options: opts, allowMultiple: !!poll.allowMultiple }
     }
     const anon = isAnonymous && board.is_anonymous ? 1 : 0
-    const result = db.prepare('INSERT INTO forum_threads (board_id,author_id,author_name,title,content,is_anonymous,status) VALUES (?,?,?,?,?,?,?)').run(boardId, user.id, user.name, title, content, anon, 'pending')
+    const result = db.prepare('INSERT INTO forum_threads (board_id,author_id,author_name,title,content,is_anonymous,status) VALUES (?,?,?,?,?,?,?)').run(boardId, user.id, user.name, title, safeContent, anon, 'pending')
     if (pollData) {
       db.prepare('INSERT INTO forum_polls (thread_id,question,options,allow_multiple,created_by) VALUES (?,?,?,?,?)')
         .run(result.lastInsertRowid, pollData.question, JSON.stringify(pollData.options), pollData.allowMultiple ? 1 : 0, user.id)

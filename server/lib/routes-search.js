@@ -13,7 +13,7 @@ function ftsPhrase(q) {
 
 const ROUTES = [
   { method: 'GET', pattern: '/api/search/v2', handler: async (ctx, { res, url }) => {
-    const { db, sendJSON } = ctx
+    const { db, sendJSON, escapeLike } = ctx
     const q = (url.searchParams.get('q') || '').trim()
     const type = url.searchParams.get('type') || 'all'
     const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit')) || 20))
@@ -26,8 +26,8 @@ const ROUTES = [
     const tokens = q.split(/\s+/).filter(Boolean)
     const minLen = Math.min(...tokens.map(t => t.length))
     if (minLen < 3) {
-      const likeConds = tokens.map(() => '(s.title LIKE ? OR s.body LIKE ? OR s.tags LIKE ?)').join(' AND ')
-      const likeArgs = tokens.flatMap(t => { const kw = '%' + t + '%'; return [kw, kw, kw] })
+      const likeConds = tokens.map(() => "(s.title LIKE ? ESCAPE '\\' OR s.body LIKE ? ESCAPE '\\' OR s.tags LIKE ? ESCAPE '\\')").join(' AND ')
+      const likeArgs = tokens.flatMap(t => { const kw = '%' + escapeLike(t) + '%'; return [kw, kw, kw] })
       const rows = db.prepare(`
         SELECT s.type, s.ref_id AS id, s.title, s.body, s.tags
         FROM search_src s
@@ -66,12 +66,12 @@ const ROUTES = [
       sendJSON(res, 200, { ok: true, data })
     } catch (e) {
       // FTS 语法异常（特殊字符残留等）→ LIKE 降级，搜索永不 500
-      const kw = '%' + q + '%'
+      const kw = '%' + escapeLike(q) + '%'
       const rows = db.prepare(`
         SELECT s.type, s.ref_id AS id, s.title, s.body, s.tags
         FROM search_src s
         WHERE s.status = 'published' ${typeCond}
-          AND (s.title LIKE ? OR s.body LIKE ? OR s.tags LIKE ?)
+          AND (s.title LIKE ? ESCAPE '\\' OR s.body LIKE ? ESCAPE '\\' OR s.tags LIKE ? ESCAPE '\\')
         ORDER BY s.id DESC LIMIT ?`).all(...typeArg, kw, kw, kw, limit)
       sendJSON(res, 200, { ok: true, data: rows.map(r => ({
         type: r.type, id: r.id,
