@@ -30,7 +30,7 @@ const I18N = {
   'nav.login':{zh:'登录',en:'Login'},
   // Top bar
   'top.welcome':{zh:'欢迎访问校园融媒工坊 · 校园影像资产与内容协作平台',en:'Welcome to Campus Media Workshop · Campus Visual Asset & Content Collaboration Platform'},
-  'top.join':{zh:'加入我们',en:'Join Us'}, 'top.about':{zh:'关于我们',en:'About'}, 'top.admin':{zh:'后台管理',en:'Admin Panel'},
+  'top.join':{zh:'加入我们',en:'Join Us'}, 'top.graph':{zh:'记忆图谱',en:'Memory Graph'}, 'top.about':{zh:'关于我们',en:'About'}, 'top.admin':{zh:'后台管理',en:'Admin Panel'},
   // Hero
   'hero.badge':{zh:'校园影像资产与内容协作平台',en:'Campus Visual Asset & Content Collaboration Platform'},
   'hero.title1':{zh:'汇聚学院精彩',en:'Gathering Brilliance'}, 'hero.title2':{zh:'共享光影校园',en:'Sharing Campus Light'},

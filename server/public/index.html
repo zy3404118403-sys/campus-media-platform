@@ -43,6 +43,7 @@
   <div class="container">
     <span class="hide-mobile" data-i18n="top.welcome">欢迎访问校园融媒工坊 · 校园影像资产与内容协作平台</span>
     <div style="display:flex;gap:16px;margin-left:auto">
+      <a href="/graph.html" data-i18n="top.graph">记忆图谱</a>
       <a href="/about.html" data-i18n="top.about">关于我们</a>
       <a href="#" onclick="openModal('joinModal');return false;" data-i18n="top.join">加入我们</a>
       <a href="#" onclick="goAdmin();return false;" id="topAdminLink" class="hidden" data-i18n="top.admin">后台管理</a>
@@ -613,7 +614,6 @@
         <a href="#" role="button" onclick="requireLogin(()=>openModal('uploadModal'));return false;">上传素材</a>
         <a href="#" role="button" onclick="openModal('joinModal');return false;">加入我们</a>
         <a href="/community.html" data-i18n="footer.community">校园社区</a>
-        <a href="/graph.html" data-i18n="footer.graph">记忆图谱</a>
       </div>
       <div class="footer-col">
         <h3 data-i18n="footer.contact">联系我们</h3>
@@ -632,7 +632,7 @@
 
 <script>window.__homeBundle = fetch('/api/home-bundle').then(function (r) { return r.json() })</script>
 <script src="shared.js?v=20"></script>
-<script src="/assets/index.js?v=p2v42"></script>
+<script src="/assets/index.js?v=p2v43"></script>
 <script src="/home-v3.js?v=v3r12"></script>
 <script src="/assets/polish.js?v=v4"></script>
 
