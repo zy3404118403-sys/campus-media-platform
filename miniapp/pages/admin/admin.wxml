@@ -7,7 +7,7 @@
     <view class="a-deny">
       <view class="a-deny-t">当前身份：{{roleText}}</view>
       <view class="a-deny-s">管理功能仅对管理员与审核员开放。</view>
-      <view class="a-deny-s">如需审核权限，请联系融媒体中心管理员开通。</view>
+      <view class="a-deny-s">如需审核权限，请联系校融媒体中心管理员开通。</view>
     </view>
   </block>
 

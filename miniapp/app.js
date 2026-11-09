@@ -3,7 +3,7 @@ const badge = require('./utils/badge.js');
 
 App({
     globalData: {
-        appName: '芜宇乐的融媒体中心',
+        appName: '重庆对外经贸学院校融媒体中心',
         // 原型阶段：所有数据来自 utils/mock.js，不发任何网络请求
         mock: true,
     },

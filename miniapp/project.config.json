@@ -1,5 +1,5 @@
 {
-  "description": "芜宇乐的融媒体中心 · 素材库小程序",
+  "description": "重庆对外经贸学院校融媒体中心 · 素材库小程序",
   "packOptions": {
     "ignore": [
       {
@@ -33,7 +33,7 @@
     "compileHotReLoad": true
   },
   "compileType": "miniprogram",
-  "appid": "wx0000000000000000",
+  "appid": "wx3cc05fba9cab856b",
   "projectname": "campus-media-miniapp",
   "miniprogramRoot": "./"
 }

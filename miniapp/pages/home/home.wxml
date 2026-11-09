@@ -1,7 +1,7 @@
 <view class="page">
   <view class="home-brand">
     <view class="hdr-kicker">CCIBE CAMPUS MEDIA CENTER</view>
-    <view class="home-title">{{hello || '融媒体中心'}}</view>
+    <view class="home-title">{{hello || '校融媒体中心'}}</view>
     <view class="home-sub">素材 · 专题 · 活动 · 任务，一站直达</view>
   </view>
 

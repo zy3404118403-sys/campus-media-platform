@@ -119,7 +119,7 @@ function saveActivity(payload) {
         state: ACT.DRAFT,
         tone: TONES[mock.activities.length % TONES.length],
         kicker: 'NEW ACTIVITY',
-        organizer: payload.organizer || '融媒体中心',
+        organizer: payload.organizer || '校融媒体中心',
         points: Number(payload.points) || 10,
         deadline: payload.deadline || '',
         intro: payload.intro,

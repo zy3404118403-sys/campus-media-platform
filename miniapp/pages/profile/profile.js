@@ -175,7 +175,7 @@ Page({
         if (key === 'about') {
             wx.showModal({
                 title: '关于平台',
-                content: '芜宇乐的融媒体中心素材库。素材仅供校内教学与宣传使用，对外发布请注明来源。',
+                content: '重庆对外经贸学院校融媒体中心素材库。素材仅供校内教学与宣传使用，对外发布请注明来源。',
                 showCancel: false,
                 confirmColor: '#d8b46a',
             });

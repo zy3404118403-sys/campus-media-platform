@@ -84,7 +84,7 @@
           <view class="dl-item"><text class="dl-num">1</text><text class="dl-txt">仅限校园宣传、教学与经授权的用途使用</text></view>
           <view class="dl-item"><text class="dl-num">2</text><text class="dl-txt">涉及人物肖像、校徽、活动版权时，须另行取得许可</text></view>
           <view class="dl-item"><text class="dl-num">3</text><text class="dl-txt">不得用于商业冒用、违法用途或损害学校形象的内容</text></view>
-          <view class="dl-item"><text class="dl-num">4</text><text class="dl-txt">对外发布时请注明素材来源：融媒体中心</text></view>
+          <view class="dl-item"><text class="dl-num">4</text><text class="dl-txt">对外发布时请注明素材来源：校融媒体中心</text></view>
         </view>
 
         <view id="dlAgreeRow" class="dl-check" bindtap="onDlAgree">
